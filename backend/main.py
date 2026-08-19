@@ -2,8 +2,19 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from database import engine, Base, get_db
-from models import User
-from schemas import UserCreate, UserResponse, UserLogin, Token
+from models import User, Problem, Submission
+
+from schemas import (
+    UserCreate,
+    UserResponse,
+    UserLogin,
+    Token,
+    ProblemCreate,
+    ProblemResponse,
+    SubmissionCreate,
+    SubmissionResponse
+)
+
 from auth import (
     hash_password,
     verify_password,
@@ -101,6 +112,74 @@ def token(
         "token_type": "bearer"
     }
 
+@app.post("/problems", response_model=ProblemResponse)
+def create_problem(
+    problem: ProblemCreate,
+    db: Session = Depends(get_db)
+):
+    new_problem = Problem(
+        title=problem.title,
+        description=problem.description,
+        difficulty=problem.difficulty
+    )
+
+    db.add(new_problem)
+    db.commit()
+    db.refresh(new_problem)
+
+    return new_problem
+
+
+@app.get("/problems", response_model=list[ProblemResponse])
+def get_problems(db: Session = Depends(get_db)):
+    return db.query(Problem).all()
+
+
+@app.get("/problems/{problem_id}", response_model=ProblemResponse)
+def get_problem(problem_id: int, db: Session = Depends(get_db)):
+    problem = db.query(Problem).filter(
+        Problem.id == problem_id
+    ).first()
+
+    if not problem:
+        raise HTTPException(
+            status_code=404,
+            detail="Problem not found"
+        )
+
+    return problem
+
+
+
 @app.get("/me", response_model=UserResponse)
 def get_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+@app.post("/submissions", response_model=SubmissionResponse)
+def create_submission(
+    submission: SubmissionCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    new_submission = Submission(
+        user_id=current_user.id,
+        problem_id=submission.problem_id,
+        code=submission.code,
+        language=submission.language,
+        status="Pending"
+    )
+
+    db.add(new_submission)
+    db.commit()
+    db.refresh(new_submission)
+
+    return new_submission
+
+@app.get("/submissions", response_model=list[SubmissionResponse])
+def get_submissions(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return db.query(Submission).filter(
+        Submission.user_id == current_user.id
+    ).all()
