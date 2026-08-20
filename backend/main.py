@@ -22,7 +22,8 @@ from auth import (
     hash_password,
     verify_password,
     create_access_token,
-    get_current_user
+    get_current_user,
+    get_current_admin
 )
 
 Base.metadata.create_all(bind=engine)
@@ -118,7 +119,8 @@ def token(
 @app.post("/problems", response_model=ProblemResponse)
 def create_problem(
     problem: ProblemCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin = Depends(get_current_admin)
 ):
     new_problem = Problem(
         title=problem.title,
@@ -137,8 +139,18 @@ def create_problem(
 
 
 @app.get("/problems", response_model=list[ProblemResponse])
-def get_problems(db: Session = Depends(get_db)):
-    return db.query(Problem).all()
+def get_problems(
+    difficulty: str | None = None,
+    db: Session = Depends(get_db)
+):
+    query = db.query(Problem)
+
+    if difficulty:
+        query = query.filter(
+            Problem.difficulty == difficulty
+        )
+
+    return query.all()
 
 
 @app.get("/problems/{problem_id}", response_model=ProblemResponse)
@@ -280,3 +292,114 @@ def get_test_cases(
     return db.query(TestCase).filter(
         TestCase.problem_id == problem_id
     ).all()
+
+@app.put("/problems/{problem_id}", response_model=ProblemResponse)
+def update_problem(
+    problem_id: int,
+    problem_data: ProblemCreate,
+    db: Session = Depends(get_db),
+    current_admin = Depends(get_current_admin)
+):
+    problem = db.query(Problem).filter(
+        Problem.id == problem_id
+    ).first()
+
+    if not problem:
+        raise HTTPException(
+            status_code=404,
+            detail="Problem not found"
+        )
+
+    problem.title = problem_data.title
+    problem.description = problem_data.description
+    problem.difficulty = problem_data.difficulty
+    problem.input_format = problem_data.input_format
+    problem.output_format = problem_data.output_format
+    problem.constraints = problem_data.constraints
+
+    db.commit()
+    db.refresh(problem)
+
+    return problem
+
+@app.delete("/problems/{problem_id}")
+def delete_problem(
+    problem_id: int,
+    db: Session = Depends(get_db),
+    current_admin = Depends(get_current_admin)
+):
+    problem = db.query(Problem).filter(
+        Problem.id == problem_id
+    ).first()
+
+    if not problem:
+        raise HTTPException(
+            status_code=404,
+            detail="Problem not found"
+        )
+
+    db.delete(problem)
+    db.commit()
+
+    return {
+        "message": "Problem deleted successfully"
+    }
+
+@app.get("/submissions/{submission_id}", response_model=SubmissionResponse)
+def get_submission(
+    submission_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    submission = db.query(Submission).filter(
+        Submission.id == submission_id,
+        Submission.user_id == current_user.id
+    ).first()
+
+    if not submission:
+        raise HTTPException(
+            status_code=404,
+            detail="Submission not found"
+        )
+
+    return submission
+
+@app.get("/stats")
+def get_stats(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    submissions = db.query(Submission).filter(
+        Submission.user_id == current_user.id
+    ).all()
+
+    total_submissions = len(submissions)
+
+    accepted = sum(
+        1 for submission in submissions
+        if submission.status == "Accepted"
+    )
+
+    wrong_answers = sum(
+        1 for submission in submissions
+        if submission.status == "Wrong Answer"
+    )
+
+    runtime_errors = sum(
+        1 for submission in submissions
+        if submission.status == "Runtime Error"
+    )
+
+    solved_problems = len({
+        submission.problem_id
+        for submission in submissions
+        if submission.status == "Accepted"
+    })
+
+    return {
+        "total_submissions": total_submissions,
+        "accepted": accepted,
+        "wrong_answers": wrong_answers,
+        "runtime_errors": runtime_errors,
+        "problems_solved": solved_problems
+    }
