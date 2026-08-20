@@ -4,6 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from database import engine, Base, get_db
 from models import User, Problem, Submission, TestCase
 from judge import run_python_code
+from fastapi.middleware.cors import CORSMiddleware
 
 from schemas import (
     UserCreate,
@@ -28,8 +29,16 @@ from auth import (
 
 Base.metadata.create_all(bind=engine)
 
+
 app = FastAPI(title="CodeArena API")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def home():
@@ -49,6 +58,16 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
             detail="Email already registered"
         )
 
+    existing_username = db.query(User).filter(
+        User.username == user.username
+    ).first()
+
+    if existing_username:
+        raise HTTPException(
+            status_code=400,
+            detail="Username already taken"
+        )
+
     hashed_password = hash_password(user.password)
 
     new_user = User(
@@ -56,7 +75,6 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
         email=user.email,
         hashed_password=hashed_password
     )
-
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

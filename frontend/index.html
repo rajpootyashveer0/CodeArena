@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CodeArena — Master Coding</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar">
+
+        <a href="index.html" class="logo">
+            <span class="logo-mark">&lt;/&gt;</span>
+            CodeArena
+        </a>
+
+        <nav class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="problems.html">Problems</a>
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="login.html" class="login-link">Log in</a>
+            <a href="signup.html" class="signup-btn">Sign Up</a>
+        </div>
+
+    </header>
+
+
+    <!-- Hero Section -->
+    <main>
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="hero-badge">
+                    <span></span>
+                    The coding arena for developers
+                </div>
+
+                <h1>
+                    Think.
+                    <span>Code.</span>
+                    <br>
+                    Conquer.
+                </h1>
+
+                <p>
+                    Sharpen your programming skills with real coding
+                    problems, instant judging, and detailed progress
+                    tracking.
+                </p>
+
+                <div class="hero-actions">
+
+                    <a href="problems.html" class="primary-btn">
+                        Start Coding
+                        <span>→</span>
+                    </a>
+
+                    <a href="signup.html" class="secondary-btn">
+                        Create Free Account
+                    </a>
+
+                </div>
+
+                <div class="hero-stats">
+
+                    <div>
+                        <strong>100+</strong>
+                        <span>Coding Problems</span>
+                    </div>
+
+                    <div>
+                        <strong>3</strong>
+                        <span>Difficulty Levels</span>
+                    </div>
+
+                    <div>
+                        <strong>24/7</strong>
+                        <span>Practice</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Code Preview -->
+            <div class="code-preview">
+
+                <div class="window-bar">
+                    <div class="window-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+
+                    <div class="file-name">
+                        solution.py
+                    </div>
+                </div>
+
+                <div class="code-body">
+
+                    <div class="line">
+                        <span class="number">1</span>
+                        <span class="keyword">def</span>
+                        <span class="function">two_sum</span>(nums, target):
+                    </div>
+
+                    <div class="line">
+                        <span class="number">2</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="comment"># Find two numbers</span>
+                    </div>
+
+                    <div class="line">
+                        <span class="number">3</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        seen = {}
+                    </div>
+
+                    <div class="line">
+                        <span class="number">4</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">for</span> i, num
+                        <span class="keyword">in</span> enumerate(nums):
+                    </div>
+
+                    <div class="line">
+                        <span class="number">5</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        complement = target - num
+                    </div>
+
+                    <div class="line">
+                        <span class="number">6</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">if</span> complement
+                        <span class="keyword">in</span> seen:
+                    </div>
+
+                    <div class="line">
+                        <span class="number">7</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">return</span>
+                        [seen[complement], i]
+                    </div>
+
+                    <div class="line">
+                        <span class="number">8</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        seen[num] = i
+                    </div>
+
+                    <div class="line">
+                        <span class="number">9</span>
+                        &nbsp;
+                    </div>
+
+                    <div class="terminal-status">
+                        <span class="status-dot"></span>
+                        Accepted
+                        <span class="runtime">Runtime: 42ms</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Features -->
+        <section class="features" id="features">
+
+            <div class="section-heading">
+                <span>WHY CODEARENA</span>
+                <h2>Everything you need to become a better coder.</h2>
+            </div>
+
+            <div class="feature-grid">
+
+                <div class="feature-card">
+                    <div class="feature-icon">&lt;/&gt;</div>
+                    <h3>Real Coding Problems</h3>
+                    <p>
+                        Practice algorithmic and programming problems
+                        designed to improve your problem-solving skills.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">✓</div>
+                    <h3>Instant Judging</h3>
+                    <p>
+                        Submit your code and get instant results from
+                        our automated coding judge.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">↗</div>
+                    <h3>Track Your Progress</h3>
+                    <p>
+                        Monitor solved problems, submissions and your
+                        performance across difficulty levels.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CTA -->
+        <section class="cta" id="about">
+
+            <h2>Ready to enter the arena?</h2>
+
+            <p>
+                Start solving problems and build your coding skills today.
+            </p>
+
+            <a href="signup.html" class="primary-btn">
+                Join CodeArena →
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <div class="footer-logo">
+            <span>&lt;/&gt;</span> CodeArena
+        </div>
+
+        <p>
+            Built for developers who love to solve problems.
+        </p>
+
+        <span class="copyright">
+            © 2026 CodeArena
+        </span>
+
+    </footer>
+
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>

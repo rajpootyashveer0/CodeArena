@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sign Up — CodeArena</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 430px;
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-logo a {
+            color: #ffa116;
+            text-decoration: none;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .auth-card {
+            background: #161616;
+            border: 1px solid #2a2a2a;
+            border-radius: 14px;
+            padding: 36px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        .auth-card h1 {
+            margin: 0 0 8px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 28px;
+            color: #ffffff;
+        }
+
+        .auth-subtitle {
+            margin-bottom: 28px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ddd;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px 14px;
+            background: #0f0f0f;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        .form-input:focus {
+            border-color: #ffa116;
+            box-shadow: 0 0 0 3px rgba(255, 161, 22, 0.1);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper .form-input {
+            padding-right: 48px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .toggle-password:hover {
+            color: #ffa116;
+        }
+
+        .signup-btn {
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            padding: 13px;
+            background: #ffa116;
+            color: #111;
+            font-family: "Inter", sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+            margin-top: 5px;
+        }
+
+        .signup-btn:hover {
+            background: #ffb13b;
+            transform: translateY(-1px);
+        }
+
+        .error-message {
+            display: none;
+            margin-bottom: 18px;
+            padding: 11px 13px;
+            border: 1px solid #5c2525;
+            border-radius: 8px;
+            background: #291717;
+            color: #ff7b7b;
+            font-size: 13px;
+        }
+
+        .success-message {
+            display: none;
+            margin-bottom: 18px;
+            padding: 11px 13px;
+            border: 1px solid #275c38;
+            border-radius: 8px;
+            background: #16291d;
+            color: #6ee7a0;
+            font-size: 13px;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 24px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .auth-footer a {
+            color: #ffa116;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .back-home:hover {
+            color: #ffa116;
+        }
+
+        @media (max-width: 500px) {
+            .auth-card {
+                padding: 26px 20px;
+            }
+
+            .auth-card h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="auth-page">
+
+        <div class="auth-container">
+
+            <div class="auth-logo">
+                <a href="index.html">CodeArena</a>
+            </div>
+
+            <div class="auth-card">
+
+                <h1>Create your account</h1>
+
+                <p class="auth-subtitle">
+                    Join CodeArena and start solving problems.
+                </p>
+
+                <div id="errorMessage" class="error-message"></div>
+
+                <div id="successMessage" class="success-message"></div>
+
+                <form id="signupForm">
+
+                    <div class="form-group">
+                        <label for="username">Username</label>
+
+                        <input
+                            type="text"
+                            id="username"
+                            class="form-input"
+                            placeholder="Choose a username"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            class="form-input"
+                            placeholder="you@example.com"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                id="password"
+                                class="form-input"
+                                placeholder="Create a password"
+                                required
+                                minlength="6"
+                            >
+
+                            <button
+                                type="button"
+                                class="toggle-password"
+                                id="togglePassword"
+                            >
+                                Show
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                class="form-input"
+                                placeholder="Confirm your password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="toggle-password"
+                                id="toggleConfirmPassword"
+                            >
+                                Show
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="signup-btn"
+                        id="signupButton"
+                    >
+                        Create Account
+                    </button>
+
+                </form>
+
+                <div class="auth-footer">
+                    Already have an account?
+                    <a href="login.html">Log in</a>
+                </div>
+
+            </div>
+
+            <a href="index.html" class="back-home">
+                ← Back to CodeArena
+            </a>
+
+        </div>
+
+    </main>
+
+    <script>
+    const passwordInput = document.getElementById("password");
+    const confirmPasswordInput = document.getElementById("confirmPassword");
+
+    const togglePassword = document.getElementById("togglePassword");
+    const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
+
+    const signupForm = document.getElementById("signupForm");
+    const errorMessage = document.getElementById("errorMessage");
+    const successMessage = document.getElementById("successMessage");
+    const signupButton = document.getElementById("signupButton");
+
+
+    // Show / Hide Password
+    togglePassword.addEventListener("click", () => {
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            togglePassword.textContent = "Hide";
+        } else {
+            passwordInput.type = "password";
+            togglePassword.textContent = "Show";
+        }
+
+    });
+
+
+    // Show / Hide Confirm Password
+    toggleConfirmPassword.addEventListener("click", () => {
+
+        if (confirmPasswordInput.type === "password") {
+            confirmPasswordInput.type = "text";
+            toggleConfirmPassword.textContent = "Hide";
+        } else {
+            confirmPasswordInput.type = "password";
+            toggleConfirmPassword.textContent = "Show";
+        }
+
+    });
+
+
+    // Signup
+    signupForm.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        errorMessage.style.display = "none";
+        successMessage.style.display = "none";
+
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+
+        // Check passwords
+        if (password !== confirmPassword) {
+
+            errorMessage.textContent = "Passwords do not match.";
+            errorMessage.style.display = "block";
+
+            return;
+        }
+
+
+        signupButton.disabled = true;
+        signupButton.textContent = "Creating Account...";
+
+
+        try {
+
+            const response = await fetch("http://127.0.0.1:8000/signup", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    username: username,
+                    email: email,
+                    password: password
+                })
+
+            });
+
+
+            const data = await response.json();
+
+
+            if (!response.ok) {
+
+                errorMessage.textContent =
+                    data.detail || "Signup failed. Please try again.";
+
+                errorMessage.style.display = "block";
+
+                signupButton.disabled = false;
+                signupButton.textContent = "Create Account";
+
+                return;
+            }
+
+
+            // Success
+            successMessage.textContent =
+                "Account created successfully! Redirecting to login...";
+
+            successMessage.style.display = "block";
+
+
+            signupForm.reset();
+
+
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 1500);
+
+
+        } catch (error) {
+
+            errorMessage.textContent =
+                "Unable to connect to the server. Make sure FastAPI is running.";
+
+            errorMessage.style.display = "block";
+
+            signupButton.disabled = false;
+            signupButton.textContent = "Create Account";
+
+            console.error(error);
+
+        }
+
+    });
+</script>
+
+</body>
+</html>
