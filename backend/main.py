@@ -2,7 +2,8 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from database import engine, Base, get_db
-from models import User, Problem, Submission
+from models import User, Problem, Submission, TestCase
+from judge import run_python_code
 
 from schemas import (
     UserCreate,
@@ -12,7 +13,9 @@ from schemas import (
     ProblemCreate,
     ProblemResponse,
     SubmissionCreate,
-    SubmissionResponse
+    SubmissionResponse,
+    TestCaseCreate,
+    TestCaseResponse
 )
 
 from auth import (
@@ -120,7 +123,10 @@ def create_problem(
     new_problem = Problem(
         title=problem.title,
         description=problem.description,
-        difficulty=problem.difficulty
+        difficulty=problem.difficulty,
+        input_format=problem.input_format,
+        output_format=problem.output_format,
+        constraints=problem.constraints
     )
 
     db.add(new_problem)
@@ -161,6 +167,16 @@ def create_submission(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    problem = db.query(Problem).filter(
+        Problem.id == submission.problem_id
+    ).first()
+
+    if not problem:
+        raise HTTPException(
+            status_code=404,
+            detail="Problem not found"
+        )
+
     new_submission = Submission(
         user_id=current_user.id,
         problem_id=submission.problem_id,
@@ -173,6 +189,41 @@ def create_submission(
     db.commit()
     db.refresh(new_submission)
 
+    if submission.language.lower() == "python":
+        test_cases = db.query(TestCase).filter(
+            TestCase.problem_id == submission.problem_id
+        ).all()
+
+        if not test_cases:
+            new_submission.status = "No Test Cases"
+        else:
+            all_passed = True
+
+            for test_case in test_cases:
+                result = run_python_code(
+                    submission.code,
+                    test_case.input_data
+                )
+
+                if not result["success"]:
+                    new_submission.status = "Runtime Error"
+                    all_passed = False
+                    break
+
+                if result["output"] != test_case.expected_output:
+                    new_submission.status = "Wrong Answer"
+                    all_passed = False
+                    break
+
+            if all_passed:
+                new_submission.status = "Accepted"
+
+    else:
+        new_submission.status = "Language Not Supported"
+
+    db.commit()
+    db.refresh(new_submission)
+
     return new_submission
 
 @app.get("/submissions", response_model=list[SubmissionResponse])
@@ -182,4 +233,50 @@ def get_submissions(
 ):
     return db.query(Submission).filter(
         Submission.user_id == current_user.id
+    ).all()
+
+@app.post("/test-cases", response_model=TestCaseResponse)
+def create_test_case(
+    test_case: TestCaseCreate,
+    db: Session = Depends(get_db)
+):
+    problem = db.query(Problem).filter(
+        Problem.id == test_case.problem_id
+    ).first()
+
+    if not problem:
+        raise HTTPException(
+            status_code=404,
+            detail="Problem not found"
+        )
+
+    new_test_case = TestCase(
+        problem_id=test_case.problem_id,
+        input_data=test_case.input_data,
+        expected_output=test_case.expected_output
+    )
+
+    db.add(new_test_case)
+    db.commit()
+    db.refresh(new_test_case)
+
+    return new_test_case
+
+@app.get("/test-cases/{problem_id}", response_model=list[TestCaseResponse])
+def get_test_cases(
+    problem_id: int,
+    db: Session = Depends(get_db)
+):
+    problem = db.query(Problem).filter(
+        Problem.id == problem_id
+    ).first()
+
+    if not problem:
+        raise HTTPException(
+            status_code=404,
+            detail="Problem not found"
+        )
+
+    return db.query(TestCase).filter(
+        TestCase.problem_id == problem_id
     ).all()

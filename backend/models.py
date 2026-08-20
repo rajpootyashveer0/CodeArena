@@ -20,7 +20,9 @@ class Problem(Base):
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
     difficulty = Column(String, nullable=False)
-
+    input_format = Column(String, nullable=False, default="")
+    output_format = Column(String, nullable=False, default="")
+    constraints = Column(String, nullable=False, default="")
 class Submission(Base):
     __tablename__ = "submissions"
 
@@ -30,3 +32,11 @@ class Submission(Base):
     code = Column(String, nullable=False)
     language = Column(String, nullable=False)
     status = Column(String, default="Pending")
+
+class TestCase(Base):
+    __tablename__ = "test_cases"
+
+    id = Column(Integer, primary_key=True, index=True)
+    problem_id = Column(Integer, nullable=False)
+    input_data = Column(String, nullable=False)
+    expected_output = Column(String, nullable=False)

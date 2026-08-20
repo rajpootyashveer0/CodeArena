@@ -28,7 +28,9 @@ class ProblemBase(BaseModel):
     title: str
     description: str
     difficulty: str
-
+    input_format: str = ""
+    output_format: str = ""
+    constraints: str = ""
 
 class ProblemCreate(ProblemBase):
     pass
@@ -71,6 +73,21 @@ class SubmissionResponse(BaseModel):
     code: str
     language: str
     status: str
+
+    class Config:
+        from_attributes = True
+
+class TestCaseCreate(BaseModel):
+    problem_id: int
+    input_data: str
+    expected_output: str
+
+
+class TestCaseResponse(BaseModel):
+    id: int
+    problem_id: int
+    input_data: str
+    expected_output: str
 
     class Config:
         from_attributes = True
