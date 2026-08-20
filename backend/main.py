@@ -364,6 +364,7 @@ def get_submission(
 
     return submission
 
+
 @app.get("/stats")
 def get_stats(
     db: Session = Depends(get_db),
@@ -396,10 +397,96 @@ def get_stats(
         if submission.status == "Accepted"
     })
 
+    easy_solved = 0
+    medium_solved = 0
+    hard_solved = 0
+
+    for submission in submissions:
+        if submission.status == "Accepted":
+            problem = db.query(Problem).filter(
+                Problem.id == submission.problem_id
+            ).first()
+
+            if problem:
+                if problem.difficulty == "Easy":
+                    easy_solved += 1
+                elif problem.difficulty == "Medium":
+                    medium_solved += 1
+                elif problem.difficulty == "Hard":
+                    hard_solved += 1
+
     return {
         "total_submissions": total_submissions,
         "accepted": accepted,
         "wrong_answers": wrong_answers,
         "runtime_errors": runtime_errors,
-        "problems_solved": solved_problems
+        "problems_solved": solved_problems,
+        "easy_solved": easy_solved,
+        "medium_solved": medium_solved,
+        "hard_solved": hard_solved
+    }
+@app.get("/dashboard")
+def get_dashboard(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    submissions = db.query(Submission).filter(
+        Submission.user_id == current_user.id
+    ).all()
+
+    accepted = sum(
+        1 for submission in submissions
+        if submission.status == "Accepted"
+    )
+
+    wrong_answers = sum(
+        1 for submission in submissions
+        if submission.status == "Wrong Answer"
+    )
+
+    runtime_errors = sum(
+        1 for submission in submissions
+        if submission.status == "Runtime Error"
+    )
+
+    solved_problems = len({
+        submission.problem_id
+        for submission in submissions
+        if submission.status == "Accepted"
+    })
+    easy_solved = 0
+    medium_solved = 0
+    hard_solved = 0
+
+    for submission in submissions:
+        if submission.status == "Accepted":
+            problem = db.query(Problem).filter(
+                Problem.id == submission.problem_id
+            ).first()
+
+            if problem:
+                if problem.difficulty == "Easy":
+                    easy_solved += 1
+                elif problem.difficulty == "Medium":
+                    medium_solved += 1
+                elif problem.difficulty == "Hard":
+                    hard_solved += 1
+    
+
+    return {
+        "user": {
+            "id": current_user.id,
+            "username": current_user.username,
+            "email": current_user.email
+        },
+        "stats": {
+            "total_submissions": len(submissions),
+            "accepted": accepted,
+            "wrong_answers": wrong_answers,
+            "runtime_errors": runtime_errors,
+            "problems_solved": solved_problems,
+            "easy_solved": easy_solved,
+            "medium_solved": medium_solved,
+            "hard_solved": hard_solved
+        }
     }
