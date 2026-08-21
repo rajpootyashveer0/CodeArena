@@ -1,0 +1,1000 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Problem — CodeArena</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        body {
+            margin: 0;
+            background: #0b0b0b;
+            color: #fff;
+            font-family: "Inter", sans-serif;
+        }
+
+        /* NAVBAR */
+
+        .problem-nav {
+            height: 64px;
+            background: #111;
+            border-bottom: 1px solid #292929;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 5%;
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            color: #ffa116;
+            text-decoration: none;
+
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .back-link {
+            color: #999;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .back-link:hover {
+            color: #ffa116;
+        }
+
+        .dashboard-link {
+            color: #ddd;
+            text-decoration: none;
+            border: 1px solid #333;
+            padding: 8px 14px;
+            border-radius: 7px;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .dashboard-link:hover {
+            color: #ffa116;
+            border-color: #ffa116;
+        }
+
+
+        /* MAIN LAYOUT */
+
+        .coding-layout {
+            width: min(1400px, 94%);
+            margin: 0 auto;
+
+            min-height: calc(100vh - 64px);
+
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+
+            gap: 18px;
+
+            padding: 22px 0;
+        }
+
+
+        /* PANELS */
+
+        .panel {
+            background: #151515;
+            border: 1px solid #292929;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 15px 18px;
+            background: #111;
+            border-bottom: 1px solid #292929;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header h2 {
+            margin: 0;
+
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 16px;
+        }
+
+
+        /* PROBLEM */
+
+        .problem-panel {
+            min-height: 700px;
+        }
+
+        .problem-content {
+            padding: 25px;
+            overflow-y: auto;
+            max-height: 78vh;
+        }
+
+        .problem-title-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .problem-title {
+            margin: 0;
+
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 28px;
+        }
+
+        .difficulty {
+            padding: 5px 9px;
+            border-radius: 6px;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .easy {
+            background: rgba(45, 181, 93, 0.12);
+            color: #2db55d;
+        }
+
+        .medium {
+            background: rgba(255, 161, 22, 0.12);
+            color: #ffa116;
+        }
+
+        .hard {
+            background: rgba(239, 71, 67, 0.12);
+            color: #ef4743;
+        }
+
+        .problem-description {
+            color: #c7c7c7;
+
+            font-size: 14px;
+            line-height: 1.8;
+
+            margin-bottom: 30px;
+        }
+
+        .problem-section {
+            margin-bottom: 26px;
+        }
+
+        .problem-section h3 {
+            margin-bottom: 9px;
+
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 16px;
+        }
+
+        .problem-section p {
+            color: #aaa;
+            font-size: 13px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        .problem-code {
+            background: #0c0c0c;
+            border: 1px solid #292929;
+            border-radius: 7px;
+
+            padding: 14px;
+
+            color: #ccc;
+
+            font-family: "JetBrains Mono", monospace;
+            font-size: 12px;
+
+            white-space: pre-wrap;
+        }
+
+
+        /* EDITOR */
+
+        .editor-panel {
+            display: flex;
+            flex-direction: column;
+            min-height: 700px;
+        }
+
+        .language-select {
+            background: #151515;
+            color: #bbb;
+
+            border: 1px solid #333;
+            border-radius: 6px;
+
+            padding: 6px 9px;
+
+            font-family: "Inter", sans-serif;
+            font-size: 12px;
+        }
+
+        .editor-wrapper {
+            flex: 1;
+            min-height: 470px;
+            background: #0e0e0e;
+            position: relative;
+        }
+
+        .code-editor {
+            width: 100%;
+            height: 100%;
+            min-height: 470px;
+
+            box-sizing: border-box;
+
+            resize: none;
+
+            border: none;
+            outline: none;
+
+            background: #0e0e0e;
+            color: #e4e4e4;
+
+            padding: 20px;
+
+            font-family: "JetBrains Mono", monospace;
+            font-size: 13px;
+
+            line-height: 1.7;
+
+            tab-size: 4;
+        }
+
+
+        /* ACTION BAR */
+
+        .editor-actions {
+            padding: 14px 16px;
+
+            background: #111;
+            border-top: 1px solid #292929;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 12px;
+        }
+
+        .submit-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .run-btn,
+        .submit-btn {
+            border-radius: 7px;
+
+            padding: 10px 16px;
+
+            font-family: "Inter", sans-serif;
+            font-weight: 700;
+
+            font-size: 13px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .run-btn {
+            background: #1a1a1a;
+            color: #ddd;
+            border: 1px solid #333;
+        }
+
+        .run-btn:hover {
+            border-color: #555;
+        }
+
+        .submit-btn {
+            background: #ffa116;
+            color: #111;
+            border: 1px solid #ffa116;
+        }
+
+        .submit-btn:hover {
+            background: #ffb13b;
+        }
+
+        .submit-btn:disabled,
+        .run-btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+
+        /* RESULT */
+
+        .result-panel {
+            border-top: 1px solid #292929;
+            background: #111;
+        }
+
+        .result-header {
+            padding: 12px 16px;
+
+            color: #aaa;
+            font-size: 12px;
+
+            border-bottom: 1px solid #292929;
+        }
+
+        .result-body {
+            padding: 16px;
+
+            color: #999;
+
+            font-family: "JetBrains Mono", monospace;
+            font-size: 12px;
+
+            min-height: 50px;
+        }
+
+        .result-success {
+            color: #2db55d;
+        }
+
+        .result-error {
+            color: #ef4743;
+        }
+
+        .result-warning {
+            color: #ffa116;
+        }
+
+
+        /* LOADING */
+
+        .loading {
+            text-align: center;
+            color: #777;
+
+            padding: 50px;
+
+            font-size: 14px;
+        }
+
+        .error-box {
+            display: none;
+
+            background: #291717;
+            border: 1px solid #5c2525;
+
+            color: #ff7b7b;
+
+            padding: 13px 15px;
+
+            border-radius: 8px;
+
+            margin: 18px 5% 0;
+
+            font-size: 13px;
+        }
+
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1000px) {
+
+            .coding-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .problem-content {
+                max-height: none;
+            }
+
+            .editor-panel {
+                min-height: 600px;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .problem-nav {
+                padding: 0 20px;
+            }
+
+            .back-link {
+                display: none;
+            }
+
+            .coding-layout {
+                width: 94%;
+            }
+
+            .problem-title {
+                font-size: 23px;
+            }
+
+            .editor-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .submit-actions {
+                width: 100%;
+            }
+
+            .run-btn,
+            .submit-btn {
+                flex: 1;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <nav class="problem-nav">
+
+        <a href="index.html" class="nav-logo">
+            CodeArena
+        </a>
+
+        <a href="problems.html" class="back-link">
+            ← Back to Problems
+        </a>
+
+        <a href="dashboard.html" class="dashboard-link">
+            Dashboard
+        </a>
+
+    </nav>
+
+
+    <div id="errorBox" class="error-box"></div>
+
+
+    <!-- CODING AREA -->
+
+    <main class="coding-layout">
+
+
+        <!-- PROBLEM PANEL -->
+
+        <section class="panel problem-panel">
+
+            <div class="panel-header">
+
+                <h2>
+                    Problem
+                </h2>
+
+            </div>
+
+
+            <div id="problemContent" class="problem-content">
+
+                <div class="loading">
+                    Loading problem...
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- EDITOR PANEL -->
+
+        <section class="panel editor-panel">
+
+            <div class="panel-header">
+
+                <h2>
+                    Code Editor
+                </h2>
+
+                <select id="languageSelect" class="language-select">
+
+                    <option value="python">
+                        Python
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="editor-wrapper">
+
+                <textarea
+                    id="codeEditor"
+                    class="code-editor"
+                    spellcheck="false"
+                    placeholder="# Write your Python solution here..."
+                ></textarea>
+
+            </div>
+
+
+            <div class="editor-actions">
+
+                <div id="submissionStatus">
+                    <span style="color:#777;font-size:12px;">
+                        Ready
+                    </span>
+                </div>
+
+
+                <div class="submit-actions">
+
+                    <button
+                        type="button"
+                        class="run-btn"
+                        id="runBtn">
+                        Run
+                    </button>
+
+                    <button
+                        type="button"
+                        class="submit-btn"
+                        id="submitBtn">
+                        Submit
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="result-panel">
+
+                <div class="result-header">
+                    Result
+                </div>
+
+                <div
+                    id="resultBody"
+                    class="result-body">
+                    Submit your solution to see the result.
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+<script>
+   console.log("PROBLEM PAGE LOADED");
+    const API_URL = "http://127.0.0.1:8000";
+
+    const token = localStorage.getItem("access_token");
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const problemId = urlParams.get("id");
+
+    const problemContent = document.getElementById("problemContent");
+    const errorBox = document.getElementById("errorBox");
+    const codeEditor = document.getElementById("codeEditor");
+    const submitBtn = document.getElementById("submitBtn");
+    const runBtn = document.getElementById("runBtn");
+    const resultBody = document.getElementById("resultBody");
+    const languageSelect = document.getElementById("languageSelect");
+
+
+    // =========================
+    // AUTHENTICATION
+    // =========================
+
+    if (!token) {
+        window.location.href = "login.html";
+    }
+
+
+    // =========================
+    // PROBLEM ID CHECK
+    // =========================
+
+    if (!problemId) {
+
+        errorBox.textContent = "No problem selected.";
+        errorBox.style.display = "block";
+
+        problemContent.innerHTML = "";
+
+    }
+
+
+    // =========================
+    // LOAD PROBLEM
+    // =========================
+
+    async function loadProblem() {
+
+        if (!problemId) {
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                `${API_URL}/problems/${problemId}`
+            );
+
+            const problem = await response.json();
+
+            if (!response.ok) {
+
+                throw new Error(
+                    problem.detail ||
+                    "Unable to load problem"
+                );
+
+            }
+
+
+            let difficultyClass = "easy";
+
+            if (problem.difficulty === "Medium") {
+                difficultyClass = "medium";
+            }
+
+            if (problem.difficulty === "Hard") {
+                difficultyClass = "hard";
+            }
+
+
+            problemContent.innerHTML = `
+
+                <div class="problem-title-row">
+
+                    <h1 class="problem-title">
+                        ${escapeHtml(problem.title)}
+                    </h1>
+
+                    <span class="difficulty ${difficultyClass}">
+                        ${escapeHtml(problem.difficulty)}
+                    </span>
+
+                </div>
+
+
+                <div class="problem-description">
+                    ${escapeHtml(problem.description)}
+                </div>
+
+
+                <div class="problem-section">
+
+                    <h3>Input Format</h3>
+
+                    <p>
+                        ${escapeHtml(
+                            problem.input_format || "Not specified."
+                        )}
+                    </p>
+
+                </div>
+
+
+                <div class="problem-section">
+
+                    <h3>Output Format</h3>
+
+                    <p>
+                        ${escapeHtml(
+                            problem.output_format || "Not specified."
+                        )}
+                    </p>
+
+                </div>
+
+
+                <div class="problem-section">
+
+                    <h3>Constraints</h3>
+
+                    <p>
+                        ${escapeHtml(
+                            problem.constraints || "Not specified."
+                        )}
+                    </p>
+
+                </div>
+
+            `;
+
+        } catch (error) {
+
+            problemContent.innerHTML = "";
+
+            errorBox.textContent = error.message;
+            errorBox.style.display = "block";
+
+        }
+
+    }
+
+
+    // =========================
+    // SUBMIT CODE
+    // =========================
+   console.log("SUBMIT CODE CALLED");
+    async function submitCode(event) {
+
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+
+        const code = codeEditor.value.trim();
+        localStorage.setItem(
+    `code_${problemId}`,
+    codeEditor.value
+);
+
+
+        if (!code) {
+
+            resultBody.className =
+                "result-body result-warning";
+
+            resultBody.textContent =
+                "Write some code before submitting.";
+
+            return;
+
+        }
+
+
+        submitBtn.disabled = true;
+        runBtn.disabled = true;
+
+        submitBtn.textContent = "Submitting...";
+
+        resultBody.className = "result-body";
+
+        resultBody.textContent =
+            "Running your solution...";
+
+
+        try {
+
+            const response = await fetch(
+                `${API_URL}/submissions`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+
+                    body: JSON.stringify({
+
+                        problem_id: Number(problemId),
+
+                        code: code,
+
+                        language: languageSelect.value
+
+                    })
+
+                }
+            );
+
+
+            const data = await response.json();
+
+
+            // TOKEN EXPIRED
+
+            if (response.status === 401) {
+
+                localStorage.removeItem("access_token");
+
+                window.location.href = "login.html";
+
+                return;
+
+            }
+
+
+            // BACKEND ERROR
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.detail ||
+                    "Submission failed"
+                );
+
+            }
+
+
+            // SHOW RESULT
+            console.log("SUBMISSION RESPONSE:", data);
+        console.log("SUBMISSION RESULT:", data.status);
+            showResult(data.status);
+
+
+        } catch (error) {
+
+            resultBody.className =
+                "result-body result-error";
+
+            resultBody.textContent =
+                error.message;
+
+        } finally {
+
+            submitBtn.disabled = false;
+
+            runBtn.disabled = false;
+
+            submitBtn.textContent = "Submit";
+
+        }
+
+    }
+
+
+    // =========================
+    // SHOW RESULT
+    // =========================
+
+    function showResult(status) {
+
+        resultBody.className =
+            "result-body";
+
+
+        if (status === "Accepted") {
+
+            resultBody.classList.add(
+                "result-success"
+            );
+
+            resultBody.textContent =
+                "✓ Accepted — Your solution passed all test cases.";
+
+            return;
+
+        }
+
+
+        if (status === "Wrong Answer") {
+
+            resultBody.classList.add(
+                "result-error"
+            );
+
+            resultBody.textContent =
+                "✕ Wrong Answer — Your output did not match the expected result.";
+
+            return;
+
+        }
+
+
+        if (status === "Runtime Error") {
+
+            resultBody.classList.add(
+                "result-error"
+            );
+
+            resultBody.textContent =
+                "✕ Runtime Error — Your code encountered an error while running.";
+
+            return;
+
+        }
+
+
+        resultBody.classList.add(
+            "result-warning"
+        );
+
+        resultBody.textContent =
+            `Result: ${status}`;
+
+    }
+
+
+    // =========================
+    // BUTTON EVENTS
+    // =========================
+
+    submitBtn.addEventListener(
+        "click",
+        submitCode
+    );
+
+
+    runBtn.addEventListener(
+        "click",
+        submitCode
+    );
+
+
+    // =========================
+    // ESCAPE HTML
+    // =========================
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    // =========================
+    // START
+    // =========================
+ function restoreCode() {
+
+    const savedCode = localStorage.getItem(
+        `code_${problemId}`
+    );
+
+    if (savedCode) {
+        codeEditor.value = savedCode;
+    }
+
+}
+
+loadProblem();
+restoreCode();
+
+codeEditor.addEventListener("input", function () {
+
+    localStorage.setItem(
+        `code_${problemId}`,
+        codeEditor.value
+    );
+
+});
+
+</script>
+   
+
+</body>
+
+</html>
+```

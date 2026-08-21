@@ -1,0 +1,748 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Problems — CodeArena</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        body {
+            background: #0b0b0b;
+            color: #fff;
+            margin: 0;
+            font-family: "Inter", sans-serif;
+        }
+
+        /* NAVBAR */
+
+        .problems-nav {
+            height: 64px;
+            background: #111;
+            border-bottom: 1px solid #292929;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            text-decoration: none;
+            color: #ffa116;
+
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #ffa116;
+        }
+
+        .dashboard-btn {
+            text-decoration: none;
+            color: #ddd;
+
+            border: 1px solid #333;
+            padding: 8px 14px;
+
+            border-radius: 7px;
+            font-size: 13px;
+
+            transition: 0.2s;
+        }
+
+        .dashboard-btn:hover {
+            border-color: #ffa116;
+            color: #ffa116;
+        }
+
+
+        /* PAGE */
+
+        .page-container {
+            width: min(1180px, 92%);
+            margin: auto;
+
+            padding: 45px 0 80px;
+        }
+
+        .page-heading {
+            margin-bottom: 30px;
+        }
+
+        .page-heading h1 {
+            margin: 0 0 8px;
+
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 36px;
+        }
+
+        .page-heading p {
+            margin: 0;
+
+            color: #888;
+            font-size: 14px;
+        }
+
+
+        /* FILTER BAR */
+
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .search-box input {
+            width: 100%;
+            box-sizing: border-box;
+
+            background: #151515;
+            border: 1px solid #303030;
+
+            color: #fff;
+
+            padding: 12px 14px;
+
+            border-radius: 8px;
+
+            outline: none;
+
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: #ffa116;
+            box-shadow: 0 0 0 3px rgba(255, 161, 22, 0.08);
+        }
+
+        .filter-btn {
+            padding: 11px 15px;
+
+            border: 1px solid #303030;
+            border-radius: 8px;
+
+            background: #151515;
+            color: #aaa;
+
+            cursor: pointer;
+
+            font-size: 13px;
+            font-family: "Inter", sans-serif;
+
+            transition: 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: #555;
+            color: #fff;
+        }
+
+        .filter-btn.active {
+            background: #ffa116;
+            color: #111;
+
+            border-color: #ffa116;
+
+            font-weight: 700;
+        }
+
+
+        /* TABLE */
+
+        .problem-table {
+            background: #151515;
+            border: 1px solid #292929;
+
+            border-radius: 12px;
+
+            overflow: hidden;
+        }
+
+        .table-head,
+        .problem-row {
+            display: grid;
+
+            grid-template-columns:
+                80px
+                minmax(280px, 1fr)
+                130px
+                110px;
+
+            align-items: center;
+        }
+
+        .table-head {
+            padding: 16px 22px;
+
+            color: #777;
+            font-size: 12px;
+
+            background: #111;
+
+            border-bottom: 1px solid #292929;
+        }
+
+        .problem-row {
+            padding: 18px 22px;
+
+            border-bottom: 1px solid #242424;
+
+            transition: 0.2s;
+        }
+
+        .problem-row:last-child {
+            border-bottom: none;
+        }
+
+        .problem-row:hover {
+            background: #191919;
+        }
+
+        .problem-number {
+            color: #666;
+
+            font-family: "JetBrains Mono", monospace;
+            font-size: 12px;
+        }
+
+        .problem-title a {
+            color: #eee;
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+        .problem-title a:hover {
+            color: #ffa116;
+        }
+
+        .difficulty-badge {
+            display: inline-flex;
+
+            padding: 5px 9px;
+
+            border-radius: 6px;
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .difficulty-easy {
+            background: rgba(45, 181, 93, 0.12);
+            color: #2db55d;
+        }
+
+        .difficulty-medium {
+            background: rgba(255, 161, 22, 0.12);
+            color: #ffa116;
+        }
+
+        .difficulty-hard {
+            background: rgba(239, 71, 67, 0.12);
+            color: #ef4743;
+        }
+
+        .solve-link {
+            color: #aaa;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            transition: 0.2s;
+        }
+
+        .solve-link:hover {
+            color: #ffa116;
+        }
+
+
+        /* LOADING */
+
+        .loading {
+            padding: 55px 20px;
+
+            text-align: center;
+
+            color: #777;
+            font-size: 14px;
+        }
+
+        .empty-state {
+            padding: 60px 20px;
+
+            text-align: center;
+
+            color: #777;
+            font-size: 14px;
+        }
+
+        .error-box {
+            display: none;
+
+            background: #291717;
+
+            border: 1px solid #5c2525;
+
+            color: #ff7b7b;
+
+            border-radius: 8px;
+
+            padding: 13px 15px;
+
+            margin-bottom: 20px;
+
+            font-size: 13px;
+        }
+
+
+        /* RESPONSIVE */
+
+        @media (max-width: 850px) {
+
+            .nav-links {
+                display: none;
+            }
+
+            .table-head {
+                display: none;
+            }
+
+            .problem-row {
+                grid-template-columns: 42px 1fr auto;
+                gap: 12px;
+            }
+
+            .problem-difficulty {
+                grid-column: 2;
+            }
+
+            .problem-action {
+                grid-column: 3;
+                grid-row: 1 / span 2;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .page-container {
+                padding-top: 30px;
+            }
+
+            .page-heading h1 {
+                font-size: 29px;
+            }
+
+            .problems-nav {
+                padding: 0 20px;
+            }
+
+            .dashboard-btn {
+                display: none;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <nav class="problems-nav">
+
+        <a href="index.html" class="nav-logo">
+            CodeArena
+        </a>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="problems.html" class="active">
+                Problems
+            </a>
+
+        </div>
+
+        <a href="dashboard.html" class="dashboard-btn">
+            Dashboard
+        </a>
+
+    </nav>
+
+
+    <!-- PAGE -->
+
+    <main class="page-container">
+
+        <section class="page-heading">
+
+            <h1>
+                Problems
+            </h1>
+
+            <p>
+                Sharpen your problem-solving skills and master algorithms.
+            </p>
+
+        </section>
+
+
+        <div id="errorBox" class="error-box"></div>
+
+
+        <!-- FILTERS -->
+
+        <div class="filter-bar">
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search problems..."
+                >
+
+            </div>
+
+
+            <button
+                class="filter-btn active"
+                data-difficulty="all">
+                All
+            </button>
+
+            <button
+                class="filter-btn"
+                data-difficulty="Easy">
+                Easy
+            </button>
+
+            <button
+                class="filter-btn"
+                data-difficulty="Medium">
+                Medium
+            </button>
+
+            <button
+                class="filter-btn"
+                data-difficulty="Hard">
+                Hard
+            </button>
+
+        </div>
+
+
+        <!-- PROBLEM LIST -->
+
+        <section class="problem-table">
+
+            <div class="table-head">
+
+                <div>#</div>
+
+                <div>Problem</div>
+
+                <div>Difficulty</div>
+
+                <div>Action</div>
+
+            </div>
+
+
+            <div id="problemList">
+
+                <div class="loading">
+                    Loading problems...
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        const API_URL = "http://127.0.0.1:8000";
+
+        let allProblems = [];
+
+
+        async function loadProblems() {
+
+            const problemList =
+                document.getElementById("problemList");
+
+            const errorBox =
+                document.getElementById("errorBox");
+
+
+            try {
+
+                const response = await fetch(
+                    `${API_URL}/problems`
+                );
+
+
+                const data = await response.json();
+
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.detail || "Unable to load problems"
+                    );
+                }
+
+
+                allProblems = data;
+
+                renderProblems(allProblems);
+
+
+            } catch (error) {
+
+                problemList.innerHTML = "";
+
+                errorBox.textContent = error.message;
+
+                errorBox.style.display = "block";
+
+            }
+
+        }
+
+
+        function renderProblems(problems) {
+
+            const problemList =
+                document.getElementById("problemList");
+
+
+            if (!problems.length) {
+
+                problemList.innerHTML = `
+                    <div class="empty-state">
+                        No problems found.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            problemList.innerHTML =
+                problems.map((problem, index) => {
+
+                    let difficultyClass =
+                        "difficulty-easy";
+
+                    if (problem.difficulty === "Medium") {
+                        difficultyClass =
+                            "difficulty-medium";
+                    }
+
+                    if (problem.difficulty === "Hard") {
+                        difficultyClass =
+                            "difficulty-hard";
+                    }
+
+
+                    return `
+                        <div class="problem-row">
+
+                            <div class="problem-number">
+                                ${index + 1}
+                            </div>
+
+                            <div class="problem-title">
+
+                                <a href="problem.html?id=${problem.id}">
+                                    ${escapeHtml(problem.title)}
+                                </a>
+
+                            </div>
+
+                            <div class="problem-difficulty">
+
+                                <span class="difficulty-badge ${difficultyClass}">
+                                    ${escapeHtml(problem.difficulty)}
+                                </span>
+
+                            </div>
+
+                            <div class="problem-action">
+
+                                <a
+                                    href="problem.html?id=${problem.id}"
+                                    class="solve-link">
+                                    Solve →
+                                </a>
+
+                            </div>
+
+                        </div>
+                    `;
+
+                }).join("");
+
+        }
+
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        // SEARCH
+
+        document.getElementById("searchInput")
+            .addEventListener("input", (event) => {
+
+                const query =
+                    event.target.value.toLowerCase().trim();
+
+
+                const filtered =
+                    allProblems.filter(problem =>
+                        problem.title
+                            .toLowerCase()
+                            .includes(query)
+                    );
+
+
+                renderProblems(filtered);
+
+            });
+
+
+        // FILTERS
+
+        document.querySelectorAll(".filter-btn")
+            .forEach(button => {
+
+                button.addEventListener("click", () => {
+
+                    document
+                        .querySelectorAll(".filter-btn")
+                        .forEach(btn =>
+                            btn.classList.remove("active")
+                        );
+
+                    button.classList.add("active");
+
+
+                    const difficulty =
+                        button.dataset.difficulty;
+
+
+                    let filtered = allProblems;
+
+
+                    if (difficulty !== "all") {
+
+                        filtered =
+                            allProblems.filter(
+                                problem =>
+                                    problem.difficulty === difficulty
+                            );
+
+                    }
+
+
+                    const search =
+                        document.getElementById(
+                            "searchInput"
+                        ).value.toLowerCase().trim();
+
+
+                    if (search) {
+
+                        filtered =
+                            filtered.filter(problem =>
+                                problem.title
+                                    .toLowerCase()
+                                    .includes(search)
+                            );
+
+                    }
+
+
+                    renderProblems(filtered);
+
+                });
+
+            });
+
+
+        loadProblems();
+
+    </script>
+
+
+</body>
+
+</html>
+```

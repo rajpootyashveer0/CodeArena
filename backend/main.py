@@ -452,44 +452,56 @@ def get_dashboard(
         Submission.user_id == current_user.id
     ).all()
 
+    total_submissions = len(submissions)
+
     accepted = sum(
-        1 for submission in submissions
+        1
+        for submission in submissions
         if submission.status == "Accepted"
     )
 
     wrong_answers = sum(
-        1 for submission in submissions
+        1
+        for submission in submissions
         if submission.status == "Wrong Answer"
     )
 
     runtime_errors = sum(
-        1 for submission in submissions
+        1
+        for submission in submissions
         if submission.status == "Runtime Error"
     )
 
-    solved_problems = len({
+    # Unique problems solved
+    solved_problem_ids = {
         submission.problem_id
         for submission in submissions
         if submission.status == "Accepted"
-    })
+    }
+
+    problems_solved = len(solved_problem_ids)
+
+    # Difficulty-wise solved problems
     easy_solved = 0
     medium_solved = 0
     hard_solved = 0
 
-    for submission in submissions:
-        if submission.status == "Accepted":
-            problem = db.query(Problem).filter(
-                Problem.id == submission.problem_id
-            ).first()
+    for problem_id in solved_problem_ids:
 
-            if problem:
-                if problem.difficulty == "Easy":
-                    easy_solved += 1
-                elif problem.difficulty == "Medium":
-                    medium_solved += 1
-                elif problem.difficulty == "Hard":
-                    hard_solved += 1
-    
+        problem = db.query(Problem).filter(
+            Problem.id == problem_id
+        ).first()
+
+        if problem:
+
+            if problem.difficulty == "Easy":
+                easy_solved += 1
+
+            elif problem.difficulty == "Medium":
+                medium_solved += 1
+
+            elif problem.difficulty == "Hard":
+                hard_solved += 1
 
     return {
         "user": {
@@ -498,11 +510,11 @@ def get_dashboard(
             "email": current_user.email
         },
         "stats": {
-            "total_submissions": len(submissions),
+            "total_submissions": total_submissions,
             "accepted": accepted,
             "wrong_answers": wrong_answers,
             "runtime_errors": runtime_errors,
-            "problems_solved": solved_problems,
+            "problems_solved": problems_solved,
             "easy_solved": easy_solved,
             "medium_solved": medium_solved,
             "hard_solved": hard_solved
