@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Submissions — CodeArena</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #0b0b0b;
+            color: #fff;
+            font-family: "Inter", sans-serif;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .submissions-nav {
+            height: 64px;
+            background: #111;
+            border-bottom: 1px solid #292929;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            color: #ffa116;
+            text-decoration: none;
+
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .nav-links a {
+            color: #999;
+            text-decoration: none;
+            font-size: 13px;
+
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #ffa116;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #333;
+
+            color: #bbb;
+
+            padding: 8px 14px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            border-color: #ffa116;
+            color: #ffa116;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .container {
+            width: min(1180px, 92%);
+            margin: 0 auto;
+
+            padding: 45px 0 70px;
+        }
+
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+
+            font-family: "Space Grotesk", sans-serif;
+
+            font-size: 32px;
+        }
+
+        .page-header p {
+            margin: 0;
+
+            color: #888;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           PANEL
+        ========================= */
+
+        .panel {
+            background: #151515;
+
+            border: 1px solid #292929;
+
+            border-radius: 12px;
+
+            overflow: hidden;
+        }
+
+
+        /* =========================
+           SUBMISSION ITEM
+        ========================= */
+
+        .submission-item {
+
+            display: grid;
+
+            grid-template-columns:
+                1.2fr
+                1fr
+                1fr
+                1fr
+                auto;
+
+            align-items: center;
+
+            gap: 20px;
+
+            padding: 18px 22px;
+
+            border-bottom: 1px solid #252525;
+
+            transition: 0.2s;
+        }
+
+        .submission-item:last-child {
+            border-bottom: none;
+        }
+
+        .submission-item:hover {
+            background: #191919;
+        }
+
+
+        /* =========================
+           HEADINGS
+        ========================= */
+
+        .submission-header {
+
+            background: #111;
+
+            color: #777;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        .problem-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .problem-title {
+            color: #ddd;
+
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+        .problem-id {
+            color: #666;
+
+            font-size: 11px;
+
+            font-family: "JetBrains Mono", monospace;
+        }
+
+
+        .language {
+            color: #aaa;
+
+            font-family: "JetBrains Mono", monospace;
+
+            font-size: 12px;
+        }
+
+
+        .submission-date {
+            color: #777;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================
+           STATUS
+        ========================= */
+
+        .status {
+
+            display: inline-flex;
+
+            width: fit-content;
+
+            padding: 5px 9px;
+
+            border-radius: 6px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+        }
+
+        .accepted {
+            color: #2db55d;
+            background: rgba(45, 181, 93, 0.12);
+        }
+
+        .wrong {
+            color: #ef4743;
+            background: rgba(239, 71, 67, 0.12);
+        }
+
+        .runtime {
+            color: #ef4743;
+            background: rgba(239, 71, 67, 0.12);
+        }
+
+        .pending {
+            color: #ffa116;
+            background: rgba(255, 161, 22, 0.12);
+        }
+
+
+        /* =========================
+           VIEW BUTTON
+        ========================= */
+
+        .view-btn {
+
+            background: transparent;
+
+            border: 1px solid #333;
+
+            color: #aaa;
+
+            padding: 7px 12px;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-size: 11px;
+
+            transition: 0.2s;
+        }
+
+        .view-btn:hover {
+
+            color: #ffa116;
+
+            border-color: #ffa116;
+        }
+
+
+        /* =========================
+           LOADING / EMPTY
+        ========================= */
+
+        .loading,
+        .empty {
+
+            padding: 60px 20px;
+
+            text-align: center;
+
+            color: #777;
+
+            font-size: 14px;
+        }
+
+
+        .error {
+
+            padding: 18px;
+
+            background: #291717;
+
+            border: 1px solid #5c2525;
+
+            color: #ff7b7b;
+
+            border-radius: 8px;
+
+            margin-bottom: 20px;
+
+            display: none;
+        }
+
+
+        /* =========================
+           CODE MODAL
+        ========================= */
+
+        .modal {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0, 0, 0, 0.75);
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+
+        .modal-content {
+
+            width: min(850px, 95%);
+
+            max-height: 85vh;
+
+            background: #151515;
+
+            border: 1px solid #333;
+
+            border-radius: 12px;
+
+            overflow: hidden;
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        .modal-header {
+
+            padding: 15px 18px;
+
+            background: #111;
+
+            border-bottom: 1px solid #292929;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+
+        .modal-header h2 {
+
+            margin: 0;
+
+            font-family: "Space Grotesk", sans-serif;
+
+            font-size: 16px;
+        }
+
+
+        .close-btn {
+
+            background: transparent;
+
+            border: none;
+
+            color: #888;
+
+            font-size: 22px;
+
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #ffa116;
+        }
+
+
+        .code-box {
+
+            padding: 20px;
+
+            overflow: auto;
+
+            color: #ddd;
+
+            background: #0d0d0d;
+
+            font-family: "JetBrains Mono", monospace;
+
+            font-size: 13px;
+
+            line-height: 1.7;
+
+            white-space: pre;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 850px) {
+
+            .submission-header {
+                display: none;
+            }
+
+            .submission-item {
+
+                grid-template-columns: 1fr auto;
+
+                gap: 12px;
+            }
+
+            .language,
+            .submission-date {
+                font-size: 11px;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .submissions-nav {
+                padding: 0 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .container {
+                padding-top: 30px;
+            }
+
+            .page-header h1 {
+                font-size: 27px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <nav class="submissions-nav">
+
+        <a href="index.html" class="nav-logo">
+            CodeArena
+        </a>
+
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="problems.html">
+                Problems
+            </a>
+
+            <a href="submissions.html" class="active">
+                Submissions
+            </a>
+
+            <a href="profile.html">
+                Profile
+            </a>
+
+        </div>
+
+
+        <button
+            id="logoutBtn"
+            class="logout-btn">
+
+            Logout
+
+        </button>
+
+    </nav>
+
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="container">
+
+
+        <div class="page-header">
+
+            <h1>
+                Submissions
+            </h1>
+
+            <p>
+                View your coding submission history.
+            </p>
+
+        </div>
+
+
+        <div
+            id="errorBox"
+            class="error">
+        </div>
+
+
+        <section class="panel">
+
+
+            <!-- HEADER -->
+
+            <div class="submission-item submission-header">
+
+                <div>
+                    Problem
+                </div>
+
+                <div>
+                    Language
+                </div>
+
+                <div>
+                    Status
+                </div>
+
+                <div>
+                    Submission
+                </div>
+
+                <div>
+                    Action
+                </div>
+
+            </div>
+
+
+            <!-- SUBMISSIONS -->
+
+            <div id="submissionsList">
+
+                <div class="loading">
+                    Loading submissions...
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =========================
+         CODE MODAL
+    ========================== -->
+
+    <div
+        id="codeModal"
+        class="modal">
+
+        <div class="modal-content">
+
+
+            <div class="modal-header">
+
+                <h2>
+                    Submitted Code
+                </h2>
+
+                <button
+                    id="closeModal"
+                    class="close-btn">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <pre
+                id="codeBox"
+                class="code-box">
+            </pre>
+
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+        const API_URL =
+            "http://127.0.0.1:8000";
+
+
+        const token =
+            localStorage.getItem("access_token");
+
+
+        /* =========================
+           AUTH
+        ========================== */
+
+        if (!token) {
+
+            window.location.replace(
+                "login.html"
+            );
+
+        }
+
+
+        const submissionsList =
+            document.getElementById(
+                "submissionsList"
+            );
+
+
+        const errorBox =
+            document.getElementById(
+                "errorBox"
+            );
+
+
+        const codeModal =
+            document.getElementById(
+                "codeModal"
+            );
+
+
+        const codeBox =
+            document.getElementById(
+                "codeBox"
+            );
+
+
+        const closeModal =
+            document.getElementById(
+                "closeModal"
+            );
+
+
+
+        /* =========================
+           LOAD SUBMISSIONS
+        ========================== */
+
+        async function loadSubmissions() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/submissions`,
+                        {
+                            method: "GET",
+
+                            headers: {
+                                "Authorization":
+                                    `Bearer ${token}`,
+
+                                "Accept":
+                                    "application/json"
+                            }
+                        }
+                    );
+
+
+                if (
+                    response.status === 401
+                ) {
+
+                    localStorage.removeItem(
+                        "access_token"
+                    );
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                    return;
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.detail ||
+                        "Unable to load submissions"
+                    );
+
+                }
+
+
+                if (
+                    !Array.isArray(data) ||
+                    data.length === 0
+                ) {
+
+                    submissionsList.innerHTML = `
+                        <div class="empty">
+                            No submissions yet.
+                        </div>
+                    `;
+
+                    return;
+
+                }
+
+
+                /*
+                 * Latest submission first
+                 */
+
+                data.sort(
+                    (a, b) =>
+                        Number(b.id) -
+                        Number(a.id)
+                );
+
+
+                submissionsList.innerHTML =
+                    "";
+
+
+                data.forEach(
+                    submission => {
+
+                        const item =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        item.className =
+                            "submission-item";
+
+
+                        const status =
+                            String(
+                                submission.status ||
+                                "Pending"
+                            );
+
+
+                        let statusClass =
+                            "pending";
+
+
+                        if (
+                            status
+                                .toLowerCase()
+                                === "accepted"
+                        ) {
+
+                            statusClass =
+                                "accepted";
+
+                        } else if (
+                            status
+                                .toLowerCase()
+                                === "wrong answer"
+                        ) {
+
+                            statusClass =
+                                "wrong";
+
+                        } else if (
+                            status
+                                .toLowerCase()
+                                === "runtime error"
+                        ) {
+
+                            statusClass =
+                                "runtime";
+
+                        }
+
+
+                        item.innerHTML = `
+
+                            <div class="problem-info">
+
+                                <div class="problem-title">
+                                    Problem #${submission.problem_id}
+                                </div>
+
+                                <div class="problem-id">
+                                    Submission #${submission.id}
+                                </div>
+
+                            </div>
+
+
+                            <div class="language">
+                                ${escapeHtml(
+                                    submission.language
+                                )}
+                            </div>
+
+
+                            <div>
+
+                                <span
+                                    class="status ${statusClass}">
+                                    ${escapeHtml(status)}
+                                </span>
+
+                            </div>
+
+
+                            <div class="submission-date">
+                                Submission #${submission.id}
+                            </div>
+
+
+                            <div>
+
+                                <button
+                                    class="view-btn"
+                                    data-code="${encodeURIComponent(
+                                        submission.code || ""
+                                    )}">
+                                    View Code
+                                </button>
+
+                            </div>
+
+                        `;
+
+
+                        submissionsList.appendChild(
+                            item
+                        );
+
+                    }
+                );
+
+
+                /*
+                 * View Code buttons
+                 */
+
+                document
+                    .querySelectorAll(
+                        ".view-btn"
+                    )
+                    .forEach(
+                        button => {
+
+                            button.addEventListener(
+                                "click",
+                                () => {
+
+                                    const code =
+                                        decodeURIComponent(
+                                            button.dataset.code
+                                        );
+
+
+                                    codeBox.textContent =
+                                        code;
+
+
+                                    codeModal.classList.add(
+                                        "show"
+                                    );
+
+                                }
+                            );
+
+                        }
+                    );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Submissions error:",
+                    error
+                );
+
+
+                errorBox.textContent =
+                    error.message;
+
+
+                errorBox.style.display =
+                    "block";
+
+
+                submissionsList.innerHTML = `
+                    <div class="empty">
+                        Unable to load submissions.
+                    </div>
+                `;
+
+            }
+
+        }
+
+
+
+        /* =========================
+           CLOSE MODAL
+        ========================== */
+
+        closeModal.addEventListener(
+            "click",
+            () => {
+
+                codeModal.classList.remove(
+                    "show"
+                );
+
+            }
+        );
+
+
+        codeModal.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target ===
+                    codeModal
+                ) {
+
+                    codeModal.classList.remove(
+                        "show"
+                    );
+
+                }
+
+            }
+        );
+
+
+
+        /* =========================
+           LOGOUT
+        ========================== */
+
+        document
+            .getElementById("logoutBtn")
+            .addEventListener(
+                "click",
+                () => {
+
+                    localStorage.removeItem(
+                        "access_token"
+                    );
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                }
+            );
+
+
+
+        /* =========================
+           ESCAPE HTML
+        ========================== */
+
+        function escapeHtml(value) {
+
+            return String(value)
+
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+
+
+        /* =========================
+           START
+        ========================== */
+
+        loadSubmissions();
+
+    </script>
+
+
+</body>
+
+</html>

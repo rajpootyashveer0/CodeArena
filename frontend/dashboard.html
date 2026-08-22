@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -10,13 +10,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -184,6 +184,10 @@
             margin-bottom: 22px;
         }
 
+        .difficulty-item:last-child {
+            margin-bottom: 0;
+        }
+
         .difficulty-top {
             display: flex;
             justify-content: space-between;
@@ -316,7 +320,6 @@
         /* RESPONSIVE */
 
         @media (max-width: 900px) {
-
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -324,11 +327,9 @@
             .content-grid {
                 grid-template-columns: 1fr;
             }
-
         }
 
         @media (max-width: 600px) {
-
             .dashboard-nav {
                 padding: 0 20px;
             }
@@ -348,15 +349,101 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
-
         }
+        /* SUBMISSIONS */
 
+.submissions-panel {
+    margin-top: 20px;
+}
+
+.view-all-link {
+    color: #ffa116;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.view-all-link:hover {
+    text-decoration: underline;
+}
+
+.submission-item {
+    display: grid;
+    grid-template-columns: 1.5fr 120px 100px;
+    align-items: center;
+    gap: 15px;
+
+    padding: 15px 0;
+
+    border-bottom: 1px solid #292929;
+}
+
+.submission-item:last-child {
+    border-bottom: none;
+}
+
+.submission-problem {
+    color: #ddd;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.submission-meta {
+    color: #777;
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.submission-language {
+    color: #999;
+    font-size: 12px;
+}
+
+.submission-status {
+    font-size: 12px;
+    font-weight: 600;
+    text-align: right;
+}
+
+.status-accepted {
+    color: #2db55d;
+}
+
+.status-wrong {
+    color: #ef4743;
+}
+
+.status-runtime {
+    color: #ef4743;
+}
+
+.status-warning {
+    color: #ffa116;
+}
+
+.no-submissions {
+    text-align: center;
+    color: #777;
+    padding: 30px 0;
+    font-size: 13px;
+}
+
+@media (max-width: 600px) {
+
+    .submission-item {
+        grid-template-columns: 1fr;
+        gap: 7px;
+    }
+
+    .submission-status {
+        text-align: left;
+    }
+
+}
     </style>
 
 </head>
 
 <body>
-
 
     <!-- NAVBAR -->
 
@@ -393,9 +480,7 @@
 
     <main class="dashboard-container">
 
-
         <div id="errorBox" class="error-box"></div>
-
 
         <!-- WELCOME -->
 
@@ -618,197 +703,544 @@
 
             </div>
 
-
         </section>
+        <!-- RECENT SUBMISSIONS -->
 
+<section class="submissions-panel panel">
+
+    <div class="panel-header">
+
+        <h2>
+            Recent Submissions
+        </h2>
+
+        <a href="submissions.html" class="view-all-link">
+            View All →
+        </a>
+
+    </div>
+
+    <div id="submissionsList">
+
+        <div class="loading">
+            Loading submissions...
+        </div>
+
+    </div>
+
+</section>
 
     </main>
 
+ <script>
 
-    <script>
+    const API_URL = "http://127.0.0.1:8000";
 
-        const API_URL = "http://127.0.0.1:8000";
-
-        const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem("access_token");
 
 
-        // Authentication check
+    /* ================================
+       AUTHENTICATION
+    ================================= */
 
-        if (!token) {
+    if (!token) {
+        window.location.replace("login.html");
+    }
 
-            window.location.href = "login.html";
 
+    /* ================================
+       HELPER FUNCTIONS
+    ================================= */
+
+    function showError(message) {
+
+        const errorBox = document.getElementById("errorBox");
+
+        errorBox.textContent = message;
+        errorBox.style.display = "block";
+    }
+
+
+    function hideError() {
+
+        const errorBox = document.getElementById("errorBox");
+
+        errorBox.textContent = "";
+        errorBox.style.display = "none";
+    }
+
+
+    function safeNumber(value) {
+
+        const number = Number(value);
+
+        return Number.isFinite(number) ? number : 0;
+    }
+
+
+    function calculatePercentage(solved, total) {
+
+        solved = safeNumber(solved);
+        total = safeNumber(total);
+
+        if (total <= 0) {
+            return 0;
         }
 
+        return Math.min(
+            100,
+            Math.max(
+                0,
+                (solved / total) * 100
+            )
+        );
+    }
 
-        async function loadDashboard() {
+
+    /* ================================
+       LOAD DASHBOARD
+    ================================= */
+
+    async function loadDashboard() {
+
+        hideError();
+
+        try {
+
+            const dashboardResponse = await fetch(
+                `${API_URL}/dashboard`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/json"
+                    }
+                }
+            );
+
+
+            let dashboardData = null;
+
+            try {
+                dashboardData = await dashboardResponse.json();
+            } catch {
+                dashboardData = null;
+            }
+
+
+            /* TOKEN EXPIRED */
+
+            if (dashboardResponse.status === 401) {
+
+                localStorage.removeItem("access_token");
+
+                window.location.replace("login.html");
+
+                return;
+            }
+
+
+            if (!dashboardResponse.ok) {
+
+                throw new Error(
+                    dashboardData?.detail ||
+                    "Unable to load dashboard"
+                );
+            }
+
+
+            /* USER */
+
+            const user = dashboardData?.user || {};
+
+            document.getElementById("username").textContent =
+                user.username || "Coder";
+
+
+            /* STATS */
+
+            const stats = dashboardData?.stats || {};
+
+
+            const problemsSolved =
+                safeNumber(stats.problems_solved);
+
+            const totalSubmissions =
+                safeNumber(stats.total_submissions);
+
+            const accepted =
+                safeNumber(stats.accepted);
+
+
+            const easySolved =
+                safeNumber(stats.easy_solved);
+
+            const mediumSolved =
+                safeNumber(stats.medium_solved);
+
+            const hardSolved =
+                safeNumber(stats.hard_solved);
+
+
+            /* MAIN STATS */
+
+            document.getElementById("problemsSolved").textContent =
+                problemsSolved;
+
+            document.getElementById("totalSubmissions").textContent =
+                totalSubmissions;
+
+            document.getElementById("accepted").textContent =
+                accepted;
+
+
+            /* ACCEPTANCE RATE */
+
+            let acceptanceRate = 0;
+
+            if (totalSubmissions > 0) {
+
+                acceptanceRate = Math.round(
+                    (accepted / totalSubmissions) * 100
+                );
+            }
+
+
+            document.getElementById("acceptanceRate").textContent =
+                `${acceptanceRate}%`;
+
+            document.getElementById("circleRate").textContent =
+                `${acceptanceRate}%`;
+
+
+            /* DIFFICULTY COUNTS */
+
+            document.getElementById("easyCount").textContent =
+                `${easySolved} solved`;
+
+            document.getElementById("mediumCount").textContent =
+                `${mediumSolved} solved`;
+
+            document.getElementById("hardCount").textContent =
+                `${hardSolved} solved`;
+
+
+            /* GET ALL PROBLEMS */
+
+            let allProblems = [];
 
             try {
 
-                const response = await fetch(
-                    `${API_URL}/dashboard`,
+                const problemsResponse = await fetch(
+                    `${API_URL}/problems`,
                     {
                         method: "GET",
-
                         headers: {
-                            "Authorization": `Bearer ${token}`
+                            "Accept": "application/json"
                         }
                     }
                 );
 
 
-                const data = await response.json();
+                if (problemsResponse.ok) {
 
+                    const problemsData =
+                        await problemsResponse.json();
 
-                if (!response.ok) {
-
-                    if (response.status === 401) {
-
-                        localStorage.removeItem("access_token");
-
-                        window.location.href = "login.html";
-
-                        return;
-
+                    if (Array.isArray(problemsData)) {
+                        allProblems = problemsData;
                     }
-
-                    throw new Error(
-                        data.detail || "Unable to load dashboard"
-                    );
-
                 }
 
+            } catch (problemError) {
 
-                // USER
-
-                document.getElementById("username").textContent =
-                    data.user.username;
-
-
-                // STATS
-
-                const stats = data.stats;
-
-                document.getElementById("problemsSolved").textContent =
-                    stats.problems_solved;
-
-                document.getElementById("totalSubmissions").textContent =
-                    stats.total_submissions;
-
-                document.getElementById("accepted").textContent =
-                    stats.accepted;
-
-
-                // ACCEPTANCE RATE
-
-                let acceptanceRate = 0;
-
-                if (stats.total_submissions > 0) {
-
-                    acceptanceRate = Math.round(
-                        (stats.accepted / stats.total_submissions) * 100
-                    );
-
-                }
-
-
-                document.getElementById("acceptanceRate").textContent =
-                    `${acceptanceRate}%`;
-
-                document.getElementById("circleRate").textContent =
-                    `${acceptanceRate}%`;
-
-
-                // DIFFICULTY
-
-                document.getElementById("easyCount").textContent =
-                    `${stats.easy_solved} solved`;
-
-                document.getElementById("mediumCount").textContent =
-                    `${stats.medium_solved} solved`;
-
-                document.getElementById("hardCount").textContent =
-                    `${stats.hard_solved} solved`;
-
-
-        
-
-                // TOTAL PROBLEMS BY DIFFICULTY
-const problemsResponse = await fetch(
-    `${API_URL}/problems`
-);
-
-const allProblems = await problemsResponse.json();
-
-const totalEasy = allProblems.filter(
-    problem => problem.difficulty === "Easy"
-).length;
-
-const totalMedium = allProblems.filter(
-    problem => problem.difficulty === "Medium"
-).length;
-
-const totalHard = allProblems.filter(
-    problem => problem.difficulty === "Hard"
-).length;
-
-
-// CALCULATE PROGRESS
-const easyPercentage = totalEasy > 0
-    ? (stats.easy_solved / totalEasy) * 100
-    : 0;
-
-const mediumPercentage = totalMedium > 0
-    ? (stats.medium_solved / totalMedium) * 100
-    : 0;
-
-const hardPercentage = totalHard > 0
-    ? (stats.hard_solved / totalHard) * 100
-    : 0;
-
-
-// UPDATE PROGRESS BARS
-document.getElementById("easyProgress").style.width =
-    `${easyPercentage}%`;
-
-document.getElementById("mediumProgress").style.width =
-    `${mediumPercentage}%`;
-
-document.getElementById("hardProgress").style.width =
-    `${hardPercentage}%`;
-
-            } catch (error) {
-
-                const errorBox =
-                    document.getElementById("errorBox");
-
-                errorBox.textContent = error.message;
-
-                errorBox.style.display = "block";
-
+                console.warn(
+                    "Unable to load problem list:",
+                    problemError
+                );
             }
 
+
+            /* TOTAL PROBLEMS */
+
+            const totalEasy =
+                allProblems.filter(
+                    problem =>
+                        String(problem.difficulty || "")
+                            .toLowerCase() === "easy"
+                ).length;
+
+
+            const totalMedium =
+                allProblems.filter(
+                    problem =>
+                        String(problem.difficulty || "")
+                            .toLowerCase() === "medium"
+                ).length;
+
+
+            const totalHard =
+                allProblems.filter(
+                    problem =>
+                        String(problem.difficulty || "")
+                            .toLowerCase() === "hard"
+                ).length;
+
+
+            /* PROGRESS */
+
+            const easyPercentage =
+                calculatePercentage(
+                    easySolved,
+                    totalEasy
+                );
+
+
+            const mediumPercentage =
+                calculatePercentage(
+                    mediumSolved,
+                    totalMedium
+                );
+
+
+            const hardPercentage =
+                calculatePercentage(
+                    hardSolved,
+                    totalHard
+                );
+
+
+            /* PROGRESS BARS */
+
+            document.getElementById("easyProgress").style.width =
+                `${easyPercentage}%`;
+
+            document.getElementById("mediumProgress").style.width =
+                `${mediumPercentage}%`;
+
+            document.getElementById("hardProgress").style.width =
+                `${hardPercentage}%`;
+
+
+        } catch (error) {
+
+            console.error(
+                "Dashboard error:",
+                error
+            );
+
+            showError(
+                error.message ||
+                "Something went wrong while loading the dashboard."
+            );
         }
+    }
 
 
-        // Logout
+    /* ================================
+       RECENT SUBMISSIONS
+    ================================= */
 
-        document.getElementById("logoutBtn")
-            .addEventListener("click", () => {
+    async function loadRecentSubmissions() {
+
+        try {
+
+            const response = await fetch(
+                `${API_URL}/submissions`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/json"
+                    }
+                }
+            );
+
+
+            if (response.status === 401) {
 
                 localStorage.removeItem("access_token");
 
-                window.location.href = "login.html";
+                window.location.replace("login.html");
+
+                return;
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load submissions"
+                );
+            }
+
+
+            const submissions = await response.json();
+
+
+            /*
+             * Agar Recent Submissions section
+             * HTML mein available hai tabhi update karo.
+             */
+
+            const container =
+                document.getElementById("recentSubmissions");
+
+
+            if (!container) {
+
+                console.warn(
+                    "recentSubmissions element not found."
+                );
+
+                return;
+            }
+
+
+            /* NO SUBMISSIONS */
+
+            if (
+                !Array.isArray(submissions) ||
+                submissions.length === 0
+            ) {
+
+                container.innerHTML = `
+                    <div class="loading">
+                        No submissions yet.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            /*
+             * Latest submissions first
+             */
+
+            const recent =
+                [...submissions]
+                    .sort(
+                        (a, b) =>
+                            Number(b.id) - Number(a.id)
+                    )
+                    .slice(0, 5);
+
+
+            container.innerHTML = "";
+
+
+            recent.forEach(submission => {
+
+                const status =
+                    String(
+                        submission.status || "Pending"
+                    );
+
+
+                const normalizedStatus =
+                    status.toLowerCase();
+
+
+                let statusClass =
+                    "submission-status";
+
+
+                if (
+                    normalizedStatus === "accepted"
+                ) {
+
+                    statusClass +=
+                        " submission-accepted";
+
+                } else if (
+                    normalizedStatus === "wrong answer"
+                ) {
+
+                    statusClass +=
+                        " submission-wrong";
+
+                } else if (
+                    normalizedStatus === "runtime error"
+                ) {
+
+                    statusClass +=
+                        " submission-error";
+                }
+
+
+                const item =
+                    document.createElement("div");
+
+
+                item.className =
+                    "submission-item";
+
+
+                item.innerHTML = `
+
+                    <div class="submission-info">
+
+                        <div class="submission-problem">
+                            Problem #${submission.problem_id}
+                        </div>
+
+                        <div class="submission-language">
+                            ${submission.language}
+                        </div>
+
+                    </div>
+
+                    <div class="${statusClass}">
+                        ${status}
+                    </div>
+
+                `;
+
+
+                container.appendChild(item);
 
             });
 
 
-        loadDashboard();
+        } catch (error) {
 
-    </script>
+            console.error(
+                "Recent submissions error:",
+                error
+            );
 
+        }
+    }
+
+
+    /* ================================
+       LOGOUT
+    ================================= */
+
+    document
+        .getElementById("logoutBtn")
+        .addEventListener("click", () => {
+
+            localStorage.removeItem("access_token");
+
+            window.location.replace("login.html");
+
+        });
+
+
+    /* ================================
+       START
+    ================================= */
+
+    loadDashboard();
+
+    loadRecentSubmissions();
+
+</script>
 
 </body>
 
 </html>
-```

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,13 +10,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-
         body {
             margin: 0;
             background: #0b0b0b;
@@ -78,7 +77,6 @@
             border-color: #ffa116;
         }
 
-
         /* MAIN LAYOUT */
 
         .coding-layout {
@@ -94,7 +92,6 @@
 
             padding: 22px 0;
         }
-
 
         /* PANELS */
 
@@ -121,7 +118,6 @@
             font-family: "Space Grotesk", sans-serif;
             font-size: 16px;
         }
-
 
         /* PROBLEM */
 
@@ -214,7 +210,6 @@
             white-space: pre-wrap;
         }
 
-
         /* EDITOR */
 
         .editor-panel {
@@ -267,7 +262,6 @@
 
             tab-size: 4;
         }
-
 
         /* ACTION BAR */
 
@@ -331,7 +325,6 @@
             cursor: not-allowed;
         }
 
-
         /* RESULT */
 
         .result-panel {
@@ -357,6 +350,7 @@
             font-size: 12px;
 
             min-height: 50px;
+            white-space: pre-wrap;
         }
 
         .result-success {
@@ -370,7 +364,6 @@
         .result-warning {
             color: #ffa116;
         }
-
 
         /* LOADING */
 
@@ -400,7 +393,6 @@
             font-size: 13px;
         }
 
-
         /* RESPONSIVE */
 
         @media (max-width: 1000px) {
@@ -416,7 +408,6 @@
             .editor-panel {
                 min-height: 600px;
             }
-
         }
 
         @media (max-width: 600px) {
@@ -450,16 +441,12 @@
             .submit-btn {
                 flex: 1;
             }
-
         }
-
     </style>
 
 </head>
 
-
 <body>
-
 
     <!-- NAVBAR -->
 
@@ -487,7 +474,6 @@
 
     <main class="coding-layout">
 
-
         <!-- PROBLEM PANEL -->
 
         <section class="panel problem-panel">
@@ -499,7 +485,6 @@
                 </h2>
 
             </div>
-
 
             <div id="problemContent" class="problem-content">
 
@@ -553,7 +538,6 @@
                     </span>
                 </div>
 
-
                 <div class="submit-actions">
 
                     <button
@@ -584,494 +568,981 @@
                 <div
                     id="resultBody"
                     class="result-body">
-                    ready to submit
+                    Ready to submit
                 </div>
 
             </div>
 
         </section>
 
-
     </main>
-   <script>
-    console.log("PROBLEM PAGE LOADED");
-
-    const API_URL = "http://127.0.0.1:8000";
-
-    const token = localStorage.getItem("access_token");
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const problemId = urlParams.get("id");
-
-    const problemContent = document.getElementById("problemContent");
-    const errorBox = document.getElementById("errorBox");
-    const codeEditor = document.getElementById("codeEditor");
-    const submitBtn = document.getElementById("submitBtn");
-    const runBtn = document.getElementById("runBtn");
-    const resultBody = document.getElementById("resultBody");
-    const languageSelect = document.getElementById("languageSelect");
 
 
-    // =========================
-    // AUTHENTICATION
-    // =========================
+    <script>
 
-    if (!token) {
-        window.location.href = "login.html";
-    }
+        console.log("CODEARENA PROBLEM PAGE LOADED");
 
 
-    // =========================
-    // PROBLEM ID CHECK
-    // =========================
+        /* =========================
+           CONFIG
+        ========================= */
 
-    if (!problemId) {
+        const API_URL = "http://127.0.0.1:8000";
 
-        errorBox.textContent = "No problem selected.";
-        errorBox.style.display = "block";
+        const token = localStorage.getItem("access_token");
 
-        problemContent.innerHTML = "";
-    }
+        const urlParams =
+            new URLSearchParams(window.location.search);
+
+        const problemId =
+            urlParams.get("id");
 
 
-    // =========================
-    // LOAD PROBLEM
-    // =========================
+        /* =========================
+           ELEMENTS
+        ========================= */
 
-    async function loadProblem() {
+        const problemContent =
+            document.getElementById("problemContent");
 
-        if (!problemId) {
-            return;
+        const errorBox =
+            document.getElementById("errorBox");
+
+        const codeEditor =
+            document.getElementById("codeEditor");
+
+        const submitBtn =
+            document.getElementById("submitBtn");
+
+        const runBtn =
+            document.getElementById("runBtn");
+
+        const resultBody =
+            document.getElementById("resultBody");
+
+        const languageSelect =
+            document.getElementById("languageSelect");
+
+        const submissionStatus =
+            document.getElementById("submissionStatus");
+
+
+        /* =========================
+           AUTH
+        ========================= */
+
+        if (!token) {
+
+            window.location.replace("login.html");
+
         }
 
-        try {
 
-            const response = await fetch(
-                `${API_URL}/problems/${problemId}`
+        /* =========================
+           ERROR HELPER
+        ========================= */
+
+        function showError(message) {
+
+            errorBox.textContent =
+                message || "Something went wrong.";
+
+            errorBox.style.display =
+                "block";
+        }
+
+
+        function hideError() {
+
+            errorBox.textContent = "";
+
+            errorBox.style.display =
+                "none";
+        }
+
+
+        /* =========================
+           RESULT HELPER
+        ========================= */
+
+        function setResult(message, type = "") {
+
+            resultBody.className =
+                "result-body";
+
+            if (type) {
+                resultBody.classList.add(type);
+            }
+
+            resultBody.textContent =
+                message;
+        }
+
+
+        /* =========================
+           PROBLEM ID
+        ========================= */
+
+        if (!problemId) {
+
+            showError(
+                "No problem selected."
             );
-
-            const problem = await response.json();
-
-            if (!response.ok) {
-
-                throw new Error(
-                    problem.detail ||
-                    "Unable to load problem"
-                );
-            }
-
-
-            let difficultyClass = "easy";
-
-            if (problem.difficulty === "Medium") {
-                difficultyClass = "medium";
-            }
-
-            if (problem.difficulty === "Hard") {
-                difficultyClass = "hard";
-            }
-
-
-            problemContent.innerHTML = `
-
-                <div class="problem-title-row">
-
-                    <h1 class="problem-title">
-                        ${escapeHtml(problem.title)}
-                    </h1>
-
-                    <span class="difficulty ${difficultyClass}">
-                        ${escapeHtml(problem.difficulty)}
-                    </span>
-
-                </div>
-
-
-                <div class="problem-description">
-                    ${escapeHtml(problem.description)}
-                </div>
-
-
-                <div class="problem-section">
-
-                    <h3>Input Format</h3>
-
-                    <p>
-                        ${escapeHtml(
-                            problem.input_format || "Not specified."
-                        )}
-                    </p>
-
-                </div>
-
-
-                <div class="problem-section">
-
-                    <h3>Output Format</h3>
-
-                    <p>
-                        ${escapeHtml(
-                            problem.output_format || "Not specified."
-                        )}
-                    </p>
-
-                </div>
-
-
-                <div class="problem-section">
-
-                    <h3>Constraints</h3>
-
-                    <p>
-                        ${escapeHtml(
-                            problem.constraints || "Not specified."
-                        )}
-                    </p>
-
-                </div>
-
-            `;
-
-        } catch (error) {
 
             problemContent.innerHTML = "";
 
-            errorBox.textContent = error.message;
-            errorBox.style.display = "block";
-        }
-    }
-
-
-    // =========================
-    // SUBMIT CODE
-    // =========================
-
-    async function submitCode(event) {
-
-        console.log("SUBMIT BUTTON CLICKED");
-
-        if (event) {
-            event.preventDefault();
-            event.stopPropagation();
         }
 
 
-        const code = codeEditor.value.trim();
+        /* =========================
+           LOAD PROBLEM
+        ========================= */
+
+        async function loadProblem() {
+
+            if (!problemId) {
+                return;
+            }
+
+            try {
+
+                const response = await fetch(
+                    `${API_URL}/problems/${problemId}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Accept": "application/json"
+                        }
+                    }
+                );
 
 
-        // =========================
-        // EMPTY CODE CHECK
-        // =========================
+                let problem;
 
-        if (!code) {
-
-            resultBody.className =
-                "result-body result-warning";
-
-            resultBody.textContent =
-                "Write some code before submitting.";
-
-            return;
-        }
-
-
-        // =========================
-        // DISABLE BUTTONS
-        // =========================
-
-        submitBtn.disabled = true;
-        runBtn.disabled = true;
-
-        submitBtn.textContent = "Submitting...";
-
-
-        resultBody.className =
-            "result-body";
-
-        resultBody.textContent =
-            "Running your solution...";
-
-
-        try {
-
-            const response = await fetch(
-                `${API_URL}/submissions`,
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
-                    },
-
-                    body: JSON.stringify({
-
-                        problem_id: Number(problemId),
-
-                        code: code,
-
-                        language: languageSelect.value
-
-                    })
+                try {
+                    problem = await response.json();
+                } catch {
+                    problem = null;
                 }
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        problem?.detail ||
+                        "Unable to load problem."
+                    );
+
+                }
+
+
+                let difficultyClass =
+                    "easy";
+
+
+                if (
+                    String(problem.difficulty)
+                        .toLowerCase() === "medium"
+                ) {
+
+                    difficultyClass =
+                        "medium";
+
+                }
+
+
+                if (
+                    String(problem.difficulty)
+                        .toLowerCase() === "hard"
+                ) {
+
+                    difficultyClass =
+                        "hard";
+
+                }
+
+
+                problemContent.innerHTML = `
+
+                    <div class="problem-title-row">
+
+                        <h1 class="problem-title">
+                            ${escapeHtml(problem.title)}
+                        </h1>
+
+                        <span class="difficulty ${difficultyClass}">
+                            ${escapeHtml(problem.difficulty)}
+                        </span>
+
+                    </div>
+
+
+                    <div class="problem-description">
+                        ${escapeHtml(problem.description)}
+                    </div>
+
+
+                    <div class="problem-section">
+
+                        <h3>
+                            Input Format
+                        </h3>
+
+                        <p>
+                            ${escapeHtml(
+                                problem.input_format ||
+                                "Not specified."
+                            )}
+                        </p>
+
+                    </div>
+
+
+                    <div class="problem-section">
+
+                        <h3>
+                            Output Format
+                        </h3>
+
+                        <p>
+                            ${escapeHtml(
+                                problem.output_format ||
+                                "Not specified."
+                            )}
+                        </p>
+
+                    </div>
+
+
+                    <div class="problem-section">
+
+                        <h3>
+                            Constraints
+                        </h3>
+
+                        <p>
+                            ${escapeHtml(
+                                problem.constraints ||
+                                "Not specified."
+                            )}
+                        </p>
+
+                    </div>
+
+                `;
+
+            } catch (error) {
+
+                console.error(
+                    "PROBLEM LOAD ERROR:",
+                    error
+                );
+
+                problemContent.innerHTML = "";
+
+                showError(
+                    error.message
+                );
+            }
+        }
+
+
+        /* =========================
+           SUBMIT
+        ========================= */
+
+        async function submitCode() {
+
+            console.log(
+                "SUBMIT BUTTON CLICKED"
             );
 
 
-            const data = await response.json();
+            const code =
+                codeEditor.value.trim();
 
 
-            // =========================
-            // TOKEN EXPIRED
-            // =========================
+            if (!code) {
 
-            if (response.status === 401) {
-
-                localStorage.removeItem("access_token");
-
-                window.location.href = "login.html";
+                setResult(
+                    "Write some code before submitting.",
+                    "result-warning"
+                );
 
                 return;
             }
 
 
-            // =========================
-            // BACKEND ERROR
-            // =========================
+            if (!problemId) {
 
-            if (!response.ok) {
-
-                throw new Error(
-                    data.detail ||
-                    "Submission failed"
+                setResult(
+                    "Invalid problem.",
+                    "result-error"
                 );
+
+                return;
             }
 
 
-            // =========================
-            // BACKEND RESULT
-            // =========================
+            /*
+             * Disable both buttons so the user cannot
+             * accidentally send duplicate submissions.
+             */
+
+            submitBtn.disabled = true;
+            runBtn.disabled = true;
+
+            submitBtn.textContent =
+                "Submitting...";
+
+
+            submissionStatus.innerHTML = `
+                <span style="color:#ffa116;font-size:12px;">
+                    Judging...
+                </span>
+            `;
+
+
+            setResult(
+                "Running your solution..."
+            );
+
+
+            try {
+
+                const response = await fetch(
+                    `${API_URL}/submissions`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            "Authorization":
+                                `Bearer ${token}`,
+
+                            "Accept":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            problem_id:
+                                Number(problemId),
+
+                            code:
+                                code,
+
+                            language:
+                                languageSelect.value
+
+                        })
+                    }
+                );
+
+
+                /*
+                 * Read response safely.
+                 */
+
+                let data = null;
+
+                try {
+
+                    data =
+                        await response.json();
+
+                } catch {
+
+                    data = null;
+
+                }
+
+
+                console.log(
+                    "SUBMISSION RESPONSE:",
+                    data
+                );
+
+
+                /*
+                 * AUTH ERROR
+                 */
+
+                if (
+                    response.status === 401
+                ) {
+
+                    localStorage.removeItem(
+                        "access_token"
+                    );
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 * BACKEND ERROR
+                 */
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data?.detail ||
+                        data?.message ||
+                        "Submission failed."
+                    );
+
+                }
+
+
+                /*
+                 * IMPORTANT:
+                 *
+                 * Backend decides the verdict.
+                 *
+                 * We check the common possible
+                 * response field names.
+                 */
+
+                const status =
+                    data?.status ??
+                    data?.result ??
+                    data?.verdict ??
+                    data?.message ??
+                    "";
+
+
+                showSubmissionResult(
+                    status,
+                    data
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "SUBMISSION ERROR:",
+                    error
+                );
+
+
+                submissionStatus.innerHTML = `
+                    <span style="color:#ef4743;font-size:12px;">
+                        Submission failed
+                    </span>
+                `;
+
+
+                setResult(
+                    error.message ||
+                    "Submission failed.",
+                    "result-error"
+                );
+
+
+            } finally {
+
+                submitBtn.disabled =
+                    false;
+
+                runBtn.disabled =
+                    false;
+
+                submitBtn.textContent =
+                    "Submit";
+
+            }
+        }
+
+
+        /* =========================
+           SHOW SUBMISSION RESULT
+        ========================= */
+
+        function showSubmissionResult(
+            status,
+            data
+        ) {
+
+            const normalized =
+                String(status || "")
+                    .trim()
+                    .toLowerCase()
+                    .replace(/-/g, " ")
+                    .replace(/_/g, " ");
+
 
             console.log(
-                "BACKEND SUBMISSION RESPONSE:",
-                data
+                "NORMALIZED VERDICT:",
+                normalized
             );
 
 
             /*
-                Backend is the source of truth.
-            */
+             * ACCEPTED
+             */
 
-            const status =
-                data.status ||
-                data.result ||
-                data.verdict ||
-                "";
+            if (
+                normalized === "accepted" ||
+                normalized === "correct" ||
+                normalized === "success"
+            ) {
+
+                submissionStatus.innerHTML = `
+                    <span style="color:#2db55d;font-size:12px;font-weight:600;">
+                        ✓ Accepted
+                    </span>
+                `;
 
 
-            showResult(status);
+                setResult(
+                    "✓ Accepted — Your solution passed all test cases.",
+                    "result-success"
+                );
 
 
-        } catch (error) {
+                return;
+            }
 
-            console.error(
-                "SUBMISSION ERROR:",
-                error
+
+            /*
+             * WRONG ANSWER
+             */
+
+            if (
+                normalized === "wrong answer" ||
+                normalized === "wrong"
+            ) {
+
+                submissionStatus.innerHTML = `
+                    <span style="color:#ef4743;font-size:12px;font-weight:600;">
+                        ✕ Wrong Answer
+                    </span>
+                `;
+
+
+                setResult(
+                    "✕ Wrong Answer — Your solution did not pass all test cases.",
+                    "result-error"
+                );
+
+
+                return;
+            }
+
+
+            /*
+             * RUNTIME ERROR
+             */
+
+            if (
+                normalized === "runtime error" ||
+                normalized === "runtimeerror"
+            ) {
+
+                submissionStatus.innerHTML = `
+                    <span style="color:#ef4743;font-size:12px;font-weight:600;">
+                        ✕ Runtime Error
+                    </span>
+                `;
+
+
+                setResult(
+                    "✕ Runtime Error — Your code encountered an error while running.",
+                    "result-error"
+                );
+
+
+                return;
+            }
+
+
+            /*
+             * TIME LIMIT
+             */
+
+            if (
+                normalized ===
+                    "time limit exceeded" ||
+                normalized ===
+                    "tle"
+            ) {
+
+                submissionStatus.innerHTML = `
+                    <span style="color:#ffa116;font-size:12px;font-weight:600;">
+                        ⚠ Time Limit Exceeded
+                    </span>
+                `;
+
+
+                setResult(
+                    "⚠ Time Limit Exceeded — Your solution took too long.",
+                    "result-warning"
+                );
+
+
+                return;
+            }
+
+
+            /*
+             * COMPILATION ERROR
+             */
+
+            if (
+                normalized ===
+                    "compilation error" ||
+                normalized ===
+                    "compile error"
+            ) {
+
+                submissionStatus.innerHTML = `
+                    <span style="color:#ef4743;font-size:12px;font-weight:600;">
+                        ✕ Compilation Error
+                    </span>
+                `;
+
+
+                setResult(
+                    "✕ Compilation Error — Your code could not be executed.",
+                    "result-error"
+                );
+
+
+                return;
+            }
+
+
+            /*
+             * UNKNOWN RESPONSE
+             *
+             * Show the actual backend response
+             * instead of falsely saying Accepted.
+             */
+
+            submissionStatus.innerHTML = `
+                <span style="color:#ffa116;font-size:12px;">
+                    Submission completed
+                </span>
+            `;
+
+
+            if (data) {
+
+                setResult(
+                    `Result: ${status || JSON.stringify(data)}`,
+                    "result-warning"
+                );
+
+            } else {
+
+                setResult(
+                    "Submission completed.",
+                    "result-warning"
+                );
+
+            }
+        }
+
+
+        /* =========================
+           RUN CODE
+        ========================= */
+
+        async function runCode() {
+
+            const code =
+                codeEditor.value.trim();
+
+
+            if (!code) {
+
+                setResult(
+                    "Write some code before running.",
+                    "result-warning"
+                );
+
+                return;
+            }
+
+
+            if (!problemId) {
+
+                setResult(
+                    "Invalid problem.",
+                    "result-error"
+                );
+
+                return;
+            }
+
+
+            runBtn.disabled = true;
+            submitBtn.disabled = true;
+
+            runBtn.textContent =
+                "Running...";
+
+
+            submissionStatus.innerHTML = `
+                <span style="color:#aaa;font-size:12px;">
+                    Running code...
+                </span>
+            `;
+
+
+            setResult(
+                "Running your code..."
             );
 
-            resultBody.className =
-                "result-body result-error";
 
-            resultBody.textContent =
-                error.message;
+            try {
 
-        } finally {
+                const response = await fetch(
+                    `${API_URL}/run`,
+                    {
+                        method: "POST",
 
-            submitBtn.disabled = false;
+                        headers: {
+                            "Content-Type":
+                                "application/json",
 
-            runBtn.disabled = false;
+                            "Accept":
+                                "application/json"
+                        },
 
-            submitBtn.textContent = "Submit";
-        }
-    }
+                        body: JSON.stringify({
 
+                            problem_id:
+                                Number(problemId),
 
-    // =========================
-    // SHOW RESULT
-    // =========================
+                            code:
+                                code,
 
-    function showResult(status) {
+                            language:
+                                languageSelect.value
 
-        resultBody.className =
-            "result-body";
-
-
-        if (!status) {
-
-            resultBody.classList.add(
-                "result-warning"
-            );
-
-            resultBody.textContent =
-                "Submission completed.";
-
-            return;
-        }
+                        })
+                    }
+                );
 
 
-        const normalizedStatus =
-            String(status)
-                .trim()
-                .toLowerCase();
+                let data = null;
+
+                try {
+
+                    data =
+                        await response.json();
+
+                } catch {
+
+                    data = null;
+
+                }
 
 
-        // =========================
-        // ACCEPTED
-        // =========================
+                if (!response.ok) {
 
-        if (
-            normalizedStatus === "accepted" ||
-            normalizedStatus === "correct" ||
-            normalizedStatus === "success"
-        ) {
+                    throw new Error(
+                        data?.detail ||
+                        "Run failed."
+                    );
 
-            resultBody.classList.add(
-                "result-success"
-            );
-
-            resultBody.textContent =
-                "✓ Accepted — Your solution passed all test cases.";
-
-            return;
-        }
+                }
 
 
-        // =========================
-        // WRONG ANSWER
-        // =========================
-
-        if (
-            normalizedStatus === "wrong answer" ||
-            normalizedStatus === "wrong_answer" ||
-            normalizedStatus === "wrong"
-        ) {
-
-            resultBody.classList.add(
-                "result-error"
-            );
-
-            resultBody.textContent =
-                "✕ Wrong Answer — Your output did not match the expected result.";
-
-            return;
-        }
+                console.log(
+                    "RUN RESPONSE:",
+                    data
+                );
 
 
-        // =========================
-        // RUNTIME ERROR
-        // =========================
+                if (data?.success) {
 
-        if (
-            normalizedStatus === "runtime error" ||
-            normalizedStatus === "runtime_error"
-        ) {
-
-            resultBody.classList.add(
-                "result-error"
-            );
-
-            resultBody.textContent =
-                "✕ Runtime Error — Your code encountered an error while running.";
-
-            return;
-        }
+                    submissionStatus.innerHTML = `
+                        <span style="color:#2db55d;font-size:12px;">
+                            Run successful
+                        </span>
+                    `;
 
 
-        // =========================
-        // TIME LIMIT
-        // =========================
+                    setResult(
+                        `Output:\n${data.output || "(no output)"}`,
+                        "result-success"
+                    );
 
-        if (
-            normalizedStatus === "time limit exceeded" ||
-            normalizedStatus === "time_limit_exceeded"
-        ) {
+                } else {
 
-            resultBody.classList.add(
-                "result-warning"
-            );
+                    submissionStatus.innerHTML = `
+                        <span style="color:#ef4743;font-size:12px;">
+                            Runtime Error
+                        </span>
+                    `;
 
-            resultBody.textContent =
-                "⚠ Time Limit Exceeded — Your solution took too long.";
 
-            return;
+                    setResult(
+                        data?.output ||
+                        data?.error ||
+                        "Runtime Error",
+                        "result-error"
+                    );
+
+                }
+
+
+            } catch (error) {
+
+                console.error(
+                    "RUN ERROR:",
+                    error
+                );
+
+
+                setResult(
+                    error.message ||
+                    "Run failed.",
+                    "result-error"
+                );
+
+
+            } finally {
+
+                runBtn.disabled =
+                    false;
+
+                submitBtn.disabled =
+                    false;
+
+                runBtn.textContent =
+                    "Run";
+
+            }
         }
 
 
-        // =========================
-        // OTHER RESULT
-        // =========================
+        /* =========================
+           BUTTON EVENTS
+        ========================= */
 
-        resultBody.classList.add(
-            "result-warning"
+        submitBtn.addEventListener(
+            "click",
+            function (event) {
+
+                /*
+                 * VERY IMPORTANT:
+                 *
+                 * Prevent default browser action.
+                 * This prevents accidental form/page
+                 * refresh behaviour.
+                 */
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                submitCode();
+
+            }
         );
 
-        resultBody.textContent =
-            `Result: ${status}`;
-    }
+
+        runBtn.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                runCode();
+
+            }
+        );
 
 
-    // =========================
-    // BUTTON EVENTS
-    // =========================
+        /* =========================
+           TAB KEY IN EDITOR
+        ========================= */
 
-    submitBtn.addEventListener(
-        "click",
-        function (event) {
+        codeEditor.addEventListener(
+            "keydown",
+            function (event) {
 
-            event.preventDefault();
-            event.stopPropagation();
+                if (event.key === "Tab") {
 
-            submitCode(event);
+                    event.preventDefault();
+
+                    const start =
+                        this.selectionStart;
+
+                    const end =
+                        this.selectionEnd;
+
+
+                    this.value =
+                        this.value.substring(
+                            0,
+                            start
+                        ) +
+                        "    " +
+                        this.value.substring(
+                            end
+                        );
+
+
+                    this.selectionStart =
+                        this.selectionEnd =
+                            start + 4;
+
+                }
+
+            }
+        );
+
+
+        /* =========================
+           ESCAPE HTML
+        ========================= */
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
         }
-    );
 
 
-    runBtn.addEventListener(
-        "click",
-        function (event) {
+        /* =========================
+           START
+        ========================= */
 
-            event.preventDefault();
-            event.stopPropagation();
+        loadProblem();
 
-            submitCode(event);
-        }
-    );
-
-
-    // =========================
-    // ESCAPE HTML
-    // =========================
-
-    function escapeHtml(value) {
-
-        return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
-
-    // =========================
-    // START
-    // =========================
-
-    loadProblem();
-
-</script>
-   
+    </script>
 
 </body>
 
 </html>
-```

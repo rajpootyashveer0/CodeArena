@@ -190,6 +190,51 @@ def get_problem(problem_id: int, db: Session = Depends(get_db)):
 @app.get("/me", response_model=UserResponse)
 def get_me(current_user: User = Depends(get_current_user)):
     return current_user
+# =========================
+# RUN CODE
+# =========================
+
+@app.post("/run")
+def run_code(
+    submission: SubmissionCreate,
+    db: Session = Depends(get_db)
+):
+    problem = db.query(Problem).filter(
+        Problem.id == submission.problem_id
+    ).first()
+
+    if not problem:
+        raise HTTPException(
+            status_code=404,
+            detail="Problem not found"
+        )
+
+    if submission.language.lower() != "python":
+        return {
+            "success": False,
+            "output": "Language Not Supported"
+        }
+
+    test_case = db.query(TestCase).filter(
+        TestCase.problem_id == submission.problem_id
+    ).first()
+
+    if not test_case:
+        return {
+            "success": False,
+            "output": "No test cases available"
+        }
+
+    result = run_python_code(
+        submission.code,
+        test_case.input_data
+    )
+
+    return {
+        "success": result["success"],
+        "output": result["output"]
+    }
+
 
 @app.post("/submissions", response_model=SubmissionResponse)
 def create_submission(
