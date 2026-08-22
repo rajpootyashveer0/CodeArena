@@ -1,0 +1,1766 @@
+ <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Profile — CodeArena</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #0b0b0b;
+            color: #fff;
+            font-family: "Inter", sans-serif;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .profile-nav {
+            height: 64px;
+            background: #111;
+            border-bottom: 1px solid #292929;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            color: #ffa116;
+            text-decoration: none;
+
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #ffa116;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #333;
+            color: #bbb;
+
+            padding: 8px 14px;
+            border-radius: 7px;
+
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            color: #ffa116;
+            border-color: #ffa116;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .profile-container {
+            width: min(1100px, 92%);
+            margin: 0 auto;
+
+            padding: 45px 0 70px;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .profile-header {
+            margin-bottom: 30px;
+        }
+
+        .profile-header h1 {
+            margin: 0 0 8px;
+
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 34px;
+        }
+
+        .profile-header p {
+            margin: 0;
+
+            color: #888;
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           PROFILE CARD
+        ========================= */
+
+        .profile-card {
+            background: #151515;
+            border: 1px solid #292929;
+
+            border-radius: 12px;
+
+            padding: 30px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 25px;
+
+            margin-bottom: 25px;
+        }
+
+        .avatar {
+            width: 85px;
+            height: 85px;
+
+            border-radius: 50%;
+
+            background: #ffa116;
+            color: #111;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+
+            flex-shrink: 0;
+        }
+
+        .profile-info h2 {
+            margin: 0 0 7px;
+
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 25px;
+        }
+
+        .profile-info .email {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .profile-info .joined {
+            color: #666;
+            font-size: 12px;
+        }
+
+
+        /* =========================
+           STATS
+        ========================= */
+
+        .stats-grid {
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: #151515;
+
+            border: 1px solid #292929;
+
+            border-radius: 12px;
+
+            padding: 23px;
+
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: #444;
+            transform: translateY(-2px);
+        }
+
+        .stat-label {
+            color: #888;
+
+            font-size: 12px;
+
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-family: "JetBrains Mono", monospace;
+
+            font-size: 27px;
+
+            font-weight: 600;
+        }
+
+        .success {
+            color: #2db55d;
+        }
+
+        .accent {
+            color: #ffa116;
+        }
+
+
+        /* =========================
+           PROGRESS
+        ========================= */
+
+        .progress-panel {
+            background: #151515;
+
+            border: 1px solid #292929;
+
+            border-radius: 12px;
+
+            padding: 26px;
+
+            margin-bottom: 25px;
+        }
+
+        .panel-title {
+            margin: 0 0 25px;
+
+            font-family: "Space Grotesk", sans-serif;
+
+            font-size: 20px;
+        }
+
+        .difficulty-item {
+            margin-bottom: 22px;
+        }
+
+        .difficulty-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .difficulty-top {
+            display: flex;
+            justify-content: space-between;
+
+            margin-bottom: 9px;
+
+            font-size: 14px;
+        }
+
+        .difficulty-name {
+            color: #ddd;
+        }
+
+        .difficulty-count {
+            color: #888;
+        }
+
+        .progress {
+            height: 7px;
+
+            background: #252525;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+
+            width: 0%;
+
+            border-radius: 10px;
+
+            transition: width 0.8s ease;
+        }
+
+        .easy {
+            background: #2db55d;
+        }
+
+        .medium {
+            background: #ffa116;
+        }
+
+        .hard {
+            background: #ef4743;
+        }
+
+
+        /* =========================
+           SOLVED PROBLEMS
+        ========================= */
+
+        .solved-section {
+            background: #151515;
+
+            border: 1px solid #292929;
+
+            border-radius: 12px;
+
+            padding: 26px;
+
+            margin-bottom: 25px;
+        }
+
+        .section-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            margin: 0 0 6px;
+
+            font-family: "Space Grotesk", sans-serif;
+
+            font-size: 20px;
+        }
+
+        .section-description {
+            margin: 0;
+
+            color: #777;
+
+            font-size: 12px;
+        }
+
+        .view-all-link {
+            color: #ffa116;
+
+            text-decoration: none;
+
+            font-size: 12px;
+
+            white-space: nowrap;
+        }
+
+        .view-all-link:hover {
+            color: #ffb13b;
+        }
+
+        .solved-problems-list {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+        .solved-problem-card {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 15px 16px;
+
+            background: #101010;
+
+            border: 1px solid #292929;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+
+            transition: 0.2s;
+        }
+
+        .solved-problem-card:hover {
+            border-color: #ffa116;
+
+            transform: translateY(-1px);
+        }
+
+        .solved-problem-left {
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            min-width: 0;
+        }
+
+        .solved-check {
+            color: #2db55d;
+
+            font-size: 17px;
+
+            font-weight: 700;
+
+            flex-shrink: 0;
+        }
+
+        .solved-problem-title {
+            color: #ddd;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            margin-bottom: 4px;
+        }
+
+        .solved-problem-id {
+            color: #666;
+
+            font-size: 11px;
+        }
+
+        .solved-difficulty {
+            font-size: 11px;
+
+            font-weight: 600;
+
+            flex-shrink: 0;
+        }
+
+        .solved-difficulty.easy {
+            background: transparent;
+            color: #2db55d;
+        }
+
+        .solved-difficulty.medium {
+            background: transparent;
+            color: #ffa116;
+        }
+
+        .solved-difficulty.hard {
+            background: transparent;
+            color: #ef4743;
+        }
+
+        .solved-loading,
+        .no-solved {
+            color: #777;
+
+            text-align: center;
+
+            padding: 20px;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           ACTIONS
+        ========================= */
+
+        .actions {
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 25px;
+        }
+
+        .action-btn {
+            text-decoration: none;
+
+            padding: 11px 16px;
+
+            border-radius: 7px;
+
+            border: 1px solid #333;
+
+            color: #ddd;
+
+            background: #101010;
+
+            font-size: 13px;
+
+            transition: 0.2s;
+        }
+
+        .action-btn:hover {
+            color: #ffa116;
+
+            border-color: #ffa116;
+        }
+
+        .primary {
+            background: #ffa116;
+
+            color: #111;
+
+            border-color: #ffa116;
+
+            font-weight: 600;
+        }
+
+        .primary:hover {
+            background: #ffb13b;
+
+            color: #111;
+        }
+
+
+        /* =========================
+           ERROR
+        ========================= */
+
+        .error-box {
+            display: none;
+
+            background: #291717;
+
+            border: 1px solid #5c2525;
+
+            color: #ff7b7b;
+
+            padding: 13px 15px;
+
+            border-radius: 8px;
+
+            margin-bottom: 25px;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 850px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .profile-nav {
+                padding: 0 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .profile-container {
+                padding-top: 30px;
+            }
+
+            .profile-header h1 {
+                font-size: 28px;
+            }
+
+            .profile-card {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .section-title-row {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .solved-problem-card {
+                align-items: flex-start;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         NAVBAR
+    ========================= -->
+
+    <nav class="profile-nav">
+
+        <a href="index.html" class="nav-logo">
+            CodeArena
+        </a>
+
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="problems.html">
+                Problems
+            </a>
+
+            <a href="profile.html" class="active">
+                Profile
+            </a>
+
+        </div>
+
+
+        <button
+            class="logout-btn"
+            id="logoutBtn">
+
+            Logout
+
+        </button>
+
+    </nav>
+
+
+    <!-- =========================
+         MAIN
+    ========================= -->
+
+    <main class="profile-container">
+
+
+        <div
+            id="errorBox"
+            class="error-box">
+        </div>
+
+
+        <!-- =========================
+             HEADER
+        ========================= -->
+
+        <section class="profile-header">
+
+            <h1>
+                My Profile
+            </h1>
+
+            <p>
+                Your CodeArena coding journey and progress.
+            </p>
+
+        </section>
+
+
+        <!-- =========================
+             PROFILE CARD
+        ========================= -->
+
+        <section class="profile-card">
+
+            <div
+                class="avatar"
+                id="avatar">
+
+                C
+
+            </div>
+
+
+            <div class="profile-info">
+
+                <h2 id="username">
+                    Loading...
+                </h2>
+
+                <div
+                    class="email"
+                    id="email">
+
+                    Loading...
+
+                </div>
+
+                <div
+                    class="joined"
+                    id="joined">
+
+                    CodeArena member
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             STATS
+        ========================= -->
+
+        <section class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Problems Solved
+                </div>
+
+                <div
+                    class="stat-value success"
+                    id="problemsSolved">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Total Submissions
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalSubmissions">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Accepted
+                </div>
+
+                <div
+                    class="stat-value success"
+                    id="accepted">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Acceptance Rate
+                </div>
+
+                <div
+                    class="stat-value accent"
+                    id="acceptanceRate">
+
+                    0%
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =========================
+             PROGRESS
+        ========================= -->
+
+        <section class="progress-panel">
+
+            <h2 class="panel-title">
+                Problem Progress
+            </h2>
+
+
+            <!-- EASY -->
+
+            <div class="difficulty-item">
+
+                <div class="difficulty-top">
+
+                    <span class="difficulty-name">
+                        Easy
+                    </span>
+
+                    <span
+                        class="difficulty-count"
+                        id="easyCount">
+
+                        0 solved
+
+                    </span>
+
+                </div>
+
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar easy"
+                        id="easyProgress">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- MEDIUM -->
+
+            <div class="difficulty-item">
+
+                <div class="difficulty-top">
+
+                    <span class="difficulty-name">
+                        Medium
+                    </span>
+
+                    <span
+                        class="difficulty-count"
+                        id="mediumCount">
+
+                        0 solved
+
+                    </span>
+
+                </div>
+
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar medium"
+                        id="mediumProgress">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- HARD -->
+
+            <div class="difficulty-item">
+
+                <div class="difficulty-top">
+
+                    <span class="difficulty-name">
+                        Hard
+                    </span>
+
+                    <span
+                        class="difficulty-count"
+                        id="hardCount">
+
+                        0 solved
+
+                    </span>
+
+                </div>
+
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar hard"
+                        id="hardProgress">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =========================
+             SOLVED PROBLEMS
+        ========================= -->
+
+        <section class="solved-section">
+
+            <div class="section-title-row">
+
+                <div>
+
+                    <h2 class="section-title">
+                        Solved Problems
+                    </h2>
+
+                    <p class="section-description">
+                        Your successfully solved CodeArena problems.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="problems.html"
+                    class="view-all-link">
+
+                    Solve More →
+
+                </a>
+
+            </div>
+
+
+            <div
+                id="solvedProblems"
+                class="solved-problems-list">
+
+                <div class="solved-loading">
+                    Loading solved problems...
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="actions">
+
+                <a
+                    href="problems.html"
+                    class="action-btn primary">
+
+                    Solve More Problems →
+
+                </a>
+
+                <a
+                    href="submissions.html"
+                    class="action-btn">
+
+                    View Submissions
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
+
+    <script>
+
+        const API_URL =
+            "http://127.0.0.1:8000";
+
+        const token =
+            localStorage.getItem("access_token");
+
+
+        /* =========================
+           AUTHENTICATION
+        ========================= */
+
+        if (!token) {
+
+            window.location.replace(
+                "login.html"
+            );
+
+        }
+
+
+        /* =========================
+           HELPERS
+        ========================= */
+
+        function safeNumber(value) {
+
+            const number =
+                Number(value);
+
+            return Number.isFinite(number)
+                ? number
+                : 0;
+
+        }
+
+
+        function percentage(solved, total) {
+
+            solved =
+                safeNumber(solved);
+
+            total =
+                safeNumber(total);
+
+            if (total <= 0) {
+
+                return 0;
+
+            }
+
+            return Math.min(
+                100,
+                Math.max(
+                    0,
+                    (solved / total) * 100
+                )
+            );
+
+        }
+
+
+        function escapeHtml(value) {
+
+            return String(value)
+
+                .replace(/&/g, "&amp;")
+
+                .replace(/</g, "&lt;")
+
+                .replace(/>/g, "&gt;")
+
+                .replace(/"/g, "&quot;")
+
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        /* =========================
+           LOAD PROFILE
+        ========================= */
+
+        async function loadProfile() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/dashboard`,
+                        {
+                            method: "GET",
+
+                            headers: {
+
+                                "Authorization":
+                                    `Bearer ${token}`,
+
+                                "Accept":
+                                    "application/json"
+
+                            }
+
+                        }
+                    );
+
+
+                let data = null;
+
+
+                try {
+
+                    data =
+                        await response.json();
+
+                } catch {
+
+                    data = null;
+
+                }
+
+
+                /* TOKEN INVALID */
+
+                if (response.status === 401) {
+
+                    localStorage.removeItem(
+                        "access_token"
+                    );
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data?.detail ||
+                        "Unable to load profile"
+                    );
+
+                }
+
+
+                /* =========================
+                   USER
+                ========================= */
+
+                const user =
+                    data?.user || {};
+
+                const stats =
+                    data?.stats || {};
+
+
+                const username =
+                    user.username || "Coder";
+
+
+                document.getElementById(
+                    "username"
+                ).textContent =
+                    username;
+
+
+                document.getElementById(
+                    "email"
+                ).textContent =
+                    user.email ||
+                    "No email";
+
+
+                /* AVATAR */
+
+                document.getElementById(
+                    "avatar"
+                ).textContent =
+                    username
+                        .charAt(0)
+                        .toUpperCase();
+
+
+                /* =========================
+                   STATS
+                ========================= */
+
+                const problemsSolved =
+                    safeNumber(
+                        stats.problems_solved
+                    );
+
+
+                const totalSubmissions =
+                    safeNumber(
+                        stats.total_submissions
+                    );
+
+
+                const accepted =
+                    safeNumber(
+                        stats.accepted
+                    );
+
+
+                const easySolved =
+                    safeNumber(
+                        stats.easy_solved
+                    );
+
+
+                const mediumSolved =
+                    safeNumber(
+                        stats.medium_solved
+                    );
+
+
+                const hardSolved =
+                    safeNumber(
+                        stats.hard_solved
+                    );
+
+
+                document.getElementById(
+                    "problemsSolved"
+                ).textContent =
+                    problemsSolved;
+
+
+                document.getElementById(
+                    "totalSubmissions"
+                ).textContent =
+                    totalSubmissions;
+
+
+                document.getElementById(
+                    "accepted"
+                ).textContent =
+                    accepted;
+
+
+                /* =========================
+                   ACCEPTANCE RATE
+                ========================= */
+
+                let rate = 0;
+
+
+                if (totalSubmissions > 0) {
+
+                    rate = Math.round(
+                        (
+                            accepted /
+                            totalSubmissions
+                        ) * 100
+                    );
+
+                }
+
+
+                document.getElementById(
+                    "acceptanceRate"
+                ).textContent =
+                    `${rate}%`;
+
+
+                /* =========================
+                   DIFFICULTY COUNTS
+                ========================= */
+
+                document.getElementById(
+                    "easyCount"
+                ).textContent =
+                    `${easySolved} solved`;
+
+
+                document.getElementById(
+                    "mediumCount"
+                ).textContent =
+                    `${mediumSolved} solved`;
+
+
+                document.getElementById(
+                    "hardCount"
+                ).textContent =
+                    `${hardSolved} solved`;
+
+
+                /* =========================
+                   GET ALL PROBLEMS
+                ========================= */
+
+                let problems = [];
+
+
+                try {
+
+                    const problemsResponse =
+                        await fetch(
+                            `${API_URL}/problems`
+                        );
+
+
+                    if (
+                        problemsResponse.ok
+                    ) {
+
+                        const problemsData =
+                            await problemsResponse.json();
+
+
+                        if (
+                            Array.isArray(
+                                problemsData
+                            )
+                        ) {
+
+                            problems =
+                                problemsData;
+
+                        }
+
+                    }
+
+                } catch (error) {
+
+                    console.warn(
+                        "Unable to load problems:",
+                        error
+                    );
+
+                }
+
+
+                /* =========================
+                   TOTAL DIFFICULTY
+                ========================= */
+
+                const totalEasy =
+                    problems.filter(
+                        problem =>
+                            String(
+                                problem.difficulty || ""
+                            ).toLowerCase()
+                            === "easy"
+                    ).length;
+
+
+                const totalMedium =
+                    problems.filter(
+                        problem =>
+                            String(
+                                problem.difficulty || ""
+                            ).toLowerCase()
+                            === "medium"
+                    ).length;
+
+
+                const totalHard =
+                    problems.filter(
+                        problem =>
+                            String(
+                                problem.difficulty || ""
+                            ).toLowerCase()
+                            === "hard"
+                    ).length;
+
+
+                /* =========================
+                   PROGRESS BARS
+                ========================= */
+
+                document.getElementById(
+                    "easyProgress"
+                ).style.width =
+                    `${percentage(
+                        easySolved,
+                        totalEasy
+                    )}%`;
+
+
+                document.getElementById(
+                    "mediumProgress"
+                ).style.width =
+                    `${percentage(
+                        mediumSolved,
+                        totalMedium
+                    )}%`;
+
+
+                document.getElementById(
+                    "hardProgress"
+                ).style.width =
+                    `${percentage(
+                        hardSolved,
+                        totalHard
+                    )}%`;
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    "Profile error:",
+                    error
+                );
+
+
+                const errorBox =
+                    document.getElementById(
+                        "errorBox"
+                    );
+
+
+                errorBox.textContent =
+                    error.message ||
+                    "Unable to load profile.";
+
+
+                errorBox.style.display =
+                    "block";
+
+            }
+
+        }
+
+
+        /* =========================
+           LOAD SOLVED PROBLEMS
+        ========================= */
+
+        async function loadSolvedProblems() {
+
+            const container =
+                document.getElementById(
+                    "solvedProblems"
+                );
+
+
+            if (!container) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/submissions`,
+                        {
+                            method: "GET",
+
+                            headers: {
+
+                                "Authorization":
+                                    `Bearer ${token}`,
+
+                                "Accept":
+                                    "application/json"
+
+                            }
+
+                        }
+                    );
+
+
+                /* TOKEN INVALID */
+
+                if (response.status === 401) {
+
+                    localStorage.removeItem(
+                        "access_token"
+                    );
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load submissions"
+                    );
+
+                }
+
+
+                const submissions =
+                    await response.json();
+
+
+                /* =========================
+                   ACCEPTED ONLY
+                ========================= */
+
+                const acceptedSubmissions =
+                    submissions.filter(
+                        submission =>
+                            submission.status ===
+                            "Accepted"
+                    );
+
+
+                /* =========================
+                   UNIQUE PROBLEMS
+                ========================= */
+
+                const solvedProblemIds =
+                    [
+                        ...new Set(
+                            acceptedSubmissions.map(
+                                submission =>
+                                    submission.problem_id
+                            )
+                        )
+                    ];
+
+
+                if (
+                    solvedProblemIds.length === 0
+                ) {
+
+                    container.innerHTML = `
+
+                        <div class="no-solved">
+
+                            You haven't solved
+                            any problems yet.
+
+                        </div>
+
+                    `;
+
+                    return;
+
+                }
+
+
+                /* =========================
+                   LOAD PROBLEM DETAILS
+                ========================= */
+
+                const solvedProblems = [];
+
+
+                for (
+                    const problemId
+                    of solvedProblemIds
+                ) {
+
+                    try {
+
+                        const problemResponse =
+                            await fetch(
+                                `${API_URL}/problems/${problemId}`
+                            );
+
+
+                        if (
+                            !problemResponse.ok
+                        ) {
+
+                            continue;
+
+                        }
+
+
+                        const problem =
+                            await problemResponse.json();
+
+
+                        solvedProblems.push(
+                            problem
+                        );
+
+                    }
+
+
+                    catch (error) {
+
+                        console.warn(
+                            "Unable to load problem:",
+                            problemId,
+                            error
+                        );
+
+                    }
+
+                }
+
+
+                /* =========================
+                   DISPLAY
+                ========================= */
+
+                if (
+                    solvedProblems.length === 0
+                ) {
+
+                    container.innerHTML = `
+
+                        <div class="no-solved">
+
+                            Unable to load
+                            solved problems.
+
+                        </div>
+
+                    `;
+
+                    return;
+
+                }
+
+
+                container.innerHTML =
+                    solvedProblems
+                        .map(problem => {
+
+                            const difficulty =
+                                String(
+                                    problem.difficulty ||
+                                    ""
+                                ).toLowerCase();
+
+
+                            return `
+
+                                <a
+                                    href="problem.html?id=${problem.id}"
+                                    class="solved-problem-card"
+                                >
+
+                                    <div
+                                        class="solved-problem-left"
+                                    >
+
+                                        <span
+                                            class="solved-check"
+                                        >
+                                            ✓
+                                        </span>
+
+
+                                        <div>
+
+                                            <div
+                                                class="solved-problem-title"
+                                            >
+                                                ${escapeHtml(
+                                                    problem.title
+                                                )}
+                                            </div>
+
+
+                                            <div
+                                                class="solved-problem-id"
+                                            >
+                                                Problem #${problem.id}
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <span
+                                        class="solved-difficulty ${difficulty}"
+                                    >
+                                        ${escapeHtml(
+                                            problem.difficulty
+                                        )}
+                                    </span>
+
+                                </a>
+
+                            `;
+
+                        })
+                        .join("");
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    "Solved problems error:",
+                    error
+                );
+
+
+                container.innerHTML = `
+
+                    <div class="no-solved">
+
+                        Unable to load
+                        solved problems.
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        /* =========================
+           LOGOUT
+        ========================= */
+
+        document
+            .getElementById("logoutBtn")
+            .addEventListener(
+                "click",
+                () => {
+
+                    localStorage.removeItem(
+                        "access_token"
+                    );
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                }
+            );
+
+
+        /* =========================
+           START
+        ========================= */
+
+        loadProfile();
+
+        loadSolvedProblems();
+
+    </script>
+
+
+</body>
+
+</html>
