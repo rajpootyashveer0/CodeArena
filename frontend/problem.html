@@ -584,7 +584,7 @@
                 <div
                     id="resultBody"
                     class="result-body">
-                    Submit your solution to see the result.
+                    ready to submit
                 </div>
 
             </div>
@@ -593,9 +593,9 @@
 
 
     </main>
+   <script>
+    console.log("PROBLEM PAGE LOADED");
 
-<script>
-   console.log("PROBLEM PAGE LOADED");
     const API_URL = "http://127.0.0.1:8000";
 
     const token = localStorage.getItem("access_token");
@@ -631,7 +631,6 @@
         errorBox.style.display = "block";
 
         problemContent.innerHTML = "";
-
     }
 
 
@@ -659,7 +658,6 @@
                     problem.detail ||
                     "Unable to load problem"
                 );
-
             }
 
 
@@ -740,17 +738,17 @@
 
             errorBox.textContent = error.message;
             errorBox.style.display = "block";
-
         }
-
     }
 
 
     // =========================
     // SUBMIT CODE
     // =========================
-   console.log("SUBMIT CODE CALLED");
+
     async function submitCode(event) {
+
+        console.log("SUBMIT BUTTON CLICKED");
 
         if (event) {
             event.preventDefault();
@@ -759,11 +757,11 @@
 
 
         const code = codeEditor.value.trim();
-        localStorage.setItem(
-    `code_${problemId}`,
-    codeEditor.value
-);
 
+
+        // =========================
+        // EMPTY CODE CHECK
+        // =========================
 
         if (!code) {
 
@@ -774,16 +772,21 @@
                 "Write some code before submitting.";
 
             return;
-
         }
 
+
+        // =========================
+        // DISABLE BUTTONS
+        // =========================
 
         submitBtn.disabled = true;
         runBtn.disabled = true;
 
         submitBtn.textContent = "Submitting...";
 
-        resultBody.className = "result-body";
+
+        resultBody.className =
+            "result-body";
 
         resultBody.textContent =
             "Running your solution...";
@@ -810,7 +813,6 @@
                         language: languageSelect.value
 
                     })
-
                 }
             );
 
@@ -818,7 +820,9 @@
             const data = await response.json();
 
 
+            // =========================
             // TOKEN EXPIRED
+            // =========================
 
             if (response.status === 401) {
 
@@ -827,11 +831,12 @@
                 window.location.href = "login.html";
 
                 return;
-
             }
 
 
+            // =========================
             // BACKEND ERROR
+            // =========================
 
             if (!response.ok) {
 
@@ -839,17 +844,39 @@
                     data.detail ||
                     "Submission failed"
                 );
-
             }
 
 
-            // SHOW RESULT
-            console.log("SUBMISSION RESPONSE:", data);
-        console.log("SUBMISSION RESULT:", data.status);
-            showResult(data.status);
+            // =========================
+            // BACKEND RESULT
+            // =========================
+
+            console.log(
+                "BACKEND SUBMISSION RESPONSE:",
+                data
+            );
+
+
+            /*
+                Backend is the source of truth.
+            */
+
+            const status =
+                data.status ||
+                data.result ||
+                data.verdict ||
+                "";
+
+
+            showResult(status);
 
 
         } catch (error) {
+
+            console.error(
+                "SUBMISSION ERROR:",
+                error
+            );
 
             resultBody.className =
                 "result-body result-error";
@@ -864,9 +891,7 @@
             runBtn.disabled = false;
 
             submitBtn.textContent = "Submit";
-
         }
-
     }
 
 
@@ -880,7 +905,34 @@
             "result-body";
 
 
-        if (status === "Accepted") {
+        if (!status) {
+
+            resultBody.classList.add(
+                "result-warning"
+            );
+
+            resultBody.textContent =
+                "Submission completed.";
+
+            return;
+        }
+
+
+        const normalizedStatus =
+            String(status)
+                .trim()
+                .toLowerCase();
+
+
+        // =========================
+        // ACCEPTED
+        // =========================
+
+        if (
+            normalizedStatus === "accepted" ||
+            normalizedStatus === "correct" ||
+            normalizedStatus === "success"
+        ) {
 
             resultBody.classList.add(
                 "result-success"
@@ -890,11 +942,18 @@
                 "✓ Accepted — Your solution passed all test cases.";
 
             return;
-
         }
 
 
-        if (status === "Wrong Answer") {
+        // =========================
+        // WRONG ANSWER
+        // =========================
+
+        if (
+            normalizedStatus === "wrong answer" ||
+            normalizedStatus === "wrong_answer" ||
+            normalizedStatus === "wrong"
+        ) {
 
             resultBody.classList.add(
                 "result-error"
@@ -904,11 +963,17 @@
                 "✕ Wrong Answer — Your output did not match the expected result.";
 
             return;
-
         }
 
 
-        if (status === "Runtime Error") {
+        // =========================
+        // RUNTIME ERROR
+        // =========================
+
+        if (
+            normalizedStatus === "runtime error" ||
+            normalizedStatus === "runtime_error"
+        ) {
 
             resultBody.classList.add(
                 "result-error"
@@ -918,9 +983,32 @@
                 "✕ Runtime Error — Your code encountered an error while running.";
 
             return;
-
         }
 
+
+        // =========================
+        // TIME LIMIT
+        // =========================
+
+        if (
+            normalizedStatus === "time limit exceeded" ||
+            normalizedStatus === "time_limit_exceeded"
+        ) {
+
+            resultBody.classList.add(
+                "result-warning"
+            );
+
+            resultBody.textContent =
+                "⚠ Time Limit Exceeded — Your solution took too long.";
+
+            return;
+        }
+
+
+        // =========================
+        // OTHER RESULT
+        // =========================
 
         resultBody.classList.add(
             "result-warning"
@@ -928,7 +1016,6 @@
 
         resultBody.textContent =
             `Result: ${status}`;
-
     }
 
 
@@ -938,13 +1025,25 @@
 
     submitBtn.addEventListener(
         "click",
-        submitCode
+        function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            submitCode(event);
+        }
     );
 
 
     runBtn.addEventListener(
         "click",
-        submitCode
+        function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            submitCode(event);
+        }
     );
 
 
@@ -960,36 +1059,14 @@
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
-
     }
 
 
     // =========================
     // START
     // =========================
- function restoreCode() {
 
-    const savedCode = localStorage.getItem(
-        `code_${problemId}`
-    );
-
-    if (savedCode) {
-        codeEditor.value = savedCode;
-    }
-
-}
-
-loadProblem();
-restoreCode();
-
-codeEditor.addEventListener("input", function () {
-
-    localStorage.setItem(
-        `code_${problemId}`,
-        codeEditor.value
-    );
-
-});
+    loadProblem();
 
 </script>
    
