@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,12 +10,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css">
 
     <style>
+
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             background: #0b0b0b;
@@ -25,7 +29,9 @@
             font-family: "Inter", sans-serif;
         }
 
-        /* NAVBAR */
+        /* =========================
+           NAVBAR
+        ========================= */
 
         .problems-nav {
             height: 64px;
@@ -88,7 +94,9 @@
         }
 
 
-        /* PAGE */
+        /* =========================
+           PAGE
+        ========================= */
 
         .page-container {
             width: min(1180px, 92%);
@@ -98,7 +106,7 @@
         }
 
         .page-heading {
-            margin-bottom: 30px;
+            margin-bottom: 28px;
         }
 
         .page-heading h1 {
@@ -116,11 +124,43 @@
         }
 
 
-        /* FILTER BAR */
+        /* =========================
+           SUMMARY
+        ========================= */
+
+        .problem-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 18px;
+        }
+
+        .problem-count {
+            color: #888;
+            font-size: 13px;
+        }
+
+        .problem-count strong {
+            color: #ddd;
+        }
+
+        .solved-summary {
+            color: #2db55d;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+
+        /* =========================
+           FILTER BAR
+        ========================= */
 
         .filter-bar {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
 
             margin-bottom: 25px;
@@ -134,7 +174,6 @@
 
         .search-box input {
             width: 100%;
-            box-sizing: border-box;
 
             background: #151515;
             border: 1px solid #303030;
@@ -151,6 +190,10 @@
             font-size: 14px;
 
             transition: 0.2s;
+        }
+
+        .search-box input::placeholder {
+            color: #666;
         }
 
         .search-box input:focus {
@@ -190,7 +233,9 @@
         }
 
 
-        /* TABLE */
+        /* =========================
+           PROBLEM TABLE
+        ========================= */
 
         .problem-table {
             background: #151515;
@@ -206,10 +251,10 @@
             display: grid;
 
             grid-template-columns:
-                80px
+                70px
                 minmax(280px, 1fr)
                 130px
-                110px;
+                130px;
 
             align-items: center;
         }
@@ -262,6 +307,17 @@
             color: #ffa116;
         }
 
+        .problem-id {
+            color: #666;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+
+        /* =========================
+           DIFFICULTY
+        ========================= */
+
         .difficulty-badge {
             display: inline-flex;
 
@@ -288,6 +344,11 @@
             color: #ef4743;
         }
 
+
+        /* =========================
+           ACTION
+        ========================= */
+
         .solve-link {
             color: #aaa;
 
@@ -302,18 +363,17 @@
             color: #ffa116;
         }
 
-
-        /* LOADING */
-
-        .loading {
-            padding: 55px 20px;
-
-            text-align: center;
-
-            color: #777;
-            font-size: 14px;
+        .solved-link {
+            color: #2db55d !important;
+            font-weight: 600;
         }
 
+
+        /* =========================
+           EMPTY / LOADING
+        ========================= */
+
+        .loading,
         .empty-state {
             padding: 60px 20px;
 
@@ -322,6 +382,21 @@
             color: #777;
             font-size: 14px;
         }
+
+        .empty-state strong {
+            display: block;
+
+            color: #aaa;
+
+            font-size: 16px;
+
+            margin-bottom: 6px;
+        }
+
+
+        /* =========================
+           ERROR
+        ========================= */
 
         .error-box {
             display: none;
@@ -342,7 +417,9 @@
         }
 
 
-        /* RESPONSIVE */
+        /* =========================
+           RESPONSIVE
+        ========================= */
 
         @media (max-width: 850px) {
 
@@ -356,11 +433,13 @@
 
             .problem-row {
                 grid-template-columns: 42px 1fr auto;
-                gap: 12px;
+
+                gap: 10px;
             }
 
             .problem-difficulty {
                 grid-column: 2;
+                margin-top: 6px;
             }
 
             .problem-action {
@@ -369,6 +448,7 @@
             }
 
         }
+
 
         @media (max-width: 600px) {
 
@@ -388,6 +468,28 @@
                 display: none;
             }
 
+            .problem-summary {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .filter-bar {
+                gap: 8px;
+            }
+
+            .search-box {
+                min-width: 100%;
+                flex-basis: 100%;
+            }
+
+            .filter-btn {
+                flex: 1;
+            }
+
+            .problem-row {
+                padding: 16px;
+            }
+
         }
 
     </style>
@@ -396,8 +498,9 @@
 
 <body>
 
-
-    <!-- NAVBAR -->
+    <!-- =========================
+         NAVBAR
+    ========================= -->
 
     <nav class="problems-nav">
 
@@ -415,6 +518,10 @@
                 Problems
             </a>
 
+            <a href="profile.html">
+                Profile
+            </a>
+
         </div>
 
         <a href="dashboard.html" class="dashboard-btn">
@@ -424,7 +531,9 @@
     </nav>
 
 
-    <!-- PAGE -->
+    <!-- =========================
+         PAGE
+    ========================= -->
 
     <main class="page-container">
 
@@ -444,7 +553,26 @@
         <div id="errorBox" class="error-box"></div>
 
 
-        <!-- FILTERS -->
+        <!-- =========================
+             SUMMARY
+        ========================= -->
+
+        <div class="problem-summary">
+
+            <div class="problem-count" id="problemCount">
+                Loading problems...
+            </div>
+
+            <div class="solved-summary" id="solvedSummary">
+                0 solved
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             FILTERS
+        ========================= -->
 
         <div class="filter-bar">
 
@@ -454,6 +582,7 @@
                     type="text"
                     id="searchInput"
                     placeholder="Search problems..."
+                    autocomplete="off"
                 >
 
             </div>
@@ -461,32 +590,46 @@
 
             <button
                 class="filter-btn active"
-                data-difficulty="all">
+                data-filter="all">
                 All
             </button>
 
             <button
                 class="filter-btn"
-                data-difficulty="Easy">
+                data-filter="Easy">
                 Easy
             </button>
 
             <button
                 class="filter-btn"
-                data-difficulty="Medium">
+                data-filter="Medium">
                 Medium
             </button>
 
             <button
                 class="filter-btn"
-                data-difficulty="Hard">
+                data-filter="Hard">
                 Hard
+            </button>
+
+            <button
+                class="filter-btn"
+                data-filter="Solved">
+                ✓ Solved
+            </button>
+
+            <button
+                class="filter-btn"
+                data-filter="Unsolved">
+                Unsolved
             </button>
 
         </div>
 
 
-        <!-- PROBLEM LIST -->
+        <!-- =========================
+             PROBLEM LIST
+        ========================= -->
 
         <section class="problem-table">
 
@@ -516,484 +659,569 @@
     </main>
 
 
-     <script>
+    <script>
 
-    const API_URL = "http://127.0.0.1:8000";
+        const API_URL = "http://127.0.0.1:8000";
 
-    let allProblems = [];
-    let solvedProblemIds = new Set();
+        let allProblems = [];
+        let solvedProblemIds = new Set();
+        let activeFilter = "all";
 
 
-    // =========================
-    // LOAD PROBLEMS
-    // =========================
+        /* =========================
+           ESCAPE HTML
+        ========================= */
 
-    async function loadProblems() {
+        function escapeHtml(value) {
 
-        const problemList =
-            document.getElementById("problemList");
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
 
-        const errorBox =
-            document.getElementById("errorBox");
+        }
 
-        try {
 
-            errorBox.style.display = "none";
+        /* =========================
+           LOAD PROBLEMS
+        ========================= */
 
-            // -------------------------
-            // GET ALL PROBLEMS
-            // -------------------------
+        async function loadProblems() {
 
-            const response = await fetch(
-                `${API_URL}/problems`
-            );
+            const problemList =
+                document.getElementById("problemList");
 
-            let data = null;
+            const errorBox =
+                document.getElementById("errorBox");
 
             try {
-                data = await response.json();
-            } catch {
-                data = null;
-            }
 
-            if (!response.ok) {
-
-                throw new Error(
-                    data?.detail ||
-                    "Unable to load problems"
-                );
-
-            }
-
-            if (!Array.isArray(data)) {
-                throw new Error("Invalid problems response");
-            }
-
-            allProblems = data;
+                errorBox.style.display = "none";
 
 
-            // -------------------------
-            // GET USER SUBMISSIONS
-            // -------------------------
-            //
-            // This is OPTIONAL.
-            //
-            // If user is logged in, we try to
-            // find which problems were Accepted.
-            //
-            // If this request fails for any reason,
-            // the Problems page STILL WORKS normally.
-            // -------------------------
+                /* GET ALL PROBLEMS */
 
-            solvedProblemIds = new Set();
-
-            const token =
-                localStorage.getItem("access_token");
+                const response =
+                    await fetch(`${API_URL}/problems`);
 
 
-            if (token) {
+                let data = null;
 
                 try {
 
-                    const submissionsResponse =
-                        await fetch(
-                            `${API_URL}/submissions`,
-                            {
-                                method: "GET",
+                    data = await response.json();
 
-                                headers: {
-                                    "Authorization":
-                                        `Bearer ${token}`,
+                } catch {
 
-                                    "Accept":
-                                        "application/json"
-                                }
-                            }
-                        );
+                    data = null;
+
+                }
 
 
-                    if (submissionsResponse.ok) {
+                if (!response.ok) {
 
-                        const submissions =
-                            await submissionsResponse.json();
-
-
-                        if (Array.isArray(submissions)) {
-
-                            submissions.forEach(
-                                submission => {
-
-                                    if (
-                                        submission.status ===
-                                        "Accepted"
-                                    ) {
-
-                                        solvedProblemIds.add(
-                                            Number(
-                                                submission.problem_id
-                                            )
-                                        );
-
-                                    }
-
-                                }
-                            );
-
-                        }
-
-                    }
-
-                } catch (submissionError) {
-
-                    console.warn(
-                        "Unable to load submission status:",
-                        submissionError
+                    throw new Error(
+                        data?.detail ||
+                        "Unable to load problems."
                     );
 
                 }
+
+
+                if (!Array.isArray(data)) {
+
+                    throw new Error(
+                        "Invalid problems response."
+                    );
+
+                }
+
+
+                allProblems = data;
+
+
+                /* =========================
+                   GET SOLVED PROBLEMS
+                ========================= */
+
+                solvedProblemIds = new Set();
+
+                const token =
+                    localStorage.getItem("access_token");
+
+
+                if (token) {
+
+                    try {
+
+                        const submissionsResponse =
+                            await fetch(
+                                `${API_URL}/submissions`,
+                                {
+                                    method: "GET",
+
+                                    headers: {
+                                        "Authorization":
+                                            `Bearer ${token}`,
+
+                                        "Accept":
+                                            "application/json"
+                                    }
+                                }
+                            );
+
+
+                        if (submissionsResponse.status === 401) {
+
+                            localStorage.removeItem(
+                                "access_token"
+                            );
+
+                        } else if (
+                            submissionsResponse.ok
+                        ) {
+
+                            const submissions =
+                                await submissionsResponse.json();
+
+
+                            if (Array.isArray(submissions)) {
+
+                                submissions.forEach(
+                                    submission => {
+
+                                        if (
+                                            submission.status ===
+                                            "Accepted"
+                                        ) {
+
+                                            solvedProblemIds.add(
+                                                Number(
+                                                    submission.problem_id
+                                                )
+                                            );
+
+                                        }
+
+                                    }
+                                );
+
+                            }
+
+                        }
+
+                    } catch (error) {
+
+                        console.warn(
+                            "Unable to load solved status:",
+                            error
+                        );
+
+                    }
+
+                }
+
+
+                updateSummary();
+
+                applyFilters();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Problems error:",
+                    error
+                );
+
+
+                problemList.innerHTML = "";
+
+
+                errorBox.textContent =
+                    error.message ||
+                    "Unable to load problems.";
+
+
+                errorBox.style.display =
+                    "block";
+
+            }
+
+        }
+
+
+        /* =========================
+           UPDATE SUMMARY
+        ========================= */
+
+        function updateSummary() {
+
+            const problemCount =
+                document.getElementById(
+                    "problemCount"
+                );
+
+
+            const solvedSummary =
+                document.getElementById(
+                    "solvedSummary"
+                );
+
+
+            const solvedCount =
+                solvedProblemIds.size;
+
+
+            problemCount.innerHTML = `
+                <strong>${allProblems.length}</strong>
+                ${allProblems.length === 1
+                    ? "problem"
+                    : "problems"}
+            `;
+
+
+            solvedSummary.textContent =
+                `${solvedCount} solved`;
+
+        }
+
+
+        /* =========================
+           APPLY FILTERS
+        ========================= */
+
+        function applyFilters() {
+
+            const searchInput =
+                document.getElementById(
+                    "searchInput"
+                );
+
+
+            const query =
+                searchInput.value
+                    .toLowerCase()
+                    .trim();
+
+
+            let filtered =
+                [...allProblems];
+
+
+            /* DIFFICULTY / STATUS */
+
+            if (
+                activeFilter === "Easy" ||
+                activeFilter === "Medium" ||
+                activeFilter === "Hard"
+            ) {
+
+                filtered =
+                    filtered.filter(
+                        problem =>
+                            String(
+                                problem.difficulty || ""
+                            ).toLowerCase() ===
+                            activeFilter.toLowerCase()
+                    );
 
             }
 
 
-            // -------------------------
-            // RENDER
-            // -------------------------
+            if (activeFilter === "Solved") {
 
-            renderProblems(allProblems);
-
-
-        } catch (error) {
-
-            console.error(
-                "Problems error:",
-                error
-            );
-
-            problemList.innerHTML = "";
-
-            errorBox.textContent =
-                error.message ||
-                "Unable to load problems.";
-
-            errorBox.style.display = "block";
-
-        }
-
-    }
-
-
-
-    // =========================
-    // RENDER PROBLEMS
-    // =========================
-
-    function renderProblems(problems) {
-
-        const problemList =
-            document.getElementById("problemList");
-
-
-        if (!problems.length) {
-
-            problemList.innerHTML = `
-                <div class="empty-state">
-                    No problems found.
-                </div>
-            `;
-
-            return;
-
-        }
-
-
-        problemList.innerHTML =
-            problems.map((problem, index) => {
-
-                let difficultyClass =
-                    "difficulty-easy";
-
-
-                if (
-                    problem.difficulty ===
-                    "Medium"
-                ) {
-
-                    difficultyClass =
-                        "difficulty-medium";
-
-                }
-
-
-                if (
-                    problem.difficulty ===
-                    "Hard"
-                ) {
-
-                    difficultyClass =
-                        "difficulty-hard";
-
-                }
-
-
-                // -------------------------
-                // CHECK SOLVED STATUS
-                // -------------------------
-
-                const isSolved =
-                    solvedProblemIds.has(
-                        Number(problem.id)
+                filtered =
+                    filtered.filter(
+                        problem =>
+                            solvedProblemIds.has(
+                                Number(problem.id)
+                            )
                     );
 
-
-                // -------------------------
-                // ACTION
-                // -------------------------
-
-                let actionHTML;
+            }
 
 
-                if (isSolved) {
+            if (activeFilter === "Unsolved") {
 
-                    actionHTML = `
-                        <a
-                            href="problem.html?id=${problem.id}"
-                            class="solve-link"
-                            style="
-                                color: #2db55d;
-                                font-weight: 600;
-                            ">
-                            ✓ Solved
-                        </a>
-                    `;
+                filtered =
+                    filtered.filter(
+                        problem =>
+                            !solvedProblemIds.has(
+                                Number(problem.id)
+                            )
+                    );
 
-                } else {
-
-                    actionHTML = `
-                        <a
-                            href="problem.html?id=${problem.id}"
-                            class="solve-link">
-                            Solve →
-                        </a>
-                    `;
-
-                }
+            }
 
 
-                return `
-                    <div class="problem-row">
+            /* SEARCH */
 
-                        <div class="problem-number">
-                            ${index + 1}
-                        </div>
+            if (query) {
 
+                filtered =
+                    filtered.filter(
+                        problem => {
 
-                        <div class="problem-title">
-
-                            <a
-                                href="problem.html?id=${problem.id}">
-                                ${escapeHtml(problem.title)}
-                            </a>
-
-                        </div>
+                            const title =
+                                String(
+                                    problem.title || ""
+                                ).toLowerCase();
 
 
-                        <div class="problem-difficulty">
-
-                            <span
-                                class="difficulty-badge ${difficultyClass}">
-                                ${escapeHtml(problem.difficulty)}
-                            </span>
-
-                        </div>
+                            const description =
+                                String(
+                                    problem.description || ""
+                                ).toLowerCase();
 
 
-                        <div class="problem-action">
+                            const id =
+                                String(
+                                    problem.id || ""
+                                );
 
-                            ${actionHTML}
 
-                        </div>
+                            return (
+                                title.includes(query) ||
+                                description.includes(query) ||
+                                id.includes(query)
+                            );
+
+                        }
+                    );
+
+            }
+
+
+            renderProblems(filtered);
+
+        }
+
+
+        /* =========================
+           RENDER PROBLEMS
+        ========================= */
+
+        function renderProblems(problems) {
+
+            const problemList =
+                document.getElementById(
+                    "problemList"
+                );
+
+
+            if (!problems.length) {
+
+                problemList.innerHTML = `
+                    <div class="empty-state">
+
+                        <strong>
+                            No problems found
+                        </strong>
+
+                        Try changing your search
+                        or filters.
 
                     </div>
                 `;
 
-            }).join("");
-
-    }
-
-
-
-    // =========================
-    // ESCAPE HTML
-    // =========================
-
-    function escapeHtml(value) {
-
-        return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-
-    }
-
-
-
-    // =========================
-    // SEARCH
-    // =========================
-
-    document
-        .getElementById("searchInput")
-        .addEventListener(
-            "input",
-            (event) => {
-
-                const query =
-                    event.target.value
-                        .toLowerCase()
-                        .trim();
-
-
-                const activeButton =
-                    document.querySelector(
-                        ".filter-btn.active"
-                    );
-
-
-                const difficulty =
-                    activeButton?.dataset.difficulty ||
-                    "all";
-
-
-                let filtered =
-                    allProblems;
-
-
-                // Difficulty filter
-
-                if (difficulty !== "all") {
-
-                    filtered =
-                        filtered.filter(
-                            problem =>
-                                problem.difficulty ===
-                                difficulty
-                        );
-
-                }
-
-
-                // Search filter
-
-                if (query) {
-
-                    filtered =
-                        filtered.filter(
-                            problem =>
-                                String(
-                                    problem.title || ""
-                                )
-                                .toLowerCase()
-                                .includes(query)
-                        );
-
-                }
-
-
-                renderProblems(filtered);
+                return;
 
             }
-        );
 
 
+            problemList.innerHTML =
+                problems.map(
+                    (problem, index) => {
 
-    // =========================
-    // DIFFICULTY FILTERS
-    // =========================
 
-    document
-        .querySelectorAll(".filter-btn")
-        .forEach(button => {
+                        const difficulty =
+                            String(
+                                problem.difficulty || "Unknown"
+                            );
 
-            button.addEventListener(
-                "click",
-                () => {
 
-                    document
-                        .querySelectorAll(".filter-btn")
-                        .forEach(btn =>
-                            btn.classList.remove(
-                                "active"
+                        const difficultyLower =
+                            difficulty.toLowerCase();
+
+
+                        let difficultyClass =
+                            "difficulty-easy";
+
+
+                        if (
+                            difficultyLower ===
+                            "medium"
+                        ) {
+
+                            difficultyClass =
+                                "difficulty-medium";
+
+                        }
+
+
+                        if (
+                            difficultyLower ===
+                            "hard"
+                        ) {
+
+                            difficultyClass =
+                                "difficulty-hard";
+
+                        }
+
+
+                        const isSolved =
+                            solvedProblemIds.has(
+                                Number(problem.id)
+                            );
+
+
+                        const actionHTML =
+                            isSolved
+                                ? `
+                                    <a
+                                        href="problem.html?id=${encodeURIComponent(problem.id)}"
+                                        class="solve-link solved-link">
+
+                                        ✓ Solved
+
+                                    </a>
+                                `
+                                : `
+                                    <a
+                                        href="problem.html?id=${encodeURIComponent(problem.id)}"
+                                        class="solve-link">
+
+                                        Solve →
+
+                                    </a>
+                                `;
+
+
+                        return `
+                            <div class="problem-row">
+
+                                <div class="problem-number">
+                                    ${index + 1}
+                                </div>
+
+
+                                <div class="problem-title">
+
+                                    <a
+                                        href="problem.html?id=${encodeURIComponent(problem.id)}">
+
+                                        ${escapeHtml(
+                                            problem.title
+                                        )}
+
+                                    </a>
+
+                                    <div class="problem-id">
+
+                                        Problem #${escapeHtml(
+                                            problem.id
+                                        )}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="problem-difficulty">
+
+                                    <span
+                                        class="difficulty-badge ${difficultyClass}">
+
+                                        ${escapeHtml(
+                                            difficulty
+                                        )}
+
+                                    </span>
+
+                                </div>
+
+
+                                <div class="problem-action">
+
+                                    ${actionHTML}
+
+                                </div>
+
+                            </div>
+                        `;
+
+                    }
+                )
+                .join("");
+
+        }
+
+
+        /* =========================
+           SEARCH
+        ========================= */
+
+        document
+            .getElementById("searchInput")
+            .addEventListener(
+                "input",
+                applyFilters
+            );
+
+
+        /* =========================
+           FILTER BUTTONS
+        ========================= */
+
+        document
+            .querySelectorAll(".filter-btn")
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        document
+                            .querySelectorAll(
+                                ".filter-btn"
                             )
+                            .forEach(
+                                btn =>
+                                    btn.classList.remove(
+                                        "active"
+                                    )
+                            );
+
+
+                        button.classList.add(
+                            "active"
                         );
 
 
-                    button.classList.add("active");
+                        activeFilter =
+                            button.dataset.filter;
 
 
-                    const difficulty =
-                        button.dataset.difficulty;
-
-
-                    const search =
-                        document
-                            .getElementById(
-                                "searchInput"
-                            )
-                            .value
-                            .toLowerCase()
-                            .trim();
-
-
-                    let filtered =
-                        allProblems;
-
-
-                    // Difficulty
-
-                    if (difficulty !== "all") {
-
-                        filtered =
-                            filtered.filter(
-                                problem =>
-                                    problem.difficulty ===
-                                    difficulty
-                            );
+                        applyFilters();
 
                     }
+                );
+
+            });
 
 
-                    // Search
+        /* =========================
+           START
+        ========================= */
 
-                    if (search) {
+        loadProblems();
 
-                        filtered =
-                            filtered.filter(
-                                problem =>
-                                    String(
-                                        problem.title || ""
-                                    )
-                                    .toLowerCase()
-                                    .includes(search)
-                            );
+    </script>
 
-                    }
+</body>
 
-
-                    renderProblems(filtered);
-
-                }
-            );
-
-        });
-
-
-
-    // =========================
-    // START
-    // =========================
-
-    loadProblems();
-
-</script>
+</html>
