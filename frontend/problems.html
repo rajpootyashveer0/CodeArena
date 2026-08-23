@@ -516,180 +516,418 @@
     </main>
 
 
-    <script>
+     <script>
 
-        const API_URL = "http://127.0.0.1:8000";
+    const API_URL = "http://127.0.0.1:8000";
 
-        let allProblems = [];
+    let allProblems = [];
+    let solvedProblemIds = new Set();
 
 
-        async function loadProblems() {
+    // =========================
+    // LOAD PROBLEMS
+    // =========================
 
-            const problemList =
-                document.getElementById("problemList");
+    async function loadProblems() {
 
-            const errorBox =
-                document.getElementById("errorBox");
+        const problemList =
+            document.getElementById("problemList");
 
+        const errorBox =
+            document.getElementById("errorBox");
+
+        try {
+
+            errorBox.style.display = "none";
+
+            // -------------------------
+            // GET ALL PROBLEMS
+            // -------------------------
+
+            const response = await fetch(
+                `${API_URL}/problems`
+            );
+
+            let data = null;
 
             try {
+                data = await response.json();
+            } catch {
+                data = null;
+            }
 
-                const response = await fetch(
-                    `${API_URL}/problems`
+            if (!response.ok) {
+
+                throw new Error(
+                    data?.detail ||
+                    "Unable to load problems"
                 );
 
+            }
 
-                const data = await response.json();
+            if (!Array.isArray(data)) {
+                throw new Error("Invalid problems response");
+            }
+
+            allProblems = data;
 
 
-                if (!response.ok) {
-                    throw new Error(
-                        data.detail || "Unable to load problems"
+            // -------------------------
+            // GET USER SUBMISSIONS
+            // -------------------------
+            //
+            // This is OPTIONAL.
+            //
+            // If user is logged in, we try to
+            // find which problems were Accepted.
+            //
+            // If this request fails for any reason,
+            // the Problems page STILL WORKS normally.
+            // -------------------------
+
+            solvedProblemIds = new Set();
+
+            const token =
+                localStorage.getItem("access_token");
+
+
+            if (token) {
+
+                try {
+
+                    const submissionsResponse =
+                        await fetch(
+                            `${API_URL}/submissions`,
+                            {
+                                method: "GET",
+
+                                headers: {
+                                    "Authorization":
+                                        `Bearer ${token}`,
+
+                                    "Accept":
+                                        "application/json"
+                                }
+                            }
+                        );
+
+
+                    if (submissionsResponse.ok) {
+
+                        const submissions =
+                            await submissionsResponse.json();
+
+
+                        if (Array.isArray(submissions)) {
+
+                            submissions.forEach(
+                                submission => {
+
+                                    if (
+                                        submission.status ===
+                                        "Accepted"
+                                    ) {
+
+                                        solvedProblemIds.add(
+                                            Number(
+                                                submission.problem_id
+                                            )
+                                        );
+
+                                    }
+
+                                }
+                            );
+
+                        }
+
+                    }
+
+                } catch (submissionError) {
+
+                    console.warn(
+                        "Unable to load submission status:",
+                        submissionError
                     );
+
+                }
+
+            }
+
+
+            // -------------------------
+            // RENDER
+            // -------------------------
+
+            renderProblems(allProblems);
+
+
+        } catch (error) {
+
+            console.error(
+                "Problems error:",
+                error
+            );
+
+            problemList.innerHTML = "";
+
+            errorBox.textContent =
+                error.message ||
+                "Unable to load problems.";
+
+            errorBox.style.display = "block";
+
+        }
+
+    }
+
+
+
+    // =========================
+    // RENDER PROBLEMS
+    // =========================
+
+    function renderProblems(problems) {
+
+        const problemList =
+            document.getElementById("problemList");
+
+
+        if (!problems.length) {
+
+            problemList.innerHTML = `
+                <div class="empty-state">
+                    No problems found.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        problemList.innerHTML =
+            problems.map((problem, index) => {
+
+                let difficultyClass =
+                    "difficulty-easy";
+
+
+                if (
+                    problem.difficulty ===
+                    "Medium"
+                ) {
+
+                    difficultyClass =
+                        "difficulty-medium";
+
                 }
 
 
-                allProblems = data;
+                if (
+                    problem.difficulty ===
+                    "Hard"
+                ) {
 
-                renderProblems(allProblems);
+                    difficultyClass =
+                        "difficulty-hard";
 
-
-            } catch (error) {
-
-                problemList.innerHTML = "";
-
-                errorBox.textContent = error.message;
-
-                errorBox.style.display = "block";
-
-            }
-
-        }
+                }
 
 
-        function renderProblems(problems) {
+                // -------------------------
+                // CHECK SOLVED STATUS
+                // -------------------------
 
-            const problemList =
-                document.getElementById("problemList");
+                const isSolved =
+                    solvedProblemIds.has(
+                        Number(problem.id)
+                    );
 
 
-            if (!problems.length) {
+                // -------------------------
+                // ACTION
+                // -------------------------
 
-                problemList.innerHTML = `
-                    <div class="empty-state">
-                        No problems found.
+                let actionHTML;
+
+
+                if (isSolved) {
+
+                    actionHTML = `
+                        <a
+                            href="problem.html?id=${problem.id}"
+                            class="solve-link"
+                            style="
+                                color: #2db55d;
+                                font-weight: 600;
+                            ">
+                            ✓ Solved
+                        </a>
+                    `;
+
+                } else {
+
+                    actionHTML = `
+                        <a
+                            href="problem.html?id=${problem.id}"
+                            class="solve-link">
+                            Solve →
+                        </a>
+                    `;
+
+                }
+
+
+                return `
+                    <div class="problem-row">
+
+                        <div class="problem-number">
+                            ${index + 1}
+                        </div>
+
+
+                        <div class="problem-title">
+
+                            <a
+                                href="problem.html?id=${problem.id}">
+                                ${escapeHtml(problem.title)}
+                            </a>
+
+                        </div>
+
+
+                        <div class="problem-difficulty">
+
+                            <span
+                                class="difficulty-badge ${difficultyClass}">
+                                ${escapeHtml(problem.difficulty)}
+                            </span>
+
+                        </div>
+
+
+                        <div class="problem-action">
+
+                            ${actionHTML}
+
+                        </div>
+
                     </div>
                 `;
 
-                return;
+            }).join("");
 
-            }
-
-
-            problemList.innerHTML =
-                problems.map((problem, index) => {
-
-                    let difficultyClass =
-                        "difficulty-easy";
-
-                    if (problem.difficulty === "Medium") {
-                        difficultyClass =
-                            "difficulty-medium";
-                    }
-
-                    if (problem.difficulty === "Hard") {
-                        difficultyClass =
-                            "difficulty-hard";
-                    }
+    }
 
 
-                    return `
-                        <div class="problem-row">
 
-                            <div class="problem-number">
-                                ${index + 1}
-                            </div>
+    // =========================
+    // ESCAPE HTML
+    // =========================
 
-                            <div class="problem-title">
+    function escapeHtml(value) {
 
-                                <a href="problem.html?id=${problem.id}">
-                                    ${escapeHtml(problem.title)}
-                                </a>
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
 
-                            </div>
-
-                            <div class="problem-difficulty">
-
-                                <span class="difficulty-badge ${difficultyClass}">
-                                    ${escapeHtml(problem.difficulty)}
-                                </span>
-
-                            </div>
-
-                            <div class="problem-action">
-
-                                <a
-                                    href="problem.html?id=${problem.id}"
-                                    class="solve-link">
-                                    Solve →
-                                </a>
-
-                            </div>
-
-                        </div>
-                    `;
-
-                }).join("");
-
-        }
+    }
 
 
-        function escapeHtml(value) {
 
-            return String(value)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+    // =========================
+    // SEARCH
+    // =========================
 
-        }
-
-
-        // SEARCH
-
-        document.getElementById("searchInput")
-            .addEventListener("input", (event) => {
+    document
+        .getElementById("searchInput")
+        .addEventListener(
+            "input",
+            (event) => {
 
                 const query =
-                    event.target.value.toLowerCase().trim();
+                    event.target.value
+                        .toLowerCase()
+                        .trim();
 
 
-                const filtered =
-                    allProblems.filter(problem =>
-                        problem.title
-                            .toLowerCase()
-                            .includes(query)
+                const activeButton =
+                    document.querySelector(
+                        ".filter-btn.active"
                     );
+
+
+                const difficulty =
+                    activeButton?.dataset.difficulty ||
+                    "all";
+
+
+                let filtered =
+                    allProblems;
+
+
+                // Difficulty filter
+
+                if (difficulty !== "all") {
+
+                    filtered =
+                        filtered.filter(
+                            problem =>
+                                problem.difficulty ===
+                                difficulty
+                        );
+
+                }
+
+
+                // Search filter
+
+                if (query) {
+
+                    filtered =
+                        filtered.filter(
+                            problem =>
+                                String(
+                                    problem.title || ""
+                                )
+                                .toLowerCase()
+                                .includes(query)
+                        );
+
+                }
 
 
                 renderProblems(filtered);
 
-            });
+            }
+        );
 
 
-        // FILTERS
 
-        document.querySelectorAll(".filter-btn")
-            .forEach(button => {
+    // =========================
+    // DIFFICULTY FILTERS
+    // =========================
 
-                button.addEventListener("click", () => {
+    document
+        .querySelectorAll(".filter-btn")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
 
                     document
                         .querySelectorAll(".filter-btn")
                         .forEach(btn =>
-                            btn.classList.remove("active")
+                            btn.classList.remove(
+                                "active"
+                            )
                         );
+
 
                     button.classList.add("active");
 
@@ -698,31 +936,44 @@
                         button.dataset.difficulty;
 
 
-                    let filtered = allProblems;
+                    const search =
+                        document
+                            .getElementById(
+                                "searchInput"
+                            )
+                            .value
+                            .toLowerCase()
+                            .trim();
 
+
+                    let filtered =
+                        allProblems;
+
+
+                    // Difficulty
 
                     if (difficulty !== "all") {
 
                         filtered =
-                            allProblems.filter(
+                            filtered.filter(
                                 problem =>
-                                    problem.difficulty === difficulty
+                                    problem.difficulty ===
+                                    difficulty
                             );
 
                     }
 
 
-                    const search =
-                        document.getElementById(
-                            "searchInput"
-                        ).value.toLowerCase().trim();
-
+                    // Search
 
                     if (search) {
 
                         filtered =
-                            filtered.filter(problem =>
-                                problem.title
+                            filtered.filter(
+                                problem =>
+                                    String(
+                                        problem.title || ""
+                                    )
                                     .toLowerCase()
                                     .includes(search)
                             );
@@ -732,17 +983,17 @@
 
                     renderProblems(filtered);
 
-                });
+                }
+            );
 
-            });
-
-
-        loadProblems();
-
-    </script>
+        });
 
 
-</body>
 
-</html>
-```
+    // =========================
+    // START
+    // =========================
+
+    loadProblems();
+
+</script>
