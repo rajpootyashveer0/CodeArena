@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -17,18 +17,26 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            background: #0b0b0b;
+            background:
+                radial-gradient(circle at 15% 0%, rgba(255, 161, 22, 0.045), transparent 28%),
+                #0b0b0b;
             color: #fff;
             font-family: "Inter", sans-serif;
         }
 
-        /* NAVBAR */
+        /* =========================
+           NAVBAR
+        ========================= */
 
         .problem-nav {
             height: 64px;
-            background: #111;
+            background: rgba(17, 17, 17, 0.96);
             border-bottom: 1px solid #292929;
 
             display: flex;
@@ -40,6 +48,8 @@
             position: sticky;
             top: 0;
             z-index: 100;
+
+            backdrop-filter: blur(12px);
         }
 
         .nav-logo {
@@ -49,6 +59,7 @@
             font-family: "Space Grotesk", sans-serif;
             font-size: 23px;
             font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         .back-link {
@@ -65,9 +76,11 @@
         .dashboard-link {
             color: #ddd;
             text-decoration: none;
+
             border: 1px solid #333;
             padding: 8px 14px;
             border-radius: 7px;
+
             font-size: 13px;
             transition: 0.2s;
         }
@@ -75,35 +88,45 @@
         .dashboard-link:hover {
             color: #ffa116;
             border-color: #ffa116;
+            background: rgba(255, 161, 22, 0.05);
         }
 
-        /* MAIN LAYOUT */
+        /* =========================
+           MAIN LAYOUT
+        ========================= */
 
         .coding-layout {
-            width: min(1400px, 94%);
+            width: min(1450px, 94%);
             margin: 0 auto;
 
             min-height: calc(100vh - 64px);
 
             display: grid;
-            grid-template-columns: 0.9fr 1.1fr;
+            grid-template-columns: 0.95fr 1.05fr;
 
             gap: 18px;
 
             padding: 22px 0;
         }
 
-        /* PANELS */
+        /* =========================
+           PANELS
+        ========================= */
 
         .panel {
             background: #151515;
             border: 1px solid #292929;
-            border-radius: 10px;
+            border-radius: 11px;
             overflow: hidden;
+
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.18);
         }
 
         .panel-header {
-            padding: 15px 18px;
+            min-height: 56px;
+
+            padding: 13px 18px;
+
             background: #111;
             border-bottom: 1px solid #292929;
 
@@ -116,82 +139,139 @@
             margin: 0;
 
             font-family: "Space Grotesk", sans-serif;
-            font-size: 16px;
+            font-size: 15px;
+            font-weight: 600;
         }
 
-        /* PROBLEM */
+        .panel-label {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .panel-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #ffa116;
+
+            box-shadow: 0 0 10px rgba(255, 161, 22, 0.35);
+        }
+
+        /* =========================
+           PROBLEM PANEL
+        ========================= */
 
         .problem-panel {
             min-height: 700px;
         }
 
         .problem-content {
-            padding: 25px;
+            padding: 27px;
             overflow-y: auto;
-            max-height: 78vh;
+            max-height: calc(100vh - 145px);
+
+            scrollbar-width: thin;
+            scrollbar-color: #333 transparent;
+        }
+
+        .problem-content::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        .problem-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .problem-content::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 20px;
         }
 
         .problem-title-row {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             gap: 12px;
-            margin-bottom: 22px;
+
+            margin-bottom: 20px;
+        }
+
+        .problem-number {
+            color: #777;
+            font-size: 12px;
+            font-family: "JetBrains Mono", monospace;
         }
 
         .problem-title {
             margin: 0;
 
             font-family: "Space Grotesk", sans-serif;
-            font-size: 28px;
+            font-size: 29px;
+            line-height: 1.2;
+
+            letter-spacing: -0.5px;
         }
 
         .difficulty {
-            padding: 5px 9px;
+            padding: 5px 10px;
             border-radius: 6px;
 
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .easy {
             background: rgba(45, 181, 93, 0.12);
             color: #2db55d;
+            border: 1px solid rgba(45, 181, 93, 0.18);
         }
 
         .medium {
             background: rgba(255, 161, 22, 0.12);
             color: #ffa116;
+            border: 1px solid rgba(255, 161, 22, 0.18);
         }
 
         .hard {
             background: rgba(239, 71, 67, 0.12);
             color: #ef4743;
+            border: 1px solid rgba(239, 71, 67, 0.18);
         }
 
         .problem-description {
             color: #c7c7c7;
 
             font-size: 14px;
-            line-height: 1.8;
+            line-height: 1.85;
 
             margin-bottom: 30px;
         }
 
         .problem-section {
-            margin-bottom: 26px;
+            margin-bottom: 27px;
         }
 
         .problem-section h3 {
-            margin-bottom: 9px;
+            margin: 0 0 10px;
 
             font-family: "Space Grotesk", sans-serif;
-            font-size: 16px;
+            font-size: 15px;
+            font-weight: 600;
+
+            color: #f1f1f1;
         }
 
         .problem-section p {
             color: #aaa;
             font-size: 13px;
-            line-height: 1.7;
+            line-height: 1.75;
+
+            margin: 0;
+
             white-space: pre-wrap;
         }
 
@@ -210,12 +290,43 @@
             white-space: pre-wrap;
         }
 
-        /* EDITOR */
+        .problem-divider {
+            height: 1px;
+            background: #242424;
+            margin: 26px 0;
+        }
+
+        /* =========================
+           EDITOR
+        ========================= */
 
         .editor-panel {
             display: flex;
             flex-direction: column;
             min-height: 700px;
+        }
+
+        .editor-heading {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .editor-heading-icon {
+            width: 28px;
+            height: 28px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 6px;
+
+            background: rgba(255, 161, 22, 0.09);
+            color: #ffa116;
+
+            font-family: "JetBrains Mono", monospace;
+            font-size: 12px;
         }
 
         .language-select {
@@ -225,25 +336,58 @@
             border: 1px solid #333;
             border-radius: 6px;
 
-            padding: 6px 9px;
+            padding: 7px 10px;
 
             font-family: "Inter", sans-serif;
             font-size: 12px;
+
+            outline: none;
+            cursor: pointer;
+        }
+
+        .language-select:hover,
+        .language-select:focus {
+            border-color: #555;
         }
 
         .editor-wrapper {
             flex: 1;
             min-height: 470px;
+
             background: #0e0e0e;
+
             position: relative;
+        }
+
+        .editor-topbar {
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 14px;
+
+            background: #0c0c0c;
+            border-bottom: 1px solid #202020;
+
+            color: #666;
+            font-size: 10px;
+        }
+
+        .editor-file {
+            font-family: "JetBrains Mono", monospace;
+        }
+
+        .editor-tip {
+            color: #555;
         }
 
         .code-editor {
             width: 100%;
-            height: 100%;
-            min-height: 470px;
+            height: calc(100% - 34px);
 
-            box-sizing: border-box;
+            min-height: 436px;
 
             resize: none;
 
@@ -261,12 +405,38 @@
             line-height: 1.7;
 
             tab-size: 4;
+
+            scrollbar-width: thin;
+            scrollbar-color: #333 transparent;
         }
 
-        /* ACTION BAR */
+        .code-editor::selection {
+            background: rgba(255, 161, 22, 0.18);
+        }
+
+        .code-editor::placeholder {
+            color: #444;
+        }
+
+        .code-editor::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .code-editor::-webkit-scrollbar-track {
+            background: #0e0e0e;
+        }
+
+        .code-editor::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 20px;
+        }
+
+        /* =========================
+           ACTION BAR
+        ========================= */
 
         .editor-actions {
-            padding: 14px 16px;
+            padding: 13px 16px;
 
             background: #111;
             border-top: 1px solid #292929;
@@ -278,25 +448,29 @@
             gap: 12px;
         }
 
+        #submissionStatus {
+            min-width: 130px;
+        }
+
         .submit-actions {
             display: flex;
-            gap: 10px;
+            gap: 9px;
         }
 
         .run-btn,
         .submit-btn {
             border-radius: 7px;
 
-            padding: 10px 16px;
+            padding: 10px 17px;
 
             font-family: "Inter", sans-serif;
             font-weight: 700;
 
-            font-size: 13px;
+            font-size: 12px;
 
             cursor: pointer;
 
-            transition: 0.2s;
+            transition: all 0.18s ease;
         }
 
         .run-btn {
@@ -307,6 +481,7 @@
 
         .run-btn:hover {
             border-color: #555;
+            background: #202020;
         }
 
         .submit-btn {
@@ -317,15 +492,20 @@
 
         .submit-btn:hover {
             background: #ffb13b;
+            border-color: #ffb13b;
+            transform: translateY(-1px);
         }
 
         .submit-btn:disabled,
         .run-btn:disabled {
             opacity: 0.55;
             cursor: not-allowed;
+            transform: none;
         }
 
-        /* RESULT */
+        /* =========================
+           RESULT
+        ========================= */
 
         .result-panel {
             border-top: 1px solid #292929;
@@ -333,24 +513,31 @@
         }
 
         .result-header {
-            padding: 12px 16px;
+            padding: 11px 16px;
 
-            color: #aaa;
-            font-size: 12px;
+            color: #888;
+            font-size: 11px;
+            font-weight: 600;
 
             border-bottom: 1px solid #292929;
+
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .result-body {
-            padding: 16px;
+            padding: 15px 16px;
 
-            color: #999;
+            color: #888;
 
             font-family: "JetBrains Mono", monospace;
             font-size: 12px;
 
-            min-height: 50px;
+            min-height: 52px;
+
             white-space: pre-wrap;
+
+            line-height: 1.65;
         }
 
         .result-success {
@@ -365,16 +552,45 @@
             color: #ffa116;
         }
 
-        /* LOADING */
+        /* =========================
+           LOADING
+        ========================= */
 
         .loading {
             text-align: center;
             color: #777;
 
-            padding: 50px;
+            padding: 70px 20px;
 
-            font-size: 14px;
+            font-size: 13px;
         }
+
+        .loading::before {
+            content: "";
+            display: block;
+
+            width: 22px;
+            height: 22px;
+
+            margin: 0 auto 14px;
+
+            border: 2px solid #292929;
+            border-top-color: #ffa116;
+
+            border-radius: 50%;
+
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =========================
+           ERROR
+        ========================= */
 
         .error-box {
             display: none;
@@ -393,9 +609,11 @@
             font-size: 13px;
         }
 
-        /* RESPONSIVE */
+        /* =========================
+           RESPONSIVE
+        ========================= */
 
-        @media (max-width: 1000px) {
+        @media (max-width: 1100px) {
 
             .coding-layout {
                 grid-template-columns: 1fr;
@@ -406,22 +624,31 @@
             }
 
             .editor-panel {
-                min-height: 600px;
+                min-height: 650px;
             }
         }
 
         @media (max-width: 600px) {
 
             .problem-nav {
-                padding: 0 20px;
+                padding: 0 18px;
             }
 
             .back-link {
                 display: none;
             }
 
+            .dashboard-link {
+                padding: 7px 10px;
+            }
+
             .coding-layout {
                 width: 94%;
+                padding: 14px 0;
+            }
+
+            .problem-content {
+                padding: 20px;
             }
 
             .problem-title {
@@ -433,6 +660,10 @@
                 align-items: stretch;
             }
 
+            #submissionStatus {
+                min-width: 0;
+            }
+
             .submit-actions {
                 width: 100%;
             }
@@ -440,6 +671,10 @@
             .run-btn,
             .submit-btn {
                 flex: 1;
+            }
+
+            .editor-tip {
+                display: none;
             }
         }
     </style>
@@ -480,9 +715,13 @@
 
             <div class="panel-header">
 
-                <h2>
-                    Problem
-                </h2>
+                <div class="panel-label">
+                    <span class="panel-dot"></span>
+
+                    <h2>
+                        Problem
+                    </h2>
+                </div>
 
             </div>
 
@@ -503,9 +742,17 @@
 
             <div class="panel-header">
 
-                <h2>
-                    Code Editor
-                </h2>
+                <div class="editor-heading">
+
+                    <div class="editor-heading-icon">
+                        &lt;/&gt;
+                    </div>
+
+                    <h2>
+                        Code Editor
+                    </h2>
+
+                </div>
 
                 <select id="languageSelect" class="language-select">
 
@@ -520,6 +767,18 @@
 
             <div class="editor-wrapper">
 
+                <div class="editor-topbar">
+
+                    <span class="editor-file">
+                        solution.py
+                    </span>
+
+                    <span class="editor-tip">
+                        Tab = 4 spaces
+                    </span>
+
+                </div>
+
                 <textarea
                     id="codeEditor"
                     class="code-editor"
@@ -533,9 +792,11 @@
             <div class="editor-actions">
 
                 <div id="submissionStatus">
+
                     <span style="color:#777;font-size:12px;">
                         Ready
                     </span>
+
                 </div>
 
                 <div class="submit-actions">
@@ -589,7 +850,8 @@
 
         const API_URL = "http://127.0.0.1:8000";
 
-        const token = localStorage.getItem("access_token");
+        const token =
+            localStorage.getItem("access_token");
 
         const urlParams =
             new URLSearchParams(window.location.search);
@@ -766,6 +1028,10 @@
 
                     <div class="problem-title-row">
 
+                        <span class="problem-number">
+                            #${escapeHtml(problem.id)}
+                        </span>
+
                         <h1 class="problem-title">
                             ${escapeHtml(problem.title)}
                         </h1>
@@ -780,6 +1046,9 @@
                     <div class="problem-description">
                         ${escapeHtml(problem.description)}
                     </div>
+
+
+                    <div class="problem-divider"></div>
 
 
                     <div class="problem-section">
@@ -1002,12 +1271,7 @@
 
 
                 /*
-                 * IMPORTANT:
-                 *
                  * Backend decides the verdict.
-                 *
-                 * We check the common possible
-                 * response field names.
                  */
 
                 const status =
@@ -1168,10 +1432,8 @@
              */
 
             if (
-                normalized ===
-                    "time limit exceeded" ||
-                normalized ===
-                    "tle"
+                normalized === "time limit exceeded" ||
+                normalized === "tle"
             ) {
 
                 submissionStatus.innerHTML = `
@@ -1196,10 +1458,8 @@
              */
 
             if (
-                normalized ===
-                    "compilation error" ||
-                normalized ===
-                    "compile error"
+                normalized === "compilation error" ||
+                normalized === "compile error"
             ) {
 
                 submissionStatus.innerHTML = `
@@ -1221,9 +1481,6 @@
 
             /*
              * UNKNOWN RESPONSE
-             *
-             * Show the actual backend response
-             * instead of falsely saying Accepted.
              */
 
             submissionStatus.innerHTML = `
@@ -1435,11 +1692,7 @@
             function (event) {
 
                 /*
-                 * VERY IMPORTANT:
-                 *
                  * Prevent default browser action.
-                 * This prevents accidental form/page
-                 * refresh behaviour.
                  */
 
                 event.preventDefault();

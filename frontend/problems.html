@@ -17,15 +17,24 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-
         * {
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            background: #0b0b0b;
-            color: #fff;
             margin: 0;
+            background:
+                radial-gradient(
+                    circle at 15% 0%,
+                    rgba(255, 161, 22, 0.055),
+                    transparent 28%
+                ),
+                #0b0b0b;
+            color: #fff;
             font-family: "Inter", sans-serif;
         }
 
@@ -35,7 +44,7 @@
 
         .problems-nav {
             height: 64px;
-            background: #111;
+            background: rgba(17, 17, 17, 0.96);
             border-bottom: 1px solid #292929;
 
             display: flex;
@@ -47,6 +56,8 @@
             position: sticky;
             top: 0;
             z-index: 100;
+
+            backdrop-filter: blur(12px);
         }
 
         .nav-logo {
@@ -56,17 +67,23 @@
             font-family: "Space Grotesk", sans-serif;
             font-size: 23px;
             font-weight: 700;
+
+            letter-spacing: -0.5px;
         }
 
         .nav-links {
             display: flex;
-            gap: 28px;
+            gap: 30px;
+            align-items: center;
         }
 
         .nav-links a {
-            color: #aaa;
+            color: #888;
             text-decoration: none;
-            font-size: 14px;
+
+            font-size: 13px;
+            font-weight: 500;
+
             transition: 0.2s;
         }
 
@@ -77,13 +94,17 @@
 
         .dashboard-btn {
             text-decoration: none;
+
             color: #ddd;
 
             border: 1px solid #333;
+
             padding: 8px 14px;
 
             border-radius: 7px;
+
             font-size: 13px;
+            font-weight: 500;
 
             transition: 0.2s;
         }
@@ -91,140 +112,311 @@
         .dashboard-btn:hover {
             border-color: #ffa116;
             color: #ffa116;
-        }
 
+            background: rgba(255, 161, 22, 0.05);
+        }
 
         /* =========================
            PAGE
         ========================= */
 
         .page-container {
-            width: min(1180px, 92%);
-            margin: auto;
+            width: min(1200px, 92%);
+            margin: 0 auto;
 
-            padding: 45px 0 80px;
+            padding: 48px 0 90px;
         }
 
         .page-heading {
-            margin-bottom: 28px;
+            margin-bottom: 30px;
+        }
+
+        .heading-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            color: #ffa116;
+
+            font-family: "JetBrains Mono", monospace;
+            font-size: 11px;
+            font-weight: 600;
+
+            margin-bottom: 10px;
+        }
+
+        .heading-dot {
+            width: 6px;
+            height: 6px;
+
+            background: #ffa116;
+
+            border-radius: 50%;
+
+            box-shadow: 0 0 10px rgba(255, 161, 22, 0.45);
         }
 
         .page-heading h1 {
-            margin: 0 0 8px;
+            margin: 0 0 9px;
 
             font-family: "Space Grotesk", sans-serif;
-            font-size: 36px;
+
+            font-size: 38px;
+            line-height: 1.1;
+
+            letter-spacing: -1px;
         }
 
         .page-heading p {
             margin: 0;
 
-            color: #888;
+            color: #777;
+
             font-size: 14px;
+            line-height: 1.6;
         }
 
-
         /* =========================
-           SUMMARY
+           STATS
         ========================= */
 
-        .problem-summary {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .stats-grid {
+            display: grid;
 
-            gap: 15px;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 12px;
+
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #121212;
+
+            border: 1px solid #292929;
+
+            border-radius: 10px;
+
+            padding: 15px 17px;
+
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: #3a3a3a;
+            transform: translateY(-1px);
+        }
+
+        .stat-label {
+            color: #666;
+
+            font-size: 11px;
+            font-weight: 600;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.6px;
+
+            margin-bottom: 7px;
+        }
+
+        .stat-value {
+            color: #eee;
+
+            font-family: "Space Grotesk", sans-serif;
+
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .stat-value.solved {
+            color: #2db55d;
+        }
+
+        .stat-value.easy {
+            color: #2db55d;
+        }
+
+        .stat-value.medium {
+            color: #ffa116;
+        }
+
+        .stat-value.hard {
+            color: #ef4743;
+        }
+
+        /* =========================
+           FILTER CARD
+        ========================= */
+
+        .controls-card {
+            background: #121212;
+
+            border: 1px solid #292929;
+
+            border-radius: 11px;
+
+            padding: 15px;
 
             margin-bottom: 18px;
         }
 
-        .problem-count {
-            color: #888;
-            font-size: 13px;
-        }
-
-        .problem-count strong {
-            color: #ddd;
-        }
-
-        .solved-summary {
-            color: #2db55d;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-
-        /* =========================
-           FILTER BAR
-        ========================= */
-
-        .filter-bar {
+        .controls-top {
             display: flex;
-            gap: 10px;
+
             align-items: center;
 
-            margin-bottom: 25px;
-            flex-wrap: wrap;
+            gap: 10px;
+
+            margin-bottom: 13px;
         }
 
         .search-box {
+            position: relative;
+
             flex: 1;
-            min-width: 240px;
+        }
+
+        .search-icon {
+            position: absolute;
+
+            left: 13px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: #666;
+
+            font-size: 14px;
+
+            pointer-events: none;
         }
 
         .search-box input {
             width: 100%;
 
-            background: #151515;
+            height: 42px;
+
+            background: #0d0d0d;
+
             border: 1px solid #303030;
 
             color: #fff;
 
-            padding: 12px 14px;
+            padding: 0 40px 0 36px;
 
             border-radius: 8px;
 
             outline: none;
 
             font-family: "Inter", sans-serif;
-            font-size: 14px;
+            font-size: 13px;
 
             transition: 0.2s;
         }
 
         .search-box input::placeholder {
-            color: #666;
+            color: #555;
         }
 
         .search-box input:focus {
             border-color: #ffa116;
-            box-shadow: 0 0 0 3px rgba(255, 161, 22, 0.08);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(255, 161, 22, 0.07);
         }
 
-        .filter-btn {
-            padding: 11px 15px;
+        .search-shortcut {
+            position: absolute;
 
-            border: 1px solid #303030;
-            border-radius: 8px;
+            right: 10px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: #555;
+
+            border: 1px solid #292929;
 
             background: #151515;
-            color: #aaa;
+
+            border-radius: 5px;
+
+            padding: 3px 6px;
+
+            font-family: "JetBrains Mono", monospace;
+
+            font-size: 10px;
+        }
+
+        .clear-search {
+            display: none;
+
+            position: absolute;
+
+            right: 10px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            border: none;
+
+            background: transparent;
+
+            color: #777;
 
             cursor: pointer;
 
-            font-size: 13px;
+            font-size: 15px;
+        }
+
+        .clear-search:hover {
+            color: #fff;
+        }
+
+        .filter-buttons {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            height: 34px;
+
+            padding: 0 13px;
+
+            border: 1px solid #303030;
+
+            border-radius: 7px;
+
+            background: #151515;
+
+            color: #999;
+
+            cursor: pointer;
+
+            font-size: 12px;
+            font-weight: 500;
+
             font-family: "Inter", sans-serif;
 
             transition: 0.2s;
         }
 
         .filter-btn:hover {
-            border-color: #555;
             color: #fff;
+            border-color: #4a4a4a;
         }
 
         .filter-btn.active {
             background: #ffa116;
+
             color: #111;
 
             border-color: #ffa116;
@@ -232,6 +424,52 @@
             font-weight: 700;
         }
 
+        .filter-divider {
+            width: 1px;
+
+            height: 22px;
+
+            background: #292929;
+
+            margin: 0 3px;
+        }
+
+        /* =========================
+           LIST HEADER
+        ========================= */
+
+        .list-info {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin: 0 2px 10px;
+        }
+
+        .result-count {
+            color: #666;
+
+            font-size: 12px;
+        }
+
+        .result-count strong {
+            color: #aaa;
+        }
+
+        .active-filter-label {
+            color: #777;
+
+            font-size: 12px;
+        }
+
+        .active-filter-label span {
+            color: #ffa116;
+
+            font-weight: 600;
+        }
 
         /* =========================
            PROBLEM TABLE
@@ -239,11 +477,16 @@
 
         .problem-table {
             background: #151515;
+
             border: 1px solid #292929;
 
             border-radius: 12px;
 
             overflow: hidden;
+
+            box-shadow:
+                0 14px 40px
+                rgba(0, 0, 0, 0.15);
         }
 
         .table-head,
@@ -251,19 +494,25 @@
             display: grid;
 
             grid-template-columns:
-                70px
+                65px
                 minmax(280px, 1fr)
-                130px
+                140px
                 130px;
 
             align-items: center;
         }
 
         .table-head {
-            padding: 16px 22px;
+            padding: 14px 22px;
 
-            color: #777;
-            font-size: 12px;
+            color: #666;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.7px;
 
             background: #111;
 
@@ -271,11 +520,15 @@
         }
 
         .problem-row {
-            padding: 18px 22px;
+            min-height: 74px;
+
+            padding: 14px 22px;
 
             border-bottom: 1px solid #242424;
 
-            transition: 0.2s;
+            transition:
+                background 0.18s,
+                border-color 0.18s;
         }
 
         .problem-row:last-child {
@@ -286,19 +539,50 @@
             background: #191919;
         }
 
+        .problem-row.solved-row {
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(45, 181, 93, 0.035),
+                    transparent 55%
+                );
+        }
+
         .problem-number {
-            color: #666;
+            color: #555;
 
             font-family: "JetBrains Mono", monospace;
+
             font-size: 12px;
+        }
+
+        .problem-main {
+            min-width: 0;
+        }
+
+        .problem-title-line {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            min-width: 0;
         }
 
         .problem-title a {
             color: #eee;
+
             text-decoration: none;
 
             font-size: 14px;
             font-weight: 600;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
 
             transition: 0.2s;
         }
@@ -307,12 +591,36 @@
             color: #ffa116;
         }
 
-        .problem-id {
-            color: #666;
-            font-size: 11px;
-            margin-top: 4px;
+        .solved-check {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            width: 18px;
+            height: 18px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            background: rgba(45, 181, 93, 0.12);
+
+            color: #2db55d;
+
+            font-size: 10px;
+            font-weight: 700;
         }
 
+        .problem-id {
+            color: #555;
+
+            font-size: 10px;
+
+            margin-top: 5px;
+
+            font-family: "JetBrains Mono", monospace;
+        }
 
         /* =========================
            DIFFICULTY
@@ -321,53 +629,104 @@
         .difficulty-badge {
             display: inline-flex;
 
+            align-items: center;
+
             padding: 5px 9px;
 
             border-radius: 6px;
 
-            font-size: 11px;
-            font-weight: 600;
+            font-size: 10px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.35px;
         }
 
         .difficulty-easy {
-            background: rgba(45, 181, 93, 0.12);
+            background: rgba(45, 181, 93, 0.11);
+
             color: #2db55d;
+
+            border: 1px solid
+                rgba(45, 181, 93, 0.13);
         }
 
         .difficulty-medium {
-            background: rgba(255, 161, 22, 0.12);
+            background: rgba(255, 161, 22, 0.11);
+
             color: #ffa116;
+
+            border: 1px solid
+                rgba(255, 161, 22, 0.13);
         }
 
         .difficulty-hard {
-            background: rgba(239, 71, 67, 0.12);
+            background: rgba(239, 71, 67, 0.11);
+
             color: #ef4743;
+
+            border: 1px solid
+                rgba(239, 71, 67, 0.13);
         }
 
+        .difficulty-unknown {
+            background: #1c1c1c;
+
+            color: #777;
+
+            border: 1px solid #292929;
+        }
 
         /* =========================
            ACTION
         ========================= */
 
+        .problem-action {
+            text-align: right;
+        }
+
         .solve-link {
-            color: #aaa;
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-width: 76px;
+
+            color: #999;
 
             text-decoration: none;
 
-            font-size: 13px;
+            font-size: 12px;
+            font-weight: 600;
+
+            padding: 7px 9px;
+
+            border-radius: 6px;
 
             transition: 0.2s;
         }
 
         .solve-link:hover {
             color: #ffa116;
+
+            background:
+                rgba(255, 161, 22, 0.06);
         }
 
         .solved-link {
             color: #2db55d !important;
-            font-weight: 600;
         }
 
+        .solved-link:hover {
+            color: #2db55d !important;
+
+            background:
+                rgba(45, 181, 93, 0.06);
+        }
 
         /* =========================
            EMPTY / LOADING
@@ -375,12 +734,55 @@
 
         .loading,
         .empty-state {
-            padding: 60px 20px;
+            padding: 75px 20px;
 
             text-align: center;
 
+            color: #666;
+
+            font-size: 13px;
+        }
+
+        .loading::before {
+            content: "";
+
+            display: block;
+
+            width: 22px;
+            height: 22px;
+
+            margin: 0 auto 13px;
+
+            border: 2px solid #292929;
+
+            border-top-color: #ffa116;
+
+            border-radius: 50%;
+
+            animation:
+                spin 0.8s linear infinite;
+        }
+
+        .empty-icon {
+            width: 44px;
+            height: 44px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            margin: 0 auto 14px;
+
+            border-radius: 10px;
+
+            background: #1a1a1a;
+
+            border: 1px solid #292929;
+
             color: #777;
-            font-size: 14px;
+
+            font-size: 18px;
         }
 
         .empty-state strong {
@@ -388,11 +790,20 @@
 
             color: #aaa;
 
-            font-size: 16px;
+            font-size: 15px;
 
             margin-bottom: 6px;
         }
 
+        .empty-state span {
+            color: #555;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         /* =========================
            ERROR
@@ -416,7 +827,6 @@
             font-size: 13px;
         }
 
-
         /* =========================
            RESPONSIVE
         ========================= */
@@ -432,33 +842,36 @@
             }
 
             .problem-row {
-                grid-template-columns: 42px 1fr auto;
+                grid-template-columns:
+                    40px
+                    1fr
+                    auto;
 
                 gap: 10px;
+
+                padding: 16px;
             }
 
             .problem-difficulty {
                 grid-column: 2;
-                margin-top: 6px;
+                margin-top: 7px;
             }
 
             .problem-action {
                 grid-column: 3;
                 grid-row: 1 / span 2;
+
+                text-align: right;
+            }
+
+            .stats-grid {
+                grid-template-columns:
+                    repeat(3, 1fr);
             }
 
         }
 
-
         @media (max-width: 600px) {
-
-            .page-container {
-                padding-top: 30px;
-            }
-
-            .page-heading h1 {
-                font-size: 29px;
-            }
 
             .problems-nav {
                 padding: 0 20px;
@@ -468,39 +881,83 @@
                 display: none;
             }
 
-            .problem-summary {
-                align-items: flex-start;
-                flex-direction: column;
+            .page-container {
+                width: 94%;
+
+                padding-top: 32px;
             }
 
-            .filter-bar {
+            .page-heading h1 {
+                font-size: 30px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+
                 gap: 8px;
             }
 
-            .search-box {
-                min-width: 100%;
-                flex-basis: 100%;
+            .stat-card {
+                padding: 13px 15px;
+            }
+
+            .controls-card {
+                padding: 11px;
+            }
+
+            .controls-top {
+                margin-bottom: 10px;
+            }
+
+            .search-shortcut {
+                display: none;
+            }
+
+            .filter-buttons {
+                gap: 6px;
             }
 
             .filter-btn {
                 flex: 1;
+
+                min-width: 75px;
+
+                padding: 0 8px;
+            }
+
+            .filter-divider {
+                display: none;
+            }
+
+            .list-info {
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 4px;
             }
 
             .problem-row {
-                padding: 16px;
+                padding: 15px 13px;
+            }
+
+            .problem-title a {
+                font-size: 13px;
+            }
+
+            .solve-link {
+                min-width: 65px;
+
+                padding: 7px 5px;
             }
 
         }
-
     </style>
 </head>
 
-
 <body>
 
-    <!-- =========================
-         NAVBAR
-    ========================= -->
+    <!-- NAVBAR -->
 
     <nav class="problems-nav">
 
@@ -531,13 +988,16 @@
     </nav>
 
 
-    <!-- =========================
-         PAGE
-    ========================= -->
+    <!-- PAGE -->
 
     <main class="page-container">
 
         <section class="page-heading">
+
+            <div class="heading-eyebrow">
+                <span class="heading-dot"></span>
+                CODING ARENA
+            </div>
 
             <h1>
                 Problems
@@ -553,95 +1013,185 @@
         <div id="errorBox" class="error-box"></div>
 
 
-        <!-- =========================
-             SUMMARY
-        ========================= -->
+        <!-- STATS -->
 
-        <div class="problem-summary">
+        <section class="stats-grid">
 
-            <div class="problem-count" id="problemCount">
-                Loading problems...
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Total Problems
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalProblems">
+                    —
+                </div>
+
             </div>
 
-            <div class="solved-summary" id="solvedSummary">
-                0 solved
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Solved
+                </div>
+
+                <div
+                    class="stat-value solved"
+                    id="totalSolved">
+                    —
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Remaining
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalRemaining">
+                    —
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FILTER CONTROLS -->
+
+        <section class="controls-card">
+
+            <div class="controls-top">
+
+                <div class="search-box">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search by problem name or ID..."
+                        autocomplete="off">
+
+                    <span
+                        class="search-shortcut"
+                        id="searchShortcut">
+                        /
+                    </span>
+
+                    <button
+                        class="clear-search"
+                        id="clearSearch"
+                        type="button">
+                        ×
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="filter-buttons">
+
+                <button
+                    class="filter-btn active"
+                    data-filter="all"
+                    type="button">
+                    All
+                </button>
+
+                <button
+                    class="filter-btn"
+                    data-filter="Easy"
+                    type="button">
+                    Easy
+                </button>
+
+                <button
+                    class="filter-btn"
+                    data-filter="Medium"
+                    type="button">
+                    Medium
+                </button>
+
+                <button
+                    class="filter-btn"
+                    data-filter="Hard"
+                    type="button">
+                    Hard
+                </button>
+
+                <div class="filter-divider"></div>
+
+                <button
+                    class="filter-btn"
+                    data-filter="Solved"
+                    type="button">
+                    ✓ Solved
+                </button>
+
+                <button
+                    class="filter-btn"
+                    data-filter="Unsolved"
+                    type="button">
+                    Unsolved
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- LIST INFO -->
+
+        <div class="list-info">
+
+            <div
+                class="result-count"
+                id="resultCount">
+                Loading...
+            </div>
+
+            <div
+                class="active-filter-label"
+                id="activeFilterLabel">
+                Showing:
+                <span>All</span>
             </div>
 
         </div>
 
 
-        <!-- =========================
-             FILTERS
-        ========================= -->
-
-        <div class="filter-bar">
-
-            <div class="search-box">
-
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Search problems..."
-                    autocomplete="off"
-                >
-
-            </div>
-
-
-            <button
-                class="filter-btn active"
-                data-filter="all">
-                All
-            </button>
-
-            <button
-                class="filter-btn"
-                data-filter="Easy">
-                Easy
-            </button>
-
-            <button
-                class="filter-btn"
-                data-filter="Medium">
-                Medium
-            </button>
-
-            <button
-                class="filter-btn"
-                data-filter="Hard">
-                Hard
-            </button>
-
-            <button
-                class="filter-btn"
-                data-filter="Solved">
-                ✓ Solved
-            </button>
-
-            <button
-                class="filter-btn"
-                data-filter="Unsolved">
-                Unsolved
-            </button>
-
-        </div>
-
-
-        <!-- =========================
-             PROBLEM LIST
-        ========================= -->
+        <!-- PROBLEM LIST -->
 
         <section class="problem-table">
 
             <div class="table-head">
 
-                <div>#</div>
+                <div>
+                    #
+                </div>
 
-                <div>Problem</div>
+                <div>
+                    Problem
+                </div>
 
-                <div>Difficulty</div>
+                <div>
+                    Difficulty
+                </div>
 
-                <div>Action</div>
+                <div>
+                    Action
+                </div>
 
             </div>
 
@@ -661,11 +1211,56 @@
 
     <script>
 
-        const API_URL = "http://127.0.0.1:8000";
+        /* =========================
+           CONFIG
+        ========================= */
+
+        const API_URL =
+            "http://127.0.0.1:8000";
+
 
         let allProblems = [];
-        let solvedProblemIds = new Set();
-        let activeFilter = "all";
+
+        let solvedProblemIds =
+            new Set();
+
+        let activeFilter =
+            "all";
+
+
+        /* =========================
+           ELEMENTS
+        ========================= */
+
+        const problemList =
+            document.getElementById(
+                "problemList"
+            );
+
+        const errorBox =
+            document.getElementById(
+                "errorBox"
+            );
+
+        const searchInput =
+            document.getElementById(
+                "searchInput"
+            );
+
+        const clearSearch =
+            document.getElementById(
+                "clearSearch"
+            );
+
+        const resultCount =
+            document.getElementById(
+                "resultCount"
+            );
+
+        const activeFilterLabel =
+            document.getElementById(
+                "activeFilterLabel"
+            );
 
 
         /* =========================
@@ -675,11 +1270,26 @@
         function escapeHtml(value) {
 
             return String(value ?? "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
 
         }
 
@@ -690,28 +1300,25 @@
 
         async function loadProblems() {
 
-            const problemList =
-                document.getElementById("problemList");
-
-            const errorBox =
-                document.getElementById("errorBox");
-
             try {
 
-                errorBox.style.display = "none";
+                errorBox.style.display =
+                    "none";
 
-
-                /* GET ALL PROBLEMS */
 
                 const response =
-                    await fetch(`${API_URL}/problems`);
+                    await fetch(
+                        `${API_URL}/problems`
+                    );
 
 
                 let data = null;
 
+
                 try {
 
-                    data = await response.json();
+                    data =
+                        await response.json();
 
                 } catch {
 
@@ -743,13 +1350,17 @@
 
 
                 /* =========================
-                   GET SOLVED PROBLEMS
+                   LOAD SOLVED STATUS
                 ========================= */
 
-                solvedProblemIds = new Set();
+                solvedProblemIds =
+                    new Set();
+
 
                 const token =
-                    localStorage.getItem("access_token");
+                    localStorage.getItem(
+                        "access_token"
+                    );
 
 
                 if (token) {
@@ -773,7 +1384,10 @@
                             );
 
 
-                        if (submissionsResponse.status === 401) {
+                        if (
+                            submissionsResponse.status ===
+                            401
+                        ) {
 
                             localStorage.removeItem(
                                 "access_token"
@@ -787,14 +1401,31 @@
                                 await submissionsResponse.json();
 
 
-                            if (Array.isArray(submissions)) {
+                            if (
+                                Array.isArray(
+                                    submissions
+                                )
+                            ) {
 
                                 submissions.forEach(
                                     submission => {
 
+                                        const status =
+                                            String(
+                                                submission.status ||
+                                                ""
+                                            )
+                                                .trim()
+                                                .toLowerCase();
+
+
                                         if (
-                                            submission.status ===
-                                            "Accepted"
+                                            status ===
+                                                "accepted" ||
+                                            status ===
+                                                "correct" ||
+                                            status ===
+                                                "success"
                                         ) {
 
                                             solvedProblemIds.add(
@@ -824,10 +1455,9 @@
                 }
 
 
-                updateSummary();
+                updateStats();
 
                 applyFilters();
-
 
             } catch (error) {
 
@@ -837,7 +1467,8 @@
                 );
 
 
-                problemList.innerHTML = "";
+                problemList.innerHTML =
+                    "";
 
 
                 errorBox.textContent =
@@ -854,37 +1485,74 @@
 
 
         /* =========================
-           UPDATE SUMMARY
+           UPDATE STATS
         ========================= */
 
-        function updateSummary() {
+        function updateStats() {
 
-            const problemCount =
-                document.getElementById(
-                    "problemCount"
-                );
+            const total =
+                allProblems.length;
 
 
-            const solvedSummary =
-                document.getElementById(
-                    "solvedSummary"
-                );
-
-
-            const solvedCount =
+            const solved =
                 solvedProblemIds.size;
 
 
-            problemCount.innerHTML = `
-                <strong>${allProblems.length}</strong>
-                ${allProblems.length === 1
-                    ? "problem"
-                    : "problems"}
-            `;
+            const remaining =
+                Math.max(
+                    total - solved,
+                    0
+                );
 
 
-            solvedSummary.textContent =
-                `${solvedCount} solved`;
+            document.getElementById(
+                "totalProblems"
+            ).textContent =
+                total;
+
+
+            document.getElementById(
+                "totalSolved"
+            ).textContent =
+                solved;
+
+
+            document.getElementById(
+                "totalRemaining"
+            ).textContent =
+                remaining;
+
+        }
+
+
+        /* =========================
+           FILTER LABEL
+        ========================= */
+
+        function updateFilterLabel() {
+
+            const labels = {
+
+                all: "All",
+
+                Easy: "Easy",
+
+                Medium: "Medium",
+
+                Hard: "Hard",
+
+                Solved: "Solved",
+
+                Unsolved: "Unsolved"
+
+            };
+
+
+            activeFilterLabel.innerHTML =
+                `Showing: <span>${escapeHtml(
+                    labels[activeFilter] ||
+                    "All"
+                )}</span>`;
 
         }
 
@@ -894,12 +1562,6 @@
         ========================= */
 
         function applyFilters() {
-
-            const searchInput =
-                document.getElementById(
-                    "searchInput"
-                );
-
 
             const query =
                 searchInput.value
@@ -911,7 +1573,7 @@
                 [...allProblems];
 
 
-            /* DIFFICULTY / STATUS */
+            /* DIFFICULTY */
 
             if (
                 activeFilter === "Easy" ||
@@ -923,34 +1585,50 @@
                     filtered.filter(
                         problem =>
                             String(
-                                problem.difficulty || ""
-                            ).toLowerCase() ===
+                                problem.difficulty ||
+                                ""
+                            )
+                                .toLowerCase() ===
                             activeFilter.toLowerCase()
                     );
 
             }
 
 
-            if (activeFilter === "Solved") {
+            /* SOLVED */
+
+            if (
+                activeFilter ===
+                "Solved"
+            ) {
 
                 filtered =
                     filtered.filter(
                         problem =>
                             solvedProblemIds.has(
-                                Number(problem.id)
+                                Number(
+                                    problem.id
+                                )
                             )
                     );
 
             }
 
 
-            if (activeFilter === "Unsolved") {
+            /* UNSOLVED */
+
+            if (
+                activeFilter ===
+                "Unsolved"
+            ) {
 
                 filtered =
                     filtered.filter(
                         problem =>
                             !solvedProblemIds.has(
-                                Number(problem.id)
+                                Number(
+                                    problem.id
+                                )
                             )
                     );
 
@@ -967,26 +1645,38 @@
 
                             const title =
                                 String(
-                                    problem.title || ""
-                                ).toLowerCase();
+                                    problem.title ||
+                                    ""
+                                )
+                                    .toLowerCase();
 
 
                             const description =
                                 String(
-                                    problem.description || ""
-                                ).toLowerCase();
+                                    problem.description ||
+                                    ""
+                                )
+                                    .toLowerCase();
 
 
                             const id =
                                 String(
-                                    problem.id || ""
-                                );
+                                    problem.id ||
+                                    ""
+                                )
+                                    .toLowerCase();
 
 
                             return (
-                                title.includes(query) ||
-                                description.includes(query) ||
-                                id.includes(query)
+                                title.includes(
+                                    query
+                                ) ||
+                                description.includes(
+                                    query
+                                ) ||
+                                id.includes(
+                                    query
+                                )
                             );
 
                         }
@@ -995,36 +1685,120 @@
             }
 
 
-            renderProblems(filtered);
+            updateFilterLabel();
+
+            updateResultCount(
+                filtered.length
+            );
+
+            updateClearButton();
+
+            renderProblems(
+                filtered
+            );
 
         }
+
+
+        /* =========================
+           RESULT COUNT
+        ========================= */
+
+        function updateResultCount(
+            count
+        ) {
+
+            resultCount.innerHTML =
+                `
+                <strong>${count}</strong>
+                ${
+                    count === 1
+                        ? "problem"
+                        : "problems"
+                }
+                found
+                `;
+
+        }
+
+
+        /* =========================
+           CLEAR SEARCH
+        ========================= */
+
+        function updateClearButton() {
+
+            if (
+                searchInput.value.trim()
+            ) {
+
+                clearSearch.style.display =
+                    "block";
+
+                document.getElementById(
+                    "searchShortcut"
+                ).style.display =
+                    "none";
+
+            } else {
+
+                clearSearch.style.display =
+                    "none";
+
+                document.getElementById(
+                    "searchShortcut"
+                ).style.display =
+                    "block";
+
+            }
+
+        }
+
+
+        clearSearch.addEventListener(
+            "click",
+            () => {
+
+                searchInput.value =
+                    "";
+
+                applyFilters();
+
+                searchInput.focus();
+
+            }
+        );
 
 
         /* =========================
            RENDER PROBLEMS
         ========================= */
 
-        function renderProblems(problems) {
-
-            const problemList =
-                document.getElementById(
-                    "problemList"
-                );
-
+        function renderProblems(
+            problems
+        ) {
 
             if (!problems.length) {
 
                 problemList.innerHTML = `
+
                     <div class="empty-state">
+
+                        <div class="empty-icon">
+                            ⌕
+                        </div>
 
                         <strong>
                             No problems found
                         </strong>
 
-                        Try changing your search
-                        or filters.
+                        <span>
+                            Try changing your search
+                            or filters.
+                        </span>
 
                     </div>
+
                 `;
 
                 return;
@@ -1033,144 +1807,211 @@
 
 
             problemList.innerHTML =
-                problems.map(
-                    (problem, index) => {
+                problems
+                    .map(
+                        (problem, index) => {
+
+                            const difficulty =
+                                String(
+                                    problem.difficulty ||
+                                    "Unknown"
+                                );
 
 
-                        const difficulty =
-                            String(
-                                problem.difficulty || "Unknown"
-                            );
+                            const difficultyLower =
+                                difficulty.toLowerCase();
 
 
-                        const difficultyLower =
-                            difficulty.toLowerCase();
+                            let difficultyClass =
+                                "difficulty-unknown";
 
 
-                        let difficultyClass =
-                            "difficulty-easy";
+                            if (
+                                difficultyLower ===
+                                "easy"
+                            ) {
+
+                                difficultyClass =
+                                    "difficulty-easy";
+
+                            }
 
 
-                        if (
-                            difficultyLower ===
-                            "medium"
-                        ) {
+                            if (
+                                difficultyLower ===
+                                "medium"
+                            ) {
 
-                            difficultyClass =
-                                "difficulty-medium";
+                                difficultyClass =
+                                    "difficulty-medium";
 
-                        }
-
-
-                        if (
-                            difficultyLower ===
-                            "hard"
-                        ) {
-
-                            difficultyClass =
-                                "difficulty-hard";
-
-                        }
+                            }
 
 
-                        const isSolved =
-                            solvedProblemIds.has(
-                                Number(problem.id)
-                            );
+                            if (
+                                difficultyLower ===
+                                "hard"
+                            ) {
+
+                                difficultyClass =
+                                    "difficulty-hard";
+
+                            }
 
 
-                        const actionHTML =
-                            isSolved
-                                ? `
-                                    <a
-                                        href="problem.html?id=${encodeURIComponent(problem.id)}"
-                                        class="solve-link solved-link">
-
-                                        ✓ Solved
-
-                                    </a>
-                                `
-                                : `
-                                    <a
-                                        href="problem.html?id=${encodeURIComponent(problem.id)}"
-                                        class="solve-link">
-
-                                        Solve →
-
-                                    </a>
-                                `;
+                            const isSolved =
+                                solvedProblemIds.has(
+                                    Number(
+                                        problem.id
+                                    )
+                                );
 
 
-                        return `
-                            <div class="problem-row">
-
-                                <div class="problem-number">
-                                    ${index + 1}
-                                </div>
+                            const rowClass =
+                                isSolved
+                                    ? "problem-row solved-row"
+                                    : "problem-row";
 
 
-                                <div class="problem-title">
+                            const actionHTML =
+                                isSolved
 
-                                    <a
-                                        href="problem.html?id=${encodeURIComponent(problem.id)}">
+                                    ? `
+                                        <a
+                                            href="problem.html?id=${encodeURIComponent(
+                                                problem.id
+                                            )}"
+                                            class="solve-link solved-link">
 
-                                        ${escapeHtml(
-                                            problem.title
-                                        )}
+                                            ✓ Solved
 
-                                    </a>
+                                        </a>
+                                    `
 
-                                    <div class="problem-id">
+                                    : `
+                                        <a
+                                            href="problem.html?id=${encodeURIComponent(
+                                                problem.id
+                                            )}"
+                                            class="solve-link">
 
-                                        Problem #${escapeHtml(
-                                            problem.id
-                                        )}
+                                            Solve →
+
+                                        </a>
+                                    `;
+
+
+                            const solvedCheck =
+                                isSolved
+
+                                    ? `
+                                        <span
+                                            class="solved-check"
+                                            title="Solved">
+
+                                            ✓
+
+                                        </span>
+                                    `
+
+                                    : "";
+
+
+                            return `
+
+                                <div
+                                    class="${rowClass}">
+
+                                    <div
+                                        class="problem-number">
+
+                                        ${
+                                            index + 1
+                                        }
+
+                                    </div>
+
+
+                                    <div
+                                        class="problem-main">
+
+                                        <div
+                                            class="problem-title-line">
+
+                                            <div
+                                                class="problem-title">
+
+                                                <a
+                                                    href="problem.html?id=${encodeURIComponent(
+                                                        problem.id
+                                                    )}">
+
+                                                    ${escapeHtml(
+                                                        problem.title
+                                                    )}
+
+                                                </a>
+
+                                            </div>
+
+                                            ${solvedCheck}
+
+                                        </div>
+
+
+                                        <div
+                                            class="problem-id">
+
+                                            Problem #${escapeHtml(
+                                                problem.id
+                                            )}
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div
+                                        class="problem-difficulty">
+
+                                        <span
+                                            class="difficulty-badge ${difficultyClass}">
+
+                                            ${escapeHtml(
+                                                difficulty
+                                            )}
+
+                                        </span>
+
+                                    </div>
+
+
+                                    <div
+                                        class="problem-action">
+
+                                        ${actionHTML}
 
                                     </div>
 
                                 </div>
 
+                            `;
 
-                                <div class="problem-difficulty">
-
-                                    <span
-                                        class="difficulty-badge ${difficultyClass}">
-
-                                        ${escapeHtml(
-                                            difficulty
-                                        )}
-
-                                    </span>
-
-                                </div>
-
-
-                                <div class="problem-action">
-
-                                    ${actionHTML}
-
-                                </div>
-
-                            </div>
-                        `;
-
-                    }
-                )
-                .join("");
+                        }
+                    )
+                    .join("");
 
         }
 
 
         /* =========================
-           SEARCH
+           SEARCH EVENT
         ========================= */
 
-        document
-            .getElementById("searchInput")
-            .addEventListener(
-                "input",
-                applyFilters
-            );
+        searchInput.addEventListener(
+            "input",
+            applyFilters
+        );
 
 
         /* =========================
@@ -1178,40 +2019,90 @@
         ========================= */
 
         document
-            .querySelectorAll(".filter-btn")
-            .forEach(button => {
+            .querySelectorAll(
+                ".filter-btn"
+            )
+            .forEach(
+                button => {
 
-                button.addEventListener(
-                    "click",
-                    () => {
+                    button.addEventListener(
+                        "click",
+                        () => {
 
-                        document
-                            .querySelectorAll(
-                                ".filter-btn"
-                            )
-                            .forEach(
-                                btn =>
-                                    btn.classList.remove(
-                                        "active"
-                                    )
+                            document
+                                .querySelectorAll(
+                                    ".filter-btn"
+                                )
+                                .forEach(
+                                    btn =>
+                                        btn.classList
+                                            .remove(
+                                                "active"
+                                            )
+                                );
+
+
+                            button.classList.add(
+                                "active"
                             );
 
 
-                        button.classList.add(
-                            "active"
-                        );
+                            activeFilter =
+                                button.dataset
+                                    .filter;
 
 
-                        activeFilter =
-                            button.dataset.filter;
+                            applyFilters();
+
+                        }
+                    );
+
+                }
+            );
 
 
-                        applyFilters();
+        /* =========================
+           "/" SEARCH SHORTCUT
+        ========================= */
 
-                    }
-                );
+        document.addEventListener(
+            "keydown",
+            event => {
 
-            });
+                if (
+                    event.key === "/" &&
+                    document.activeElement !==
+                        searchInput &&
+                    document.activeElement.tagName !==
+                        "TEXTAREA" &&
+                    document.activeElement.tagName !==
+                        "INPUT"
+                ) {
+
+                    event.preventDefault();
+
+                    searchInput.focus();
+
+                }
+
+
+                if (
+                    event.key === "Escape" &&
+                    document.activeElement ===
+                        searchInput
+                ) {
+
+                    searchInput.value =
+                        "";
+
+                    applyFilters();
+
+                    searchInput.blur();
+
+                }
+
+            }
+        );
 
 
         /* =========================
