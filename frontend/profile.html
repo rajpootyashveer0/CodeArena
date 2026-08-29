@@ -1,4 +1,5 @@
- <!DOCTYPE html>
+```html
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -19,19 +20,39 @@
             box-sizing: border-box;
         }
 
-        body {
-            margin: 0;
-            background: #0b0b0b;
-            color: #fff;
-            font-family: "Inter", sans-serif;
+        :root {
+            --bg: #0b0b0b;
+            --surface: #141414;
+            --surface-2: #101010;
+            --border: #292929;
+            --border-light: #353535;
+            --text: #fff;
+            --muted: #888;
+            --muted-light: #aaa;
+            --orange: #ffa116;
+            --orange-light: #ffb13b;
+            --green: #2db55d;
+            --red: #ef4743;
         }
 
-        /* NAVBAR */
+        body {
+            margin: 0;
+            background:
+                radial-gradient(circle at 50% -15%, rgba(255, 161, 22, 0.08), transparent 35%),
+                var(--bg);
+            color: var(--text);
+            font-family: "Inter", sans-serif;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
 
         .profile-nav {
             height: 64px;
-            background: #111;
-            border-bottom: 1px solid #292929;
+            background: rgba(17, 17, 17, 0.92);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -39,14 +60,16 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            backdrop-filter: blur(12px);
         }
 
         .nav-logo {
-            color: #ffa116;
+            color: var(--orange);
             text-decoration: none;
             font-family: "Space Grotesk", sans-serif;
             font-size: 23px;
             font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         .nav-links {
@@ -56,15 +79,16 @@
         }
 
         .nav-links a {
-            color: #aaa;
+            color: #999;
             text-decoration: none;
             font-size: 14px;
-            transition: .2s;
+            font-weight: 500;
+            transition: 0.2s ease;
         }
 
         .nav-links a:hover,
         .nav-links a.active {
-            color: #ffa116;
+            color: var(--orange);
         }
 
         .logout-btn {
@@ -74,39 +98,57 @@
             padding: 8px 14px;
             border-radius: 7px;
             cursor: pointer;
-            transition: .2s;
+            font-family: inherit;
+            transition: 0.2s ease;
         }
 
         .logout-btn:hover {
-            color: #ffa116;
-            border-color: #ffa116;
+            color: var(--orange);
+            border-color: var(--orange);
+            background: rgba(255, 161, 22, 0.05);
         }
 
-        /* MAIN */
+        /* =========================
+           MAIN
+        ========================= */
 
         .profile-container {
             width: min(1100px, 92%);
             margin: auto;
-            padding: 45px 0 70px;
+            padding: 48px 0 80px;
         }
 
         .profile-header {
-            margin-bottom: 30px;
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            color: var(--orange);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
         }
 
         .profile-header h1 {
             margin: 0 0 8px;
             font-family: "Space Grotesk", sans-serif;
-            font-size: 34px;
+            font-size: 36px;
+            line-height: 1.15;
+            letter-spacing: -0.8px;
         }
 
         .profile-header p {
             margin: 0;
-            color: #888;
+            color: var(--muted);
             font-size: 14px;
         }
 
-        /* ERROR */
+        /* =========================
+           ERROR
+        ========================= */
 
         .error-box {
             display: none;
@@ -114,29 +156,47 @@
             border: 1px solid #5c2525;
             color: #ff7b7b;
             padding: 13px 15px;
-            border-radius: 8px;
+            border-radius: 9px;
             margin-bottom: 25px;
             font-size: 13px;
         }
 
-        /* PROFILE CARD */
+        /* =========================
+           PROFILE HERO
+        ========================= */
 
         .profile-card {
-            background: #151515;
-            border: 1px solid #292929;
-            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            background:
+                linear-gradient(135deg, rgba(255, 161, 22, 0.07), transparent 45%),
+                var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 15px;
             padding: 30px;
             display: flex;
             align-items: center;
-            gap: 25px;
-            margin-bottom: 25px;
+            gap: 24px;
+            margin-bottom: 22px;
+        }
+
+        .profile-card::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            right: -80px;
+            top: -90px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 161, 22, 0.08);
+            pointer-events: none;
         }
 
         .avatar {
-            width: 85px;
-            height: 85px;
+            width: 88px;
+            height: 88px;
             border-radius: 50%;
-            background: #ffa116;
+            background: linear-gradient(135deg, var(--orange), #ff8c00);
             color: #111;
             display: flex;
             align-items: center;
@@ -145,76 +205,127 @@
             font-size: 32px;
             font-weight: 700;
             flex-shrink: 0;
+            box-shadow: 0 0 0 6px rgba(255, 161, 22, 0.07);
+        }
+
+        .profile-info {
+            min-width: 0;
         }
 
         .profile-info h2 {
             margin: 0 0 7px;
             font-family: "Space Grotesk", sans-serif;
-            font-size: 25px;
+            font-size: 26px;
+            letter-spacing: -0.3px;
         }
 
         .profile-info .email {
             color: #aaa;
             font-size: 14px;
-            margin-bottom: 8px;
+            margin-bottom: 9px;
+            word-break: break-word;
         }
 
         .profile-info .joined {
-            color: #666;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #707070;
             font-size: 12px;
         }
 
-        /* STATS */
+        .profile-info .joined::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 8px rgba(45, 181, 93, 0.5);
+        }
+
+        /* =========================
+           STATS
+        ========================= */
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
-            margin-bottom: 25px;
+            gap: 14px;
+            margin-bottom: 22px;
         }
 
         .stat-card {
-            background: #151515;
-            border: 1px solid #292929;
+            position: relative;
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 23px;
-            transition: .2s;
+            padding: 20px;
+            transition: 0.22s ease;
         }
 
         .stat-card:hover {
-            border-color: #444;
+            border-color: var(--border-light);
             transform: translateY(-2px);
+            background: #171717;
+        }
+
+        .stat-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #202020;
+            color: #aaa;
+            font-size: 13px;
+            margin-bottom: 15px;
+            font-family: "JetBrains Mono", monospace;
         }
 
         .stat-label {
-            color: #888;
-            font-size: 12px;
-            margin-bottom: 10px;
+            color: #777;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
         }
 
         .stat-value {
             font-family: "JetBrains Mono", monospace;
-            font-size: 27px;
+            font-size: 26px;
             font-weight: 600;
+            line-height: 1;
         }
 
         .success {
-            color: #2db55d;
+            color: var(--green);
         }
 
         .accent {
-            color: #ffa116;
+            color: var(--orange);
         }
 
-        /* PANELS */
+        /* =========================
+           PANELS
+        ========================= */
 
         .progress-panel,
         .solved-section {
-            background: #151515;
-            border: 1px solid #292929;
-            border-radius: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
             padding: 26px;
-            margin-bottom: 25px;
+            margin-bottom: 22px;
+        }
+
+        .panel-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 26px;
         }
 
         .panel-title,
@@ -222,16 +333,31 @@
             margin: 0;
             font-family: "Space Grotesk", sans-serif;
             font-size: 20px;
+            letter-spacing: -0.3px;
         }
 
-        .panel-title {
-            margin-bottom: 25px;
+        .panel-subtitle {
+            margin: 6px 0 0;
+            color: #707070;
+            font-size: 12px;
         }
 
-        /* PROGRESS */
+        .panel-badge {
+            color: #777;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 11px;
+            border: 1px solid #2c2c2c;
+            padding: 6px 9px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        /* =========================
+           PROGRESS
+        ========================= */
 
         .difficulty-item {
-            margin-bottom: 22px;
+            margin-bottom: 23px;
         }
 
         .difficulty-item:last-child {
@@ -241,21 +367,25 @@
         .difficulty-top {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin-bottom: 9px;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .difficulty-name {
             color: #ddd;
+            font-weight: 500;
         }
 
         .difficulty-count {
-            color: #888;
+            color: #777;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 11px;
         }
 
         .progress {
             height: 7px;
-            background: #252525;
+            background: #242424;
             border-radius: 10px;
             overflow: hidden;
         }
@@ -264,22 +394,24 @@
             width: 0;
             height: 100%;
             border-radius: 10px;
-            transition: width .8s ease;
+            transition: width 0.9s cubic-bezier(.2, .8, .2, 1);
         }
 
         .easy {
-            background: #2db55d;
+            background: var(--green);
         }
 
         .medium {
-            background: #ffa116;
+            background: var(--orange);
         }
 
         .hard {
-            background: #ef4743;
+            background: var(--red);
         }
 
-        /* SOLVED PROBLEMS */
+        /* =========================
+           SOLVED PROBLEMS
+        ========================= */
 
         .section-title-row {
             display: flex;
@@ -291,25 +423,27 @@
 
         .section-description {
             margin: 6px 0 0;
-            color: #777;
+            color: #707070;
             font-size: 12px;
         }
 
         .view-all-link {
-            color: #ffa116;
+            color: var(--orange);
             text-decoration: none;
             font-size: 12px;
+            font-weight: 500;
             white-space: nowrap;
+            transition: 0.2s;
         }
 
         .view-all-link:hover {
-            color: #ffb13b;
+            color: var(--orange-light);
         }
 
         .solved-problems-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .solved-problem-card {
@@ -317,17 +451,18 @@
             align-items: center;
             justify-content: space-between;
             gap: 15px;
-            padding: 15px 16px;
-            background: #101010;
-            border: 1px solid #292929;
-            border-radius: 8px;
+            padding: 14px 15px;
+            background: var(--surface-2);
+            border: 1px solid #272727;
+            border-radius: 9px;
             text-decoration: none;
-            transition: .2s;
+            transition: 0.2s ease;
         }
 
         .solved-problem-card:hover {
-            border-color: #ffa116;
-            transform: translateY(-1px);
+            border-color: rgba(255, 161, 22, 0.55);
+            background: #151515;
+            transform: translateX(2px);
         }
 
         .solved-problem-left {
@@ -338,9 +473,18 @@
         }
 
         .solved-check {
-            color: #2db55d;
-            font-size: 17px;
+            width: 27px;
+            height: 27px;
+            border-radius: 7px;
+            background: rgba(45, 181, 93, 0.08);
+            border: 1px solid rgba(45, 181, 93, 0.18);
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
             font-weight: 700;
+            flex-shrink: 0;
         }
 
         .solved-problem-title {
@@ -348,89 +492,135 @@
             font-size: 13px;
             font-weight: 600;
             margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .solved-problem-id {
-            color: #666;
-            font-size: 11px;
+            color: #606060;
+            font-size: 10px;
+            font-family: "JetBrains Mono", monospace;
         }
 
         .solved-difficulty {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
+            padding: 5px 8px;
+            border-radius: 5px;
             flex-shrink: 0;
         }
 
         .solved-difficulty.easy {
-            background: transparent;
-            color: #2db55d;
+            background: rgba(45, 181, 93, 0.08);
+            color: var(--green);
         }
 
         .solved-difficulty.medium {
-            background: transparent;
-            color: #ffa116;
+            background: rgba(255, 161, 22, 0.08);
+            color: var(--orange);
         }
 
         .solved-difficulty.hard {
-            background: transparent;
-            color: #ef4743;
+            background: rgba(239, 71, 67, 0.08);
+            color: var(--red);
         }
 
         .solved-loading,
         .no-solved {
-            color: #777;
+            color: #666;
             text-align: center;
-            padding: 20px;
-            font-size: 13px;
+            padding: 25px 20px;
+            font-size: 12px;
+            border: 1px dashed #292929;
+            border-radius: 9px;
         }
 
-        /* ACTIONS */
+        /* =========================
+           ACTIONS
+        ========================= */
 
         .actions {
             display: flex;
-            gap: 12px;
-            margin-top: 25px;
+            gap: 10px;
+            margin-top: 20px;
         }
 
         .action-btn {
             text-decoration: none;
-            padding: 11px 16px;
+            padding: 10px 15px;
             border-radius: 7px;
             border: 1px solid #333;
-            color: #ddd;
+            color: #bbb;
             background: #101010;
-            font-size: 13px;
-            transition: .2s;
+            font-size: 12px;
+            font-weight: 500;
+            transition: 0.2s ease;
         }
 
         .action-btn:hover {
-            color: #ffa116;
-            border-color: #ffa116;
+            color: var(--orange);
+            border-color: var(--orange);
         }
 
-        .primary {
-            background: #ffa116;
+        .action-btn.primary {
+            background: var(--orange);
             color: #111;
-            border-color: #ffa116;
+            border-color: var(--orange);
             font-weight: 600;
         }
 
-        .primary:hover {
-            background: #ffb13b;
+        .action-btn.primary:hover {
+            background: var(--orange-light);
             color: #111;
         }
 
-        /* RESPONSIVE */
+        /* =========================
+           LOADING
+        ========================= */
+
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            transform: translateX(-100%);
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.035),
+                transparent
+            );
+            animation: shimmer 1.4s infinite;
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
 
         @media (max-width: 850px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .profile-container {
+                width: min(94%, 700px);
+            }
         }
 
         @media (max-width: 600px) {
             .profile-nav {
-                padding: 0 20px;
+                padding: 0 18px;
             }
 
             .nav-links {
@@ -438,33 +628,87 @@
             }
 
             .profile-container {
-                padding-top: 30px;
+                width: 92%;
+                padding-top: 32px;
+                padding-bottom: 55px;
             }
 
             .profile-header h1 {
-                font-size: 28px;
+                font-size: 29px;
             }
 
             .profile-card {
+                padding: 24px;
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 18px;
+            }
+
+            .avatar {
+                width: 72px;
+                height: 72px;
+                font-size: 27px;
+            }
+
+            .profile-info h2 {
+                font-size: 23px;
             }
 
             .stats-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .stat-icon {
+                margin-bottom: 12px;
+            }
+
+            .stat-value {
+                font-size: 22px;
+            }
+
+            .progress-panel,
+            .solved-section {
+                padding: 20px;
+            }
+
+            .panel-heading {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .section-title-row {
+                align-items: flex-start;
+            }
+
+            .solved-problem-card {
+                padding: 12px;
+            }
+
+            .solved-problem-title {
+                max-width: 190px;
             }
 
             .actions {
                 flex-direction: column;
             }
 
-            .section-title-row {
-                flex-direction: column;
-                align-items: flex-start;
+            .action-btn {
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
 
-            .solved-problem-card {
-                align-items: flex-start;
+            .solved-problem-title {
+                max-width: 150px;
             }
         }
     </style>
@@ -499,13 +743,25 @@
 
         <div id="errorBox" class="error-box"></div>
 
+
+        <!-- HEADER -->
+
         <section class="profile-header">
+
+            <div class="eyebrow">
+                CODEARENA / PROFILE
+            </div>
+
             <h1>My Profile</h1>
-            <p>Your CodeArena coding journey and progress.</p>
+
+            <p>
+                Your coding journey, achievements and progress.
+            </p>
+
         </section>
 
 
-        <!-- PROFILE -->
+        <!-- PROFILE HERO -->
 
         <section class="profile-card">
 
@@ -537,23 +793,78 @@
         <section class="stats-grid">
 
             <div class="stat-card">
-                <div class="stat-label">Problems Solved</div>
-                <div class="stat-value success" id="problemsSolved">0</div>
+
+                <div class="stat-icon">
+                    ✓
+                </div>
+
+                <div class="stat-label">
+                    Problems Solved
+                </div>
+
+                <div
+                    class="stat-value success"
+                    id="problemsSolved">
+                    0
+                </div>
+
             </div>
 
-            <div class="stat-card">
-                <div class="stat-label">Total Submissions</div>
-                <div class="stat-value" id="totalSubmissions">0</div>
-            </div>
 
             <div class="stat-card">
-                <div class="stat-label">Accepted</div>
-                <div class="stat-value success" id="accepted">0</div>
+
+                <div class="stat-icon">
+                    #
+                </div>
+
+                <div class="stat-label">
+                    Total Submissions
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalSubmissions">
+                    0
+                </div>
+
             </div>
 
+
             <div class="stat-card">
-                <div class="stat-label">Acceptance Rate</div>
-                <div class="stat-value accent" id="acceptanceRate">0%</div>
+
+                <div class="stat-icon">
+                    AC
+                </div>
+
+                <div class="stat-label">
+                    Accepted
+                </div>
+
+                <div
+                    class="stat-value success"
+                    id="accepted">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    %
+                </div>
+
+                <div class="stat-label">
+                    Acceptance Rate
+                </div>
+
+                <div
+                    class="stat-value accent"
+                    id="acceptanceRate">
+                    0%
+                </div>
+
             </div>
 
         </section>
@@ -563,37 +874,22 @@
 
         <section class="progress-panel">
 
-            <h2 class="panel-title">
-                Problem Progress
-            </h2>
+            <div class="panel-heading">
 
-            <div class="difficulty-item">
+                <div>
 
-                <div class="difficulty-top">
-                    <span class="difficulty-name">Easy</span>
-                    <span class="difficulty-count" id="easyCount">
-                        0 solved
-                    </span>
+                    <h2 class="panel-title">
+                        Problem Progress
+                    </h2>
+
+                    <p class="panel-subtitle">
+                        Track your progress across difficulty levels.
+                    </p>
+
                 </div>
 
-                <div class="progress">
-                    <div class="progress-bar easy" id="easyProgress"></div>
-                </div>
-
-            </div>
-
-
-            <div class="difficulty-item">
-
-                <div class="difficulty-top">
-                    <span class="difficulty-name">Medium</span>
-                    <span class="difficulty-count" id="mediumCount">
-                        0 solved
-                    </span>
-                </div>
-
-                <div class="progress">
-                    <div class="progress-bar medium" id="mediumProgress"></div>
+                <div class="panel-badge">
+                    BY DIFFICULTY
                 </div>
 
             </div>
@@ -602,14 +898,76 @@
             <div class="difficulty-item">
 
                 <div class="difficulty-top">
-                    <span class="difficulty-name">Hard</span>
-                    <span class="difficulty-count" id="hardCount">
+
+                    <span class="difficulty-name">
+                        Easy
+                    </span>
+
+                    <span
+                        class="difficulty-count"
+                        id="easyCount">
                         0 solved
                     </span>
+
                 </div>
 
                 <div class="progress">
-                    <div class="progress-bar hard" id="hardProgress"></div>
+                    <div
+                        class="progress-bar easy"
+                        id="easyProgress">
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="difficulty-item">
+
+                <div class="difficulty-top">
+
+                    <span class="difficulty-name">
+                        Medium
+                    </span>
+
+                    <span
+                        class="difficulty-count"
+                        id="mediumCount">
+                        0 solved
+                    </span>
+
+                </div>
+
+                <div class="progress">
+                    <div
+                        class="progress-bar medium"
+                        id="mediumProgress">
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="difficulty-item">
+
+                <div class="difficulty-top">
+
+                    <span class="difficulty-name">
+                        Hard
+                    </span>
+
+                    <span
+                        class="difficulty-count"
+                        id="hardCount">
+                        0 solved
+                    </span>
+
+                </div>
+
+                <div class="progress">
+                    <div
+                        class="progress-bar hard"
+                        id="hardProgress">
+                    </div>
                 </div>
 
             </div>
@@ -624,25 +982,31 @@
             <div class="section-title-row">
 
                 <div>
+
                     <h2 class="section-title">
                         Solved Problems
                     </h2>
 
                     <p class="section-description">
-                        Your successfully solved CodeArena problems.
+                        Problems you've successfully completed.
                     </p>
+
                 </div>
 
-                <a href="problems.html" class="view-all-link">
+                <a
+                    href="problems.html"
+                    class="view-all-link">
                     Solve More →
                 </a>
 
             </div>
 
 
-            <div id="solvedProblems" class="solved-problems-list">
+            <div
+                id="solvedProblems"
+                class="solved-problems-list">
 
-                <div class="solved-loading">
+                <div class="solved-loading loading">
                     Loading solved problems...
                 </div>
 
@@ -651,11 +1015,15 @@
 
             <div class="actions">
 
-                <a href="problems.html" class="action-btn primary">
+                <a
+                    href="problems.html"
+                    class="action-btn primary">
                     Solve More Problems →
                 </a>
 
-                <a href="submissions.html" class="action-btn">
+                <a
+                    href="submissions.html"
+                    class="action-btn">
                     View Submissions
                 </a>
 
@@ -686,12 +1054,17 @@
         ========================= */
 
         function safeNumber(value) {
+
             const number = Number(value);
-            return Number.isFinite(number) ? number : 0;
+
+            return Number.isFinite(number)
+                ? number
+                : 0;
         }
 
 
         function percentage(value, total) {
+
             value = safeNumber(value);
             total = safeNumber(total);
 
@@ -703,13 +1076,16 @@
                 100,
                 Math.max(
                     0,
-                    Math.round((value / total) * 100)
+                    Math.round(
+                        (value / total) * 100
+                    )
                 )
             );
         }
 
 
         function escapeHtml(value) {
+
             return String(value ?? "")
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
@@ -720,7 +1096,9 @@
 
 
         function showError(message) {
-            const box = document.getElementById("errorBox");
+
+            const box =
+                document.getElementById("errorBox");
 
             box.textContent =
                 message || "Something went wrong.";
@@ -730,33 +1108,53 @@
 
 
         function unauthorized() {
+
             localStorage.removeItem("access_token");
-            window.location.replace("login.html");
+
+            window.location.replace(
+                "login.html"
+            );
         }
 
 
-        async function fetchJSON(url, options = {}) {
+        async function fetchJSON(
+            url,
+            options = {}
+        ) {
 
-            const response = await fetch(url, options);
+            const response =
+                await fetch(url, options);
+
 
             if (response.status === 401) {
+
                 unauthorized();
+
                 throw new Error("Unauthorized");
             }
 
+
             let data = null;
 
+
             try {
+
                 data = await response.json();
+
             } catch {
+
                 data = null;
             }
 
+
             if (!response.ok) {
+
                 throw new Error(
-                    data?.detail || "Request failed."
+                    data?.detail ||
+                    "Request failed."
                 );
             }
+
 
             return data;
         }
@@ -770,19 +1168,26 @@
 
             try {
 
-                const data = await fetchJSON(
-                    `${API_URL}/dashboard`,
-                    {
-                        headers: {
-                            "Authorization": `Bearer ${token}`,
-                            "Accept": "application/json"
+                const data =
+                    await fetchJSON(
+                        `${API_URL}/dashboard`,
+                        {
+                            headers: {
+                                "Authorization":
+                                    `Bearer ${token}`,
+
+                                "Accept":
+                                    "application/json"
+                            }
                         }
-                    }
-                );
+                    );
 
 
-                const user = data?.user || {};
-                const stats = data?.stats || {};
+                const user =
+                    data?.user || {};
+
+                const stats =
+                    data?.stats || {};
 
 
                 /* USER */
@@ -790,47 +1195,80 @@
                 const username =
                     user.username || "Coder";
 
-                document.getElementById("username")
+
+                document
+                    .getElementById("username")
                     .textContent = username;
 
-                document.getElementById("email")
+
+                document
+                    .getElementById("email")
                     .textContent =
                     user.email || "No email";
 
-                document.getElementById("avatar")
+
+                document
+                    .getElementById("avatar")
                     .textContent =
-                    username.charAt(0).toUpperCase();
+                    username
+                        .charAt(0)
+                        .toUpperCase();
 
 
                 /* STATS */
 
                 const problemsSolved =
-                    safeNumber(stats.problems_solved);
+                    safeNumber(
+                        stats.problems_solved
+                    );
+
 
                 const totalSubmissions =
-                    safeNumber(stats.total_submissions);
+                    safeNumber(
+                        stats.total_submissions
+                    );
+
 
                 const accepted =
-                    safeNumber(stats.accepted);
+                    safeNumber(
+                        stats.accepted
+                    );
+
 
                 const easySolved =
-                    safeNumber(stats.easy_solved);
+                    safeNumber(
+                        stats.easy_solved
+                    );
+
 
                 const mediumSolved =
-                    safeNumber(stats.medium_solved);
+                    safeNumber(
+                        stats.medium_solved
+                    );
+
 
                 const hardSolved =
-                    safeNumber(stats.hard_solved);
+                    safeNumber(
+                        stats.hard_solved
+                    );
 
 
-                document.getElementById("problemsSolved")
-                    .textContent = problemsSolved;
+                document
+                    .getElementById("problemsSolved")
+                    .textContent =
+                    problemsSolved;
 
-                document.getElementById("totalSubmissions")
-                    .textContent = totalSubmissions;
 
-                document.getElementById("accepted")
-                    .textContent = accepted;
+                document
+                    .getElementById("totalSubmissions")
+                    .textContent =
+                    totalSubmissions;
+
+
+                document
+                    .getElementById("accepted")
+                    .textContent =
+                    accepted;
 
 
                 /* ACCEPTANCE RATE */
@@ -838,26 +1276,36 @@
                 const acceptanceRate =
                     totalSubmissions > 0
                         ? Math.round(
-                            (accepted / totalSubmissions) * 100
+                            (
+                                accepted /
+                                totalSubmissions
+                            ) * 100
                         )
                         : 0;
 
-                document.getElementById("acceptanceRate")
+
+                document
+                    .getElementById("acceptanceRate")
                     .textContent =
                     `${acceptanceRate}%`;
 
 
                 /* DIFFICULTY */
 
-                document.getElementById("easyCount")
+                document
+                    .getElementById("easyCount")
                     .textContent =
                     `${easySolved} solved`;
 
-                document.getElementById("mediumCount")
+
+                document
+                    .getElementById("mediumCount")
                     .textContent =
                     `${mediumSolved} solved`;
 
-                document.getElementById("hardCount")
+
+                document
+                    .getElementById("hardCount")
                     .textContent =
                     `${hardSolved} solved`;
 
@@ -869,7 +1317,8 @@
                         `${API_URL}/problems`,
                         {
                             headers: {
-                                "Accept": "application/json"
+                                "Accept":
+                                    "application/json"
                             }
                         }
                     );
@@ -885,7 +1334,8 @@
                     allProblems.filter(
                         problem =>
                             String(
-                                problem.difficulty || ""
+                                problem.difficulty ||
+                                ""
                             ).toLowerCase() === "easy"
                     ).length;
 
@@ -894,7 +1344,8 @@
                     allProblems.filter(
                         problem =>
                             String(
-                                problem.difficulty || ""
+                                problem.difficulty ||
+                                ""
                             ).toLowerCase() === "medium"
                     ).length;
 
@@ -903,7 +1354,8 @@
                     allProblems.filter(
                         problem =>
                             String(
-                                problem.difficulty || ""
+                                problem.difficulty ||
+                                ""
                             ).toLowerCase() === "hard"
                     ).length;
 
@@ -912,7 +1364,8 @@
 
                 requestAnimationFrame(() => {
 
-                    document.getElementById("easyProgress")
+                    document
+                        .getElementById("easyProgress")
                         .style.width =
                         `${percentage(
                             easySolved,
@@ -920,7 +1373,8 @@
                         )}%`;
 
 
-                    document.getElementById("mediumProgress")
+                    document
+                        .getElementById("mediumProgress")
                         .style.width =
                         `${percentage(
                             mediumSolved,
@@ -928,7 +1382,8 @@
                         )}%`;
 
 
-                    document.getElementById("hardProgress")
+                    document
+                        .getElementById("hardProgress")
                         .style.width =
                         `${percentage(
                             hardSolved,
@@ -940,14 +1395,19 @@
 
             } catch (error) {
 
-                if (error.message === "Unauthorized") {
+                if (
+                    error.message ===
+                    "Unauthorized"
+                ) {
                     return;
                 }
+
 
                 console.error(
                     "Profile error:",
                     error
                 );
+
 
                 showError(
                     error.message ||
@@ -978,6 +1438,7 @@
                             headers: {
                                 "Authorization":
                                     `Bearer ${token}`,
+
                                 "Accept":
                                     "application/json"
                             }
@@ -985,7 +1446,12 @@
                     );
 
 
-                if (!Array.isArray(submissions)) {
+                if (
+                    !Array.isArray(
+                        submissions
+                    )
+                ) {
+
                     throw new Error(
                         "Invalid submissions response."
                     );
@@ -997,7 +1463,8 @@
                 const accepted =
                     submissions.filter(
                         submission =>
-                            submission.status === "Accepted"
+                            submission.status ===
+                            "Accepted"
                     );
 
 
@@ -1014,11 +1481,14 @@
                     ];
 
 
-                if (solvedIds.length === 0) {
+                if (
+                    solvedIds.length === 0
+                ) {
 
                     container.innerHTML = `
                         <div class="no-solved">
                             You haven't solved any problems yet.
+                            Start solving and build your streak.
                         </div>
                     `;
 
@@ -1030,30 +1500,32 @@
 
                 const results =
                     await Promise.all(
-                        solvedIds.map(async id => {
+                        solvedIds.map(
+                            async id => {
 
-                            try {
+                                try {
 
-                                return await fetchJSON(
-                                    `${API_URL}/problems/${id}`,
-                                    {
-                                        headers: {
-                                            "Accept":
-                                                "application/json"
+                                    return await fetchJSON(
+                                        `${API_URL}/problems/${id}`,
+                                        {
+                                            headers: {
+                                                "Accept":
+                                                    "application/json"
+                                            }
                                         }
-                                    }
-                                );
+                                    );
 
-                            } catch (error) {
+                                } catch (error) {
 
-                                console.warn(
-                                    `Unable to load problem ${id}`,
-                                    error
-                                );
+                                    console.warn(
+                                        `Unable to load problem ${id}`,
+                                        error
+                                    );
 
-                                return null;
+                                    return null;
+                                }
                             }
-                        })
+                        )
                     );
 
 
@@ -1061,7 +1533,9 @@
                     results.filter(Boolean);
 
 
-                if (solvedProblems.length === 0) {
+                if (
+                    solvedProblems.length === 0
+                ) {
 
                     container.innerHTML = `
                         <div class="no-solved">
@@ -1077,7 +1551,8 @@
 
                 solvedProblems.sort(
                     (a, b) =>
-                        Number(a.id) - Number(b.id)
+                        Number(a.id) -
+                        Number(b.id)
                 );
 
 
@@ -1089,7 +1564,8 @@
 
                             const difficulty =
                                 String(
-                                    problem.difficulty || ""
+                                    problem.difficulty ||
+                                    ""
                                 ).toLowerCase();
 
 
@@ -1138,14 +1614,19 @@
 
             } catch (error) {
 
-                if (error.message === "Unauthorized") {
+                if (
+                    error.message ===
+                    "Unauthorized"
+                ) {
                     return;
                 }
+
 
                 console.error(
                     "Solved problems error:",
                     error
                 );
+
 
                 container.innerHTML = `
                     <div class="no-solved">
@@ -1182,7 +1663,9 @@
         ========================= */
 
         if (token) {
+
             loadProfile();
+
             loadSolvedProblems();
         }
 
@@ -1191,3 +1674,5 @@
 </body>
 
 </html>
+
+
