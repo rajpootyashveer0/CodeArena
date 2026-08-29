@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Leaderboard — CodeArena</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #0b0b0b;
+        color: #ffffff;
+        font-family: "Inter", sans-serif;
+    }
+
+    /* =========================
+       NAVBAR
+    ========================= */
+
+    .dashboard-nav {
+        height: 64px;
+        border-bottom: 1px solid #262626;
+        background: #111111;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 6%;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .nav-logo {
+        color: #ffa116;
+        text-decoration: none;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 23px;
+        font-weight: 700;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+    }
+
+    .nav-links a {
+        color: #aaa;
+        text-decoration: none;
+        font-size: 14px;
+        transition: 0.2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+        color: #ffa116;
+    }
+
+    .logout-btn {
+        background: transparent;
+        border: 1px solid #333;
+        color: #bbb;
+        padding: 8px 14px;
+        border-radius: 7px;
+        cursor: pointer;
+        transition: 0.2s ease;
+        font-family: "Inter", sans-serif;
+    }
+
+    .logout-btn:hover {
+        border-color: #ffa116;
+        color: #ffa116;
+    }
+
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .leaderboard-container {
+        width: min(1180px, 92%);
+        margin: 0 auto;
+        padding: 50px 0 80px;
+    }
+
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .leaderboard-header {
+        text-align: center;
+        margin-bottom: 45px;
+    }
+
+    .leaderboard-icon {
+        font-size: 42px;
+        margin-bottom: 12px;
+    }
+
+    .leaderboard-header h1 {
+        margin: 0 0 10px;
+
+        font-family: "Space Grotesk", sans-serif;
+
+        font-size: 38px;
+        font-weight: 700;
+    }
+
+    .leaderboard-header p {
+        margin: 0;
+
+        color: #888;
+
+        font-size: 15px;
+    }
+
+
+    /* =========================
+       ERROR
+    ========================= */
+
+    .error-box {
+        display: none;
+
+        background: #291717;
+        border: 1px solid #5c2525;
+
+        color: #ff7b7b;
+
+        padding: 14px 16px;
+
+        border-radius: 8px;
+
+        margin-bottom: 25px;
+
+        font-size: 14px;
+    }
+
+
+    /* =========================
+       TOP 3
+    ========================= */
+
+    .podium {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 18px;
+
+        margin-bottom: 35px;
+    }
+
+    .podium-card {
+        background: #151515;
+
+        border: 1px solid #292929;
+
+        border-radius: 14px;
+
+        padding: 28px 20px;
+
+        text-align: center;
+
+        transition: 0.2s ease;
+    }
+
+    .podium-card:hover {
+        border-color: #444;
+
+        transform: translateY(-3px);
+    }
+
+    .podium-card.first {
+        border-color: #6b511e;
+
+        transform: translateY(-8px);
+    }
+
+    .podium-card.first:hover {
+        transform: translateY(-11px);
+    }
+
+    .podium-rank {
+        font-size: 32px;
+
+        margin-bottom: 10px;
+    }
+
+    .podium-username {
+        font-family: "Space Grotesk", sans-serif;
+
+        font-size: 19px;
+
+        font-weight: 600;
+
+        margin-bottom: 12px;
+
+        word-break: break-word;
+    }
+
+    .podium-solved {
+        color: #aaa;
+
+        font-size: 13px;
+    }
+
+    .podium-solved strong {
+        color: #ffa116;
+
+        font-family: "JetBrains Mono", monospace;
+
+        font-size: 17px;
+    }
+
+
+    /* =========================
+       LEADERBOARD PANEL
+    ========================= */
+
+    .leaderboard-panel {
+        background: #151515;
+
+        border: 1px solid #292929;
+
+        border-radius: 14px;
+
+        overflow: hidden;
+    }
+
+    .table-header {
+        padding: 22px 25px;
+
+        border-bottom: 1px solid #292929;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+    }
+
+    .table-header h2 {
+        margin: 0;
+
+        font-family: "Space Grotesk", sans-serif;
+
+        font-size: 20px;
+    }
+
+    .user-position {
+        color: #888;
+
+        font-size: 12px;
+    }
+
+    .user-position span {
+        color: #ffa116;
+
+        font-family: "JetBrains Mono", monospace;
+
+        font-weight: 600;
+    }
+
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    .leaderboard-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .leaderboard-table {
+        width: 100%;
+
+        border-collapse: collapse;
+
+        min-width: 760px;
+    }
+
+    .leaderboard-table th {
+        text-align: left;
+
+        padding: 15px 20px;
+
+        background: #101010;
+
+        color: #777;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.6px;
+    }
+
+    .leaderboard-table td {
+        padding: 17px 20px;
+
+        border-top: 1px solid #252525;
+
+        color: #ddd;
+
+        font-size: 14px;
+    }
+
+    .leaderboard-table tbody tr {
+        transition: 0.2s ease;
+    }
+
+    .leaderboard-table tbody tr:hover {
+        background: #191919;
+    }
+
+    /* CURRENT USER */
+
+    .leaderboard-table tbody tr.current-user {
+        background: #211b11;
+
+        box-shadow:
+            inset 3px 0 0 #ffa116;
+    }
+
+    .leaderboard-table tbody tr.current-user:hover {
+        background: #272015;
+    }
+
+
+    /* =========================
+       RANK
+    ========================= */
+
+    .rank {
+        width: 80px;
+
+        font-family: "JetBrains Mono", monospace;
+
+        font-weight: 600;
+
+        color: #888;
+    }
+
+    .rank.top {
+        font-size: 18px;
+    }
+
+
+    /* =========================
+       USER
+    ========================= */
+
+    .user-cell {
+        display: flex;
+
+        align-items: center;
+
+        gap: 11px;
+    }
+
+    .avatar {
+        width: 34px;
+
+        height: 34px;
+
+        border-radius: 50%;
+
+        background: #252525;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        color: #ffa116;
+
+        font-family: "Space Grotesk", sans-serif;
+
+        font-size: 13px;
+
+        font-weight: 700;
+
+        flex-shrink: 0;
+    }
+
+    .username {
+        color: #eee;
+
+        font-weight: 500;
+    }
+
+    .you-badge {
+        margin-left: 7px;
+
+        color: #ffa116;
+
+        font-size: 10px;
+
+        border: 1px solid #6b4b18;
+
+        background: #241b0c;
+
+        padding: 3px 6px;
+
+        border-radius: 5px;
+    }
+
+
+    /* =========================
+       NUMBERS
+    ========================= */
+
+    .number {
+        font-family: "JetBrains Mono", monospace;
+
+        color: #ccc;
+    }
+
+    .solved-number {
+        color: #2db55d;
+
+        font-weight: 600;
+    }
+
+    .rate {
+        color: #ffa116;
+
+        font-family: "JetBrains Mono", monospace;
+
+        font-weight: 500;
+    }
+
+
+    /* =========================
+       EMPTY / LOADING
+    ========================= */
+
+    .loading,
+    .empty-state {
+        text-align: center;
+
+        color: #777;
+
+        padding: 45px 20px;
+
+        font-size: 14px;
+    }
+
+    .loading::before {
+        content: "🏆";
+
+        display: block;
+
+        font-size: 28px;
+
+        margin-bottom: 10px;
+    }
+
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 900px) {
+
+        .podium-card.first {
+            transform: none;
+        }
+
+        .podium-card.first:hover {
+            transform: translateY(-3px);
+        }
+
+    }
+
+
+    @media (max-width: 700px) {
+
+        .dashboard-nav {
+            padding: 0 20px;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .leaderboard-container {
+            width: 92%;
+
+            padding-top: 35px;
+        }
+
+        .leaderboard-header h1 {
+            font-size: 30px;
+        }
+
+        .podium {
+            grid-template-columns: 1fr;
+
+            gap: 12px;
+        }
+
+        .podium-card {
+            padding: 20px;
+        }
+
+        .leaderboard-table th,
+        .leaderboard-table td {
+            padding: 14px 15px;
+        }
+
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<!-- =========================
+     NAVBAR
+========================== -->
+
+<nav class="dashboard-nav">
+
+    <a href="index.html" class="nav-logo">
+        CodeArena
+    </a>
+
+
+    <div class="nav-links">
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="problems.html">
+            Problems
+        </a>
+
+        <a href="leaderboard.html" class="active">
+            Leaderboard
+        </a>
+
+        <a href="profile.html">
+            Profile
+        </a>
+
+    </div>
+
+
+    <button
+        class="logout-btn"
+        id="logoutBtn">
+
+        Logout
+
+    </button>
+
+</nav>
+
+
+
+<!-- =========================
+     MAIN
+========================== -->
+
+<main class="leaderboard-container">
+
+
+    <div
+        id="errorBox"
+        class="error-box">
+    </div>
+
+
+    <!-- HEADER -->
+
+    <section class="leaderboard-header">
+
+        <div class="leaderboard-icon">
+            🏆
+        </div>
+
+        <h1>
+            Leaderboard
+        </h1>
+
+        <p>
+            Compete, solve problems, and climb the ranks.
+        </p>
+
+    </section>
+
+
+
+    <!-- =========================
+         TOP 3 PODIUM
+    ========================== -->
+
+    <section
+        id="podium"
+        class="podium">
+
+        <div class="loading">
+            Loading leaderboard...
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         LEADERBOARD
+    ========================== -->
+
+    <section class="leaderboard-panel">
+
+
+        <div class="table-header">
+
+            <h2>
+                Rankings
+            </h2>
+
+            <div
+                class="user-position"
+                id="userPosition">
+            </div>
+
+        </div>
+
+
+        <div
+            id="leaderboardContent">
+
+            <div class="loading">
+                Loading rankings...
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+<script>
+
+    /* =========================
+       CONFIG
+    ========================= */
+
+    const API_URL =
+        "http://127.0.0.1:8000";
+
+
+    const token =
+        localStorage.getItem(
+            "access_token"
+        );
+
+
+    /* =========================
+       AUTH
+    ========================= */
+
+    if (!token) {
+
+        window.location.replace(
+            "login.html"
+        );
+
+    }
+
+
+    /* =========================
+       ELEMENTS
+    ========================= */
+
+    const podium =
+        document.getElementById(
+            "podium"
+        );
+
+    const leaderboardContent =
+        document.getElementById(
+            "leaderboardContent"
+        );
+
+    const errorBox =
+        document.getElementById(
+            "errorBox"
+        );
+
+    const userPosition =
+        document.getElementById(
+            "userPosition"
+        );
+
+
+    /* =========================
+       ERROR
+    ========================= */
+
+    function showError(message) {
+
+        errorBox.textContent =
+            message;
+
+        errorBox.style.display =
+            "block";
+
+    }
+
+
+    /* =========================
+       ESCAPE HTML
+    ========================= */
+
+    function escapeHtml(value) {
+
+        return String(value ?? "")
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    /* =========================
+       GET CURRENT USER
+    ========================= */
+
+    async function getCurrentUser() {
+
+        const response =
+            await fetch(
+                `${API_URL}/me`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`,
+
+                        "Accept":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.replace(
+                "login.html"
+            );
+
+            return null;
+
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to verify current user."
+            );
+
+        }
+
+
+        return await response.json();
+
+    }
+
+
+    /* =========================
+       LOAD LEADERBOARD
+    ========================= */
+
+    async function loadLeaderboard() {
+
+        try {
+
+            const [
+                user,
+                leaderboardResponse
+            ] = await Promise.all([
+
+                getCurrentUser(),
+
+                fetch(
+                    `${API_URL}/leaderboard`,
+                    {
+                        method: "GET",
+
+                        headers: {
+                            "Accept":
+                                "application/json"
+                        }
+                    }
+                )
+
+            ]);
+
+
+            if (!user) {
+                return;
+            }
+
+
+            /* =====================
+               CHECK API
+            ===================== */
+
+            if (
+                !leaderboardResponse.ok
+            ) {
+
+                let errorData = null;
+
+                try {
+
+                    errorData =
+                        await leaderboardResponse.json();
+
+                } catch {
+
+                    errorData = null;
+
+                }
+
+
+                throw new Error(
+                    errorData?.detail ||
+                    "Unable to load leaderboard."
+                );
+
+            }
+
+
+            const data =
+                await leaderboardResponse.json();
+
+
+            if (
+                !Array.isArray(data)
+            ) {
+
+                throw new Error(
+                    "Invalid leaderboard response."
+                );
+
+            }
+
+
+            /* =====================
+               EMPTY
+            ===================== */
+
+            if (data.length === 0) {
+
+                podium.innerHTML = `
+                    <div
+                        class="empty-state"
+                        style="grid-column: 1 / -1;">
+                        No users found in the leaderboard yet.
+                    </div>
+                `;
+
+
+                leaderboardContent.innerHTML = `
+                    <div class="empty-state">
+                        Start solving problems to appear here.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            /* =====================
+               TOP 3
+            ===================== */
+
+            renderPodium(data);
+
+
+            /* =====================
+               TABLE
+            ===================== */
+
+            renderTable(
+                data,
+                user
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Leaderboard error:",
+                error
+            );
+
+
+            podium.innerHTML = `
+                <div
+                    class="empty-state"
+                    style="grid-column: 1 / -1;">
+                    Unable to load leaderboard.
+                </div>
+            `;
+
+
+            leaderboardContent.innerHTML = `
+                <div class="empty-state">
+                    Please try refreshing the page.
+                </div>
+            `;
+
+
+            showError(
+                error.message ||
+                "Something went wrong while loading the leaderboard."
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       PODIUM
+    ========================= */
+
+    function renderPodium(data) {
+
+        const topThree =
+            data.slice(0, 3);
+
+
+        const podiumOrder = [];
+
+
+        /*
+
+            Display order:
+
+                2nd
+                1st
+                3rd
+
+        */
+
+
+        if (topThree[1]) {
+
+            podiumOrder.push({
+                user: topThree[1],
+                position: 2,
+                emoji: "🥈",
+                className: ""
+            });
+
+        }
+
+
+        if (topThree[0]) {
+
+            podiumOrder.push({
+                user: topThree[0],
+                position: 1,
+                emoji: "🥇",
+                className: "first"
+            });
+
+        }
+
+
+        if (topThree[2]) {
+
+            podiumOrder.push({
+                user: topThree[2],
+                position: 3,
+                emoji: "🥉",
+                className: ""
+            });
+
+        }
+
+
+        podium.innerHTML =
+            podiumOrder.map(item => {
+
+                const username =
+                    escapeHtml(
+                        item.user.username
+                    );
+
+
+                return `
+
+                    <div
+                        class="podium-card ${item.className}">
+
+                        <div
+                            class="podium-rank">
+
+                            ${item.emoji}
+
+                        </div>
+
+
+                        <div
+                            class="podium-username">
+
+                            ${username}
+
+                        </div>
+
+
+                        <div
+                            class="podium-solved">
+
+                            <strong>
+                                ${Number(
+                                    item.user.problems_solved || 0
+                                )}
+                            </strong>
+
+                            problems solved
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }).join("");
+
+    }
+
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    function renderTable(
+        data,
+        currentUser
+    ) {
+
+        const currentUserId =
+            Number(
+                currentUser.id
+            );
+
+
+        const currentUserRow =
+            data.find(
+                user =>
+                    Number(user.user_id) ===
+                    currentUserId
+            );
+
+
+        /* USER POSITION */
+
+        if (currentUserRow) {
+
+            userPosition.innerHTML = `
+                Your Rank:
+                <span>
+                    #${currentUserRow.rank}
+                </span>
+            `;
+
+        }
+
+
+        /* TABLE */
+
+        leaderboardContent.innerHTML = `
+
+            <div
+                class="leaderboard-table-wrapper">
+
+                <table
+                    class="leaderboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Rank
+                            </th>
+
+                            <th>
+                                User
+                            </th>
+
+                            <th>
+                                Problems Solved
+                            </th>
+
+                            <th>
+                                Accepted
+                            </th>
+
+                            <th>
+                                Submissions
+                            </th>
+
+                            <th>
+                                Acceptance Rate
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${data.map(user => {
+
+                            const isCurrentUser =
+                                Number(
+                                    user.user_id
+                                ) ===
+                                currentUserId;
+
+
+                            const rank =
+                                Number(
+                                    user.rank
+                                );
+
+
+                            let rankDisplay =
+                                `#${rank}`;
+
+
+                            if (rank === 1) {
+
+                                rankDisplay =
+                                    "🥇";
+
+                            }
+                            else if (rank === 2) {
+
+                                rankDisplay =
+                                    "🥈";
+
+                            }
+                            else if (rank === 3) {
+
+                                rankDisplay =
+                                    "🥉";
+
+                            }
+
+
+                            const username =
+                                escapeHtml(
+                                    user.username
+                                );
+
+
+                            const firstLetter =
+                                username
+                                    .charAt(0)
+                                    .toUpperCase();
+
+
+                            return `
+
+                                <tr
+                                    class="${
+                                        isCurrentUser
+                                            ? "current-user"
+                                            : ""
+                                    }">
+
+                                    <td
+                                        class="rank ${
+                                            rank <= 3
+                                                ? "top"
+                                                : ""
+                                        }">
+
+                                        ${rankDisplay}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div
+                                            class="user-cell">
+
+                                            <div
+                                                class="avatar">
+
+                                                ${firstLetter}
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <span
+                                                    class="username">
+
+                                                    ${username}
+
+                                                </span>
+
+
+                                                ${
+                                                    isCurrentUser
+                                                        ? `
+                                                            <span
+                                                                class="you-badge">
+
+                                                                YOU
+
+                                                            </span>
+                                                        `
+                                                        : ""
+                                                }
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td
+                                        class="number solved-number">
+
+                                        ${Number(
+                                            user.problems_solved || 0
+                                        )}
+
+                                    </td>
+
+
+                                    <td
+                                        class="number">
+
+                                        ${Number(
+                                            user.accepted_submissions || 0
+                                        )}
+
+                                    </td>
+
+
+                                    <td
+                                        class="number">
+
+                                        ${Number(
+                                            user.total_submissions || 0
+                                        )}
+
+                                    </td>
+
+
+                                    <td
+                                        class="rate">
+
+                                        ${Number(
+                                            user.acceptance_rate || 0
+                                        )}%
+
+                                    </td>
+
+                                </tr>
+
+                            `;
+
+                        }).join("")}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    document
+        .getElementById("logoutBtn")
+        .addEventListener(
+            "click",
+            () => {
+
+                localStorage.removeItem(
+                    "access_token"
+                );
+
+                window.location.replace(
+                    "login.html"
+                );
+
+            }
+        );
+
+
+    /* =========================
+       START
+    ========================= */
+
+    loadLeaderboard();
+
+</script>
+```
+
+</body>
+
+</html>

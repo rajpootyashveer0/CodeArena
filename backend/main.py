@@ -17,7 +17,8 @@ from schemas import (
     SubmissionCreate,
     SubmissionResponse,
     TestCaseCreate,
-    TestCaseResponse
+    TestCaseResponse,
+    LeaderboardResponse
 )
 
 from auth import (
@@ -836,3 +837,112 @@ def get_dashboard(
             "hard_solved": hard_solved
         }
     }
+
+# =========================================================
+# LEADERBOARD
+# =========================================================
+
+@app.get(
+    "/leaderboard",
+    response_model=list[LeaderboardResponse]
+)
+def get_leaderboard(
+    db: Session = Depends(get_db)
+):
+
+    users = db.query(User).all()
+
+    leaderboard = []
+
+    # --------------------------------
+    # Calculate stats for every user
+    # --------------------------------
+
+    for user in users:
+
+        submissions = db.query(Submission).filter(
+            Submission.user_id == user.id
+        ).all()
+
+        # -----------------------------
+        # Total submissions
+        # -----------------------------
+
+        total_submissions = len(submissions)
+
+        # -----------------------------
+        # Accepted submissions
+        # -----------------------------
+
+        accepted_submissions = sum(
+            1
+            for submission in submissions
+            if submission.status == "Accepted"
+        )
+
+        # -----------------------------
+        # Unique solved problems
+        # -----------------------------
+
+        solved_problem_ids = {
+            submission.problem_id
+            for submission in submissions
+            if submission.status == "Accepted"
+        }
+
+        problems_solved = len(
+            solved_problem_ids
+        )
+
+        # -----------------------------
+        # Acceptance rate
+        # -----------------------------
+
+        if total_submissions > 0:
+            acceptance_rate = round(
+                (
+                    accepted_submissions
+                    / total_submissions
+                ) * 100,
+                2
+            )
+        else:
+            acceptance_rate = 0.0
+
+        # -----------------------------
+        # Add user
+        # -----------------------------
+
+        leaderboard.append({
+            "user_id": user.id,
+            "username": user.username,
+            "problems_solved": problems_solved,
+            "accepted_submissions": accepted_submissions,
+            "total_submissions": total_submissions,
+            "acceptance_rate": acceptance_rate
+        })
+
+    # --------------------------------
+    # Sort leaderboard
+    # --------------------------------
+
+    leaderboard.sort(
+        key=lambda user: (
+            -user["problems_solved"],
+            -user["accepted_submissions"],
+            -user["acceptance_rate"],
+            user["total_submissions"]
+        )
+    )
+
+    # --------------------------------
+    # Assign ranks
+    # --------------------------------
+
+    for index, user in enumerate(
+        leaderboard,
+        start=1
+    ):
+        user["rank"] = index
+
+    return leaderboard

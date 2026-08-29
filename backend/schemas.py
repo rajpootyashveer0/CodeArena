@@ -91,3 +91,12 @@ class TestCaseResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class LeaderboardResponse(BaseModel):
+    rank: int
+    user_id: int
+    username: str
+    problems_solved: int
+    accepted_submissions: int
+    total_submissions: int
+    acceptance_rate: float
