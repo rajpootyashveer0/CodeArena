@@ -1,4 +1,5 @@
- <!DOCTYPE html>
+```html
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -11,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css">
@@ -21,19 +22,29 @@
             box-sizing: border-box;
         }
 
-        body {
-            margin: 0;
-            background: #0b0b0b;
-            color: #ffffff;
-            font-family: "Inter", sans-serif;
+        html {
+            scroll-behavior: smooth;
         }
 
-        /* NAVBAR */
+        body {
+            margin: 0;
+            background:
+                radial-gradient(circle at 50% -10%, rgba(255, 161, 22, 0.08), transparent 35%),
+                #0b0b0b;
+            color: #fff;
+            font-family: "Inter", sans-serif;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
 
         .dashboard-nav {
-            height: 64px;
-            border-bottom: 1px solid #262626;
-            background: #111111;
+            height: 66px;
+            border-bottom: 1px solid #252525;
+            background: rgba(15, 15, 15, 0.94);
+            backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -49,19 +60,22 @@
             font-family: "Space Grotesk", sans-serif;
             font-size: 23px;
             font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 28px;
+            gap: 30px;
         }
 
         .nav-links a {
-            color: #aaa;
+            color: #888;
             text-decoration: none;
             font-size: 14px;
+            font-weight: 500;
             transition: 0.2s ease;
+            position: relative;
         }
 
         .nav-links a:hover,
@@ -69,119 +83,211 @@
             color: #ffa116;
         }
 
+        .nav-links a.active::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -23px;
+            height: 2px;
+            background: #ffa116;
+            border-radius: 5px;
+        }
+
         .logout-btn {
             background: transparent;
             border: 1px solid #333;
-            color: #bbb;
-            padding: 8px 14px;
+            color: #aaa;
+            padding: 8px 15px;
             border-radius: 7px;
             cursor: pointer;
+            font-family: "Inter", sans-serif;
+            font-size: 13px;
             transition: 0.2s ease;
         }
 
         .logout-btn:hover {
             border-color: #ffa116;
             color: #ffa116;
+            background: rgba(255, 161, 22, 0.05);
         }
 
-        /* MAIN */
+        /* =========================
+           MAIN
+        ========================= */
 
         .dashboard-container {
             width: min(1180px, 92%);
             margin: 0 auto;
-            padding: 45px 0 70px;
+            padding: 48px 0 80px;
         }
 
+        /* =========================
+           ERROR
+        ========================= */
+
+        .error-box {
+            display: none;
+            background: #241414;
+            border: 1px solid #542525;
+            color: #ff7b7b;
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        /* =========================
+           WELCOME
+        ========================= */
+
         .welcome-section {
-            margin-bottom: 35px;
+            margin-bottom: 34px;
+        }
+
+        .welcome-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 10px;
+            border: 1px solid #292929;
+            border-radius: 999px;
+            color: #999;
+            background: #111;
+            font-size: 11px;
+            margin-bottom: 15px;
+        }
+
+        .welcome-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #2db55d;
+            box-shadow: 0 0 8px rgba(45, 181, 93, 0.6);
         }
 
         .welcome-section h1 {
-            margin: 0 0 8px;
+            margin: 0 0 9px;
             font-family: "Space Grotesk", sans-serif;
-            font-size: 34px;
+            font-size: 36px;
+            line-height: 1.15;
+            letter-spacing: -1px;
+        }
+
+        .welcome-section h1 span {
+            color: #ffa116;
         }
 
         .welcome-section p {
             margin: 0;
-            color: #888;
-            font-size: 15px;
+            color: #777;
+            font-size: 14px;
         }
 
-        /* STATS */
+        /* =========================
+           STATS
+        ========================= */
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
-            margin-bottom: 35px;
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         .stat-card {
-            background: #151515;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(145deg, #171717, #121212);
             border: 1px solid #292929;
-            border-radius: 12px;
-            padding: 24px;
-            transition: 0.2s ease;
+            border-radius: 13px;
+            padding: 21px;
+            transition: 0.25s ease;
+        }
+
+        .stat-card::after {
+            content: "";
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            right: -35px;
+            top: -35px;
+            background: rgba(255, 161, 22, 0.04);
         }
 
         .stat-card:hover {
-            border-color: #444;
-            transform: translateY(-2px);
+            border-color: #3d3d3d;
+            transform: translateY(-3px);
         }
 
         .stat-label {
-            color: #888;
-            font-size: 13px;
-            margin-bottom: 10px;
+            color: #777;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 12px;
         }
 
         .stat-value {
             font-family: "JetBrains Mono", monospace;
-            font-size: 28px;
+            font-size: 29px;
+            line-height: 1;
             font-weight: 600;
-        }
-
-        .stat-accent {
-            color: #ffa116;
+            color: #eee;
         }
 
         .stat-success {
             color: #2db55d;
         }
 
-        /* CONTENT GRID */
+        .stat-accent {
+            color: #ffa116;
+        }
+
+        /* =========================
+           CONTENT GRID
+        ========================= */
 
         .content-grid {
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
+            grid-template-columns: 1.45fr 1fr;
             gap: 20px;
         }
 
         .panel {
-            background: #151515;
+            background: linear-gradient(145deg, #161616, #121212);
             border: 1px solid #292929;
-            border-radius: 12px;
-            padding: 26px;
+            border-radius: 13px;
+            padding: 25px;
         }
 
         .panel-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            justify-content: space-between;
+            margin-bottom: 26px;
         }
 
         .panel-header h2 {
             margin: 0;
             font-family: "Space Grotesk", sans-serif;
-            font-size: 20px;
+            font-size: 19px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
         }
 
-        /* DIFFICULTY */
+        .panel-subtitle {
+            color: #666;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        /* =========================
+           DIFFICULTY
+        ========================= */
 
         .difficulty-item {
-            margin-bottom: 22px;
+            margin-bottom: 23px;
         }
 
         .difficulty-item:last-child {
@@ -190,31 +296,35 @@
 
         .difficulty-top {
             display: flex;
+            align-items: center;
             justify-content: space-between;
             margin-bottom: 9px;
-            font-size: 14px;
         }
 
         .difficulty-name {
             color: #ddd;
+            font-size: 13px;
+            font-weight: 500;
         }
 
         .difficulty-count {
-            color: #888;
+            color: #777;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 11px;
         }
 
         .progress {
             height: 7px;
-            background: #252525;
-            border-radius: 10px;
+            background: #242424;
+            border-radius: 20px;
             overflow: hidden;
         }
 
         .progress-bar {
             height: 100%;
-            border-radius: 10px;
             width: 0%;
-            transition: width 0.8s ease;
+            border-radius: 20px;
+            transition: width 1s ease;
         }
 
         .easy {
@@ -229,61 +339,99 @@
             background: #ef4743;
         }
 
-        /* ACCEPTANCE */
+        /* =========================
+           PERFORMANCE
+        ========================= */
+
+        .performance-panel {
+            display: flex;
+            flex-direction: column;
+        }
 
         .acceptance {
             display: flex;
-            align-items: center;
             justify-content: center;
-            margin: 10px 0 30px;
+            align-items: center;
+            margin: 2px 0 28px;
         }
 
         .circle {
-            width: 155px;
-            height: 155px;
+            width: 158px;
+            height: 158px;
             border-radius: 50%;
             border: 8px solid #292929;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            position: relative;
+            background:
+                radial-gradient(circle, #181818 58%, transparent 59%),
+                conic-gradient(#ffa116 0deg, #ffa116 0deg, #292929 0deg);
+        }
+
+        .circle::before {
+            content: "";
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 1px solid #333;
+            pointer-events: none;
         }
 
         .circle-value {
             font-family: "JetBrains Mono", monospace;
             font-size: 30px;
-            color: #ffa116;
             font-weight: 600;
+            color: #ffa116;
+            z-index: 1;
         }
 
         .circle-label {
-            color: #777;
-            font-size: 12px;
+            color: #666;
+            font-size: 11px;
             margin-top: 5px;
+            z-index: 1;
         }
 
-        /* QUICK ACTIONS */
+        /* =========================
+           QUICK ACTIONS
+        ========================= */
 
         .actions {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            display: grid;
+            gap: 10px;
+            margin-top: auto;
         }
 
         .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             text-decoration: none;
-            padding: 13px 16px;
+            padding: 12px 15px;
             border-radius: 8px;
-            border: 1px solid #333;
-            color: #ddd;
+            border: 1px solid #303030;
+            color: #ccc;
             background: #101010;
-            font-size: 14px;
+            font-size: 13px;
+            transition: 0.2s ease;
+        }
+
+        .action-btn::after {
+            content: "→";
+            color: #666;
             transition: 0.2s ease;
         }
 
         .action-btn:hover {
             border-color: #ffa116;
             color: #ffa116;
+        }
+
+        .action-btn:hover::after {
+            color: #ffa116;
+            transform: translateX(3px);
         }
 
         .action-primary {
@@ -293,33 +441,116 @@
             font-weight: 600;
         }
 
+        .action-primary::after {
+            color: #111;
+        }
+
         .action-primary:hover {
             background: #ffb13b;
             color: #111;
         }
 
-        /* LOADING */
+        /* =========================
+           SUBMISSIONS
+        ========================= */
 
-        .loading {
-            color: #777;
+        .submissions-panel {
+            margin-top: 20px;
+        }
+
+        .view-all-link {
+            color: #ffa116;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .view-all-link:hover {
+            text-decoration: underline;
+        }
+
+        .submission-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .submission-item {
+            display: grid;
+            grid-template-columns: 1fr 130px 120px;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 4px;
+            border-bottom: 1px solid #252525;
+            transition: 0.2s ease;
+        }
+
+        .submission-item:hover {
+            background: #181818;
+        }
+
+        .submission-item:last-child {
+            border-bottom: none;
+        }
+
+        .submission-problem {
+            color: #ddd;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .submission-meta {
+            color: #666;
+            font-size: 10px;
+            margin-top: 5px;
+        }
+
+        .submission-language {
+            color: #999;
+            font-size: 11px;
+        }
+
+        .submission-status {
+            justify-self: end;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 5px 9px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+        }
+
+        .submission-accepted {
+            color: #2db55d;
+            background: rgba(45, 181, 93, 0.08);
+            border-color: rgba(45, 181, 93, 0.2);
+        }
+
+        .submission-wrong,
+        .submission-error {
+            color: #ef4743;
+            background: rgba(239, 71, 67, 0.08);
+            border-color: rgba(239, 71, 67, 0.2);
+        }
+
+        .submission-warning {
+            color: #ffa116;
+            background: rgba(255, 161, 22, 0.08);
+            border-color: rgba(255, 161, 22, 0.2);
+        }
+
+        .loading,
+        .no-submissions {
             text-align: center;
-            padding: 30px 0;
+            color: #666;
+            padding: 28px 0;
+            font-size: 12px;
         }
 
-        .error-box {
-            display: none;
-            background: #291717;
-            border: 1px solid #5c2525;
-            color: #ff7b7b;
-            padding: 14px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            font-size: 14px;
-        }
-
-        /* RESPONSIVE */
+        /* =========================
+           RESPONSIVE
+        ========================= */
 
         @media (max-width: 900px) {
+
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -330,6 +561,7 @@
         }
 
         @media (max-width: 600px) {
+
             .dashboard-nav {
                 padding: 0 20px;
             }
@@ -339,7 +571,8 @@
             }
 
             .dashboard-container {
-                padding-top: 30px;
+                width: calc(100% - 30px);
+                padding: 32px 0 55px;
             }
 
             .welcome-section h1 {
@@ -347,100 +580,48 @@
             }
 
             .stats-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 17px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+
+            .panel {
+                padding: 20px;
+            }
+
+            .submission-item {
+                grid-template-columns: 1fr auto;
+                gap: 8px;
+            }
+
+            .submission-language {
+                grid-column: 1;
+            }
+
+            .submission-status {
+                grid-column: 2;
+                grid-row: 1 / span 2;
             }
         }
-        /* SUBMISSIONS */
 
-.submissions-panel {
-    margin-top: 20px;
-}
+        @media (max-width: 400px) {
 
-.view-all-link {
-    color: #ffa116;
-    text-decoration: none;
-    font-size: 12px;
-}
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
 
-.view-all-link:hover {
-    text-decoration: underline;
-}
-
-.submission-item {
-    display: grid;
-    grid-template-columns: 1.5fr 120px 100px;
-    align-items: center;
-    gap: 15px;
-
-    padding: 15px 0;
-
-    border-bottom: 1px solid #292929;
-}
-
-.submission-item:last-child {
-    border-bottom: none;
-}
-
-.submission-problem {
-    color: #ddd;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.submission-meta {
-    color: #777;
-    font-size: 11px;
-    margin-top: 5px;
-}
-
-.submission-language {
-    color: #999;
-    font-size: 12px;
-}
-
-.submission-status {
-    font-size: 12px;
-    font-weight: 600;
-    text-align: right;
-}
-
-.status-accepted {
-    color: #2db55d;
-}
-
-.status-wrong {
-    color: #ef4743;
-}
-
-.status-runtime {
-    color: #ef4743;
-}
-
-.status-warning {
-    color: #ffa116;
-}
-
-.no-submissions {
-    text-align: center;
-    color: #777;
-    padding: 30px 0;
-    font-size: 13px;
-}
-
-@media (max-width: 600px) {
-
-    .submission-item {
-        grid-template-columns: 1fr;
-        gap: 7px;
-    }
-
-    .submission-status {
-        text-align: left;
-    }
-
-}
+            .logout-btn {
+                padding: 7px 11px;
+            }
+        }
     </style>
-
 </head>
 
 <body>
@@ -482,16 +663,22 @@
 
         <div id="errorBox" class="error-box"></div>
 
+
         <!-- WELCOME -->
 
         <section class="welcome-section">
+
+            <div class="welcome-badge">
+                <span class="welcome-dot"></span>
+                Your coding workspace
+            </div>
 
             <h1>
                 Welcome back, <span id="username">Coder</span> 👋
             </h1>
 
             <p>
-                Track your coding progress and keep solving problems.
+                Track your progress, review your submissions and keep solving.
             </p>
 
         </section>
@@ -507,7 +694,9 @@
                     Problems Solved
                 </div>
 
-                <div class="stat-value stat-success" id="problemsSolved">
+                <div
+                    class="stat-value stat-success"
+                    id="problemsSolved">
                     0
                 </div>
 
@@ -520,7 +709,9 @@
                     Total Submissions
                 </div>
 
-                <div class="stat-value" id="totalSubmissions">
+                <div
+                    class="stat-value"
+                    id="totalSubmissions">
                     0
                 </div>
 
@@ -533,7 +724,9 @@
                     Accepted
                 </div>
 
-                <div class="stat-value stat-success" id="accepted">
+                <div
+                    class="stat-value stat-success"
+                    id="accepted">
                     0
                 </div>
 
@@ -546,7 +739,9 @@
                     Acceptance Rate
                 </div>
 
-                <div class="stat-value stat-accent" id="acceptanceRate">
+                <div
+                    class="stat-value stat-accent"
+                    id="acceptanceRate">
                     0%
                 </div>
 
@@ -560,18 +755,24 @@
         <section class="content-grid">
 
 
-            <!-- DIFFICULTY -->
+            <!-- PROBLEM PROGRESS -->
 
             <div class="panel">
 
                 <div class="panel-header">
 
-                    <h2>
-                        Problem Progress
-                    </h2>
+                    <div>
+                        <h2>Problem Progress</h2>
+
+                        <div class="panel-subtitle">
+                            Your solved problems by difficulty
+                        </div>
+                    </div>
 
                 </div>
 
+
+                <!-- EASY -->
 
                 <div class="difficulty-item">
 
@@ -581,7 +782,9 @@
                             Easy
                         </span>
 
-                        <span class="difficulty-count" id="easyCount">
+                        <span
+                            class="difficulty-count"
+                            id="easyCount">
                             0 solved
                         </span>
 
@@ -599,6 +802,8 @@
                 </div>
 
 
+                <!-- MEDIUM -->
+
                 <div class="difficulty-item">
 
                     <div class="difficulty-top">
@@ -607,7 +812,9 @@
                             Medium
                         </span>
 
-                        <span class="difficulty-count" id="mediumCount">
+                        <span
+                            class="difficulty-count"
+                            id="mediumCount">
                             0 solved
                         </span>
 
@@ -625,6 +832,8 @@
                 </div>
 
 
+                <!-- HARD -->
+
                 <div class="difficulty-item">
 
                     <div class="difficulty-top">
@@ -633,7 +842,9 @@
                             Hard
                         </span>
 
-                        <span class="difficulty-count" id="hardCount">
+                        <span
+                            class="difficulty-count"
+                            id="hardCount">
                             0 solved
                         </span>
 
@@ -653,22 +864,28 @@
             </div>
 
 
-            <!-- RIGHT PANEL -->
+            <!-- PERFORMANCE -->
 
-            <div class="panel">
+            <div class="panel performance-panel">
 
                 <div class="panel-header">
 
-                    <h2>
-                        Your Performance
-                    </h2>
+                    <div>
+                        <h2>Your Performance</h2>
+
+                        <div class="panel-subtitle">
+                            Based on your submissions
+                        </div>
+                    </div>
 
                 </div>
 
 
                 <div class="acceptance">
 
-                    <div class="circle">
+                    <div
+                        class="circle"
+                        id="acceptanceCircle">
 
                         <div
                             class="circle-value"
@@ -690,7 +907,7 @@
                     <a
                         href="problems.html"
                         class="action-btn action-primary">
-                        Solve Problems →
+                        Solve Problems
                     </a>
 
                     <a
@@ -704,543 +921,701 @@
             </div>
 
         </section>
+
+
         <!-- RECENT SUBMISSIONS -->
 
-<section class="submissions-panel panel">
+        <section class="submissions-panel panel">
 
-    <div class="panel-header">
+            <div class="panel-header">
 
-        <h2>
-            Recent Submissions
-        </h2>
+                <div>
+                    <h2>Recent Submissions</h2>
 
-        <a href="submissions.html" class="view-all-link">
-            View All →
-        </a>
+                    <div class="panel-subtitle">
+                        Your latest coding attempts
+                    </div>
+                </div>
 
-    </div>
+                <a
+                    href="submissions.html"
+                    class="view-all-link">
+                    View All →
+                </a>
 
-    <div id="submissionsList">
+            </div>
 
-        <div class="loading">
-            Loading submissions...
-        </div>
+            <div
+                id="submissionsList"
+                class="submission-list">
 
-    </div>
+                <div class="loading">
+                    Loading submissions...
+                </div>
 
-</section>
+            </div>
+
+        </section>
 
     </main>
 
- <script>
 
-    const API_URL = "http://127.0.0.1:8000";
+    <script>
 
-    const token = localStorage.getItem("access_token");
+        const API_URL = "http://127.0.0.1:8000";
 
+        const token = localStorage.getItem("access_token");
 
-    /* ================================
-       AUTHENTICATION
-    ================================= */
 
-    if (!token) {
-        window.location.replace("login.html");
-    }
+        /* ================================
+           AUTHENTICATION
+        ================================= */
 
-
-    /* ================================
-       HELPER FUNCTIONS
-    ================================= */
-
-    function showError(message) {
-
-        const errorBox = document.getElementById("errorBox");
-
-        errorBox.textContent = message;
-        errorBox.style.display = "block";
-    }
-
-
-    function hideError() {
-
-        const errorBox = document.getElementById("errorBox");
-
-        errorBox.textContent = "";
-        errorBox.style.display = "none";
-    }
-
-
-    function safeNumber(value) {
-
-        const number = Number(value);
-
-        return Number.isFinite(number) ? number : 0;
-    }
-
-
-    function calculatePercentage(solved, total) {
-
-        solved = safeNumber(solved);
-        total = safeNumber(total);
-
-        if (total <= 0) {
-            return 0;
-        }
-
-        return Math.min(
-            100,
-            Math.max(
-                0,
-                (solved / total) * 100
-            )
-        );
-    }
-
-
-    /* ================================
-       LOAD DASHBOARD
-    ================================= */
-
-    async function loadDashboard() {
-
-        hideError();
-
-        try {
-
-            const dashboardResponse = await fetch(
-                `${API_URL}/dashboard`,
-                {
-                    method: "GET",
-
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Accept": "application/json"
-                    }
-                }
-            );
-
-
-            let dashboardData = null;
-
-            try {
-                dashboardData = await dashboardResponse.json();
-            } catch {
-                dashboardData = null;
-            }
-
-
-            /* TOKEN EXPIRED */
-
-            if (dashboardResponse.status === 401) {
-
-                localStorage.removeItem("access_token");
-
-                window.location.replace("login.html");
-
-                return;
-            }
-
-
-            if (!dashboardResponse.ok) {
-
-                throw new Error(
-                    dashboardData?.detail ||
-                    "Unable to load dashboard"
-                );
-            }
-
-
-            /* USER */
-
-            const user = dashboardData?.user || {};
-
-            document.getElementById("username").textContent =
-                user.username || "Coder";
-
-
-            /* STATS */
-
-            const stats = dashboardData?.stats || {};
-
-
-            const problemsSolved =
-                safeNumber(stats.problems_solved);
-
-            const totalSubmissions =
-                safeNumber(stats.total_submissions);
-
-            const accepted =
-                safeNumber(stats.accepted);
-
-
-            const easySolved =
-                safeNumber(stats.easy_solved);
-
-            const mediumSolved =
-                safeNumber(stats.medium_solved);
-
-            const hardSolved =
-                safeNumber(stats.hard_solved);
-
-
-            /* MAIN STATS */
-
-            document.getElementById("problemsSolved").textContent =
-                problemsSolved;
-
-            document.getElementById("totalSubmissions").textContent =
-                totalSubmissions;
-
-            document.getElementById("accepted").textContent =
-                accepted;
-
-
-            /* ACCEPTANCE RATE */
-
-            let acceptanceRate = 0;
-
-            if (totalSubmissions > 0) {
-
-                acceptanceRate = Math.round(
-                    (accepted / totalSubmissions) * 100
-                );
-            }
-
-
-            document.getElementById("acceptanceRate").textContent =
-                `${acceptanceRate}%`;
-
-            document.getElementById("circleRate").textContent =
-                `${acceptanceRate}%`;
-
-
-            /* DIFFICULTY COUNTS */
-
-            document.getElementById("easyCount").textContent =
-                `${easySolved} solved`;
-
-            document.getElementById("mediumCount").textContent =
-                `${mediumSolved} solved`;
-
-            document.getElementById("hardCount").textContent =
-                `${hardSolved} solved`;
-
-
-            /* GET ALL PROBLEMS */
-
-            let allProblems = [];
-
-            try {
-
-                const problemsResponse = await fetch(
-                    `${API_URL}/problems`,
-                    {
-                        method: "GET",
-                        headers: {
-                            "Accept": "application/json"
-                        }
-                    }
-                );
-
-
-                if (problemsResponse.ok) {
-
-                    const problemsData =
-                        await problemsResponse.json();
-
-                    if (Array.isArray(problemsData)) {
-                        allProblems = problemsData;
-                    }
-                }
-
-            } catch (problemError) {
-
-                console.warn(
-                    "Unable to load problem list:",
-                    problemError
-                );
-            }
-
-
-            /* TOTAL PROBLEMS */
-
-            const totalEasy =
-                allProblems.filter(
-                    problem =>
-                        String(problem.difficulty || "")
-                            .toLowerCase() === "easy"
-                ).length;
-
-
-            const totalMedium =
-                allProblems.filter(
-                    problem =>
-                        String(problem.difficulty || "")
-                            .toLowerCase() === "medium"
-                ).length;
-
-
-            const totalHard =
-                allProblems.filter(
-                    problem =>
-                        String(problem.difficulty || "")
-                            .toLowerCase() === "hard"
-                ).length;
-
-
-            /* PROGRESS */
-
-            const easyPercentage =
-                calculatePercentage(
-                    easySolved,
-                    totalEasy
-                );
-
-
-            const mediumPercentage =
-                calculatePercentage(
-                    mediumSolved,
-                    totalMedium
-                );
-
-
-            const hardPercentage =
-                calculatePercentage(
-                    hardSolved,
-                    totalHard
-                );
-
-
-            /* PROGRESS BARS */
-
-            document.getElementById("easyProgress").style.width =
-                `${easyPercentage}%`;
-
-            document.getElementById("mediumProgress").style.width =
-                `${mediumPercentage}%`;
-
-            document.getElementById("hardProgress").style.width =
-                `${hardPercentage}%`;
-
-
-        } catch (error) {
-
-            console.error(
-                "Dashboard error:",
-                error
-            );
-
-            showError(
-                error.message ||
-                "Something went wrong while loading the dashboard."
-            );
-        }
-    }
-
-
-    /* ================================
-       RECENT SUBMISSIONS
-    ================================= */
-
-    async function loadRecentSubmissions() {
-
-        try {
-
-            const response = await fetch(
-                `${API_URL}/submissions`,
-                {
-                    method: "GET",
-
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Accept": "application/json"
-                    }
-                }
-            );
-
-
-            if (response.status === 401) {
-
-                localStorage.removeItem("access_token");
-
-                window.location.replace("login.html");
-
-                return;
-            }
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Unable to load submissions"
-                );
-            }
-
-
-            const submissions = await response.json();
-
-
-            /*
-             * Agar Recent Submissions section
-             * HTML mein available hai tabhi update karo.
-             */
-
-            const container =
-                document.getElementById("recentSubmissions");
-
-
-            if (!container) {
-
-                console.warn(
-                    "recentSubmissions element not found."
-                );
-
-                return;
-            }
-
-
-            /* NO SUBMISSIONS */
-
-            if (
-                !Array.isArray(submissions) ||
-                submissions.length === 0
-            ) {
-
-                container.innerHTML = `
-                    <div class="loading">
-                        No submissions yet.
-                    </div>
-                `;
-
-                return;
-            }
-
-
-            /*
-             * Latest submissions first
-             */
-
-            const recent =
-                [...submissions]
-                    .sort(
-                        (a, b) =>
-                            Number(b.id) - Number(a.id)
-                    )
-                    .slice(0, 5);
-
-
-            container.innerHTML = "";
-
-
-            recent.forEach(submission => {
-
-                const status =
-                    String(
-                        submission.status || "Pending"
-                    );
-
-
-                const normalizedStatus =
-                    status.toLowerCase();
-
-
-                let statusClass =
-                    "submission-status";
-
-
-                if (
-                    normalizedStatus === "accepted"
-                ) {
-
-                    statusClass +=
-                        " submission-accepted";
-
-                } else if (
-                    normalizedStatus === "wrong answer"
-                ) {
-
-                    statusClass +=
-                        " submission-wrong";
-
-                } else if (
-                    normalizedStatus === "runtime error"
-                ) {
-
-                    statusClass +=
-                        " submission-error";
-                }
-
-
-                const item =
-                    document.createElement("div");
-
-
-                item.className =
-                    "submission-item";
-
-
-                item.innerHTML = `
-
-                    <div class="submission-info">
-
-                        <div class="submission-problem">
-                            Problem #${submission.problem_id}
-                        </div>
-
-                        <div class="submission-language">
-                            ${submission.language}
-                        </div>
-
-                    </div>
-
-                    <div class="${statusClass}">
-                        ${status}
-                    </div>
-
-                `;
-
-
-                container.appendChild(item);
-
-            });
-
-
-        } catch (error) {
-
-            console.error(
-                "Recent submissions error:",
-                error
-            );
-
-        }
-    }
-
-
-    /* ================================
-       LOGOUT
-    ================================= */
-
-    document
-        .getElementById("logoutBtn")
-        .addEventListener("click", () => {
-
-            localStorage.removeItem("access_token");
+        if (!token) {
 
             window.location.replace("login.html");
 
-        });
+        }
 
 
-    /* ================================
-       START
-    ================================= */
+        /* ================================
+           HELPERS
+        ================================= */
 
-    loadDashboard();
+        function showError(message) {
 
-    loadRecentSubmissions();
+            const errorBox =
+                document.getElementById("errorBox");
 
-</script>
+            errorBox.textContent = message;
+            errorBox.style.display = "block";
+
+        }
+
+
+        function hideError() {
+
+            const errorBox =
+                document.getElementById("errorBox");
+
+            errorBox.textContent = "";
+            errorBox.style.display = "none";
+
+        }
+
+
+        function safeNumber(value) {
+
+            const number = Number(value);
+
+            return Number.isFinite(number)
+                ? number
+                : 0;
+
+        }
+
+
+        function calculatePercentage(solved, total) {
+
+            solved = safeNumber(solved);
+            total = safeNumber(total);
+
+            if (total <= 0) {
+                return 0;
+            }
+
+            return Math.min(
+                100,
+                Math.max(
+                    0,
+                    (solved / total) * 100
+                )
+            );
+
+        }
+
+
+        /* ================================
+           LOAD DASHBOARD
+        ================================= */
+
+        async function loadDashboard() {
+
+            hideError();
+
+            try {
+
+                const dashboardResponse =
+                    await fetch(
+                        `${API_URL}/dashboard`,
+                        {
+                            method: "GET",
+
+                            headers: {
+                                "Authorization":
+                                    `Bearer ${token}`,
+
+                                "Accept":
+                                    "application/json"
+                            }
+                        }
+                    );
+
+
+                let dashboardData = null;
+
+                try {
+
+                    dashboardData =
+                        await dashboardResponse.json();
+
+                } catch {
+
+                    dashboardData = null;
+
+                }
+
+
+                /* TOKEN EXPIRED */
+
+                if (dashboardResponse.status === 401) {
+
+                    localStorage.removeItem(
+                        "access_token"
+                    );
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!dashboardResponse.ok) {
+
+                    throw new Error(
+                        dashboardData?.detail ||
+                        "Unable to load dashboard"
+                    );
+
+                }
+
+
+                /* USER */
+
+                const user =
+                    dashboardData?.user || {};
+
+                document.getElementById(
+                    "username"
+                ).textContent =
+                    user.username || "Coder";
+
+
+                /* STATS */
+
+                const stats =
+                    dashboardData?.stats || {};
+
+
+                const problemsSolved =
+                    safeNumber(
+                        stats.problems_solved
+                    );
+
+                const totalSubmissions =
+                    safeNumber(
+                        stats.total_submissions
+                    );
+
+                const accepted =
+                    safeNumber(
+                        stats.accepted
+                    );
+
+
+                const easySolved =
+                    safeNumber(
+                        stats.easy_solved
+                    );
+
+                const mediumSolved =
+                    safeNumber(
+                        stats.medium_solved
+                    );
+
+                const hardSolved =
+                    safeNumber(
+                        stats.hard_solved
+                    );
+
+
+                /* MAIN STATS */
+
+                document.getElementById(
+                    "problemsSolved"
+                ).textContent =
+                    problemsSolved;
+
+                document.getElementById(
+                    "totalSubmissions"
+                ).textContent =
+                    totalSubmissions;
+
+                document.getElementById(
+                    "accepted"
+                ).textContent =
+                    accepted;
+
+
+                /* ACCEPTANCE RATE */
+
+                let acceptanceRate = 0;
+
+                if (totalSubmissions > 0) {
+
+                    acceptanceRate =
+                        Math.round(
+                            (accepted /
+                                totalSubmissions) *
+                            100
+                        );
+
+                }
+
+
+                document.getElementById(
+                    "acceptanceRate"
+                ).textContent =
+                    `${acceptanceRate}%`;
+
+                document.getElementById(
+                    "circleRate"
+                ).textContent =
+                    `${acceptanceRate}%`;
+
+
+                /* DIFFICULTY COUNTS */
+
+                document.getElementById(
+                    "easyCount"
+                ).textContent =
+                    `${easySolved} solved`;
+
+                document.getElementById(
+                    "mediumCount"
+                ).textContent =
+                    `${mediumSolved} solved`;
+
+                document.getElementById(
+                    "hardCount"
+                ).textContent =
+                    `${hardSolved} solved`;
+
+
+                /* GET ALL PROBLEMS */
+
+                let allProblems = [];
+
+                try {
+
+                    const problemsResponse =
+                        await fetch(
+                            `${API_URL}/problems`,
+                            {
+                                method: "GET",
+
+                                headers: {
+                                    "Accept":
+                                        "application/json"
+                                }
+                            }
+                        );
+
+
+                    if (problemsResponse.ok) {
+
+                        const problemsData =
+                            await problemsResponse.json();
+
+                        if (
+                            Array.isArray(
+                                problemsData
+                            )
+                        ) {
+
+                            allProblems =
+                                problemsData;
+
+                        }
+
+                    }
+
+                } catch (problemError) {
+
+                    console.warn(
+                        "Unable to load problem list:",
+                        problemError
+                    );
+
+                }
+
+
+                /* TOTAL PROBLEMS */
+
+                const totalEasy =
+                    allProblems.filter(
+                        problem =>
+                            String(
+                                problem.difficulty || ""
+                            ).toLowerCase() === "easy"
+                    ).length;
+
+
+                const totalMedium =
+                    allProblems.filter(
+                        problem =>
+                            String(
+                                problem.difficulty || ""
+                            ).toLowerCase() === "medium"
+                    ).length;
+
+
+                const totalHard =
+                    allProblems.filter(
+                        problem =>
+                            String(
+                                problem.difficulty || ""
+                            ).toLowerCase() === "hard"
+                    ).length;
+
+
+                /* PROGRESS */
+
+                const easyPercentage =
+                    calculatePercentage(
+                        easySolved,
+                        totalEasy
+                    );
+
+
+                const mediumPercentage =
+                    calculatePercentage(
+                        mediumSolved,
+                        totalMedium
+                    );
+
+
+                const hardPercentage =
+                    calculatePercentage(
+                        hardSolved,
+                        totalHard
+                    );
+
+
+                /* PROGRESS BARS */
+
+                document.getElementById(
+                    "easyProgress"
+                ).style.width =
+                    `${easyPercentage}%`;
+
+
+                document.getElementById(
+                    "mediumProgress"
+                ).style.width =
+                    `${mediumPercentage}%`;
+
+
+                document.getElementById(
+                    "hardProgress"
+                ).style.width =
+                    `${hardPercentage}%`;
+
+
+                /* ACCEPTANCE RING */
+
+                const circle =
+                    document.getElementById(
+                        "acceptanceCircle"
+                    );
+
+                const degrees =
+                    acceptanceRate * 3.6;
+
+                circle.style.background =
+                    `
+                    radial-gradient(
+                        circle,
+                        #181818 58%,
+                        transparent 59%
+                    ),
+                    conic-gradient(
+                        #ffa116 0deg,
+                        #ffa116 ${degrees}deg,
+                        #292929 ${degrees}deg,
+                        #292929 360deg
+                    )
+                    `;
+
+            } catch (error) {
+
+                console.error(
+                    "Dashboard error:",
+                    error
+                );
+
+                showError(
+                    error.message ||
+                    "Something went wrong while loading the dashboard."
+                );
+
+            }
+
+        }
+
+
+        /* ================================
+           RECENT SUBMISSIONS
+        ================================= */
+
+        async function loadRecentSubmissions() {
+
+            const container =
+                document.getElementById(
+                    "submissionsList"
+                );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/submissions`,
+                        {
+                            method: "GET",
+
+                            headers: {
+                                "Authorization":
+                                    `Bearer ${token}`,
+
+                                "Accept":
+                                    "application/json"
+                            }
+                        }
+                    );
+
+
+                if (response.status === 401) {
+
+                    localStorage.removeItem(
+                        "access_token"
+                    );
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load submissions"
+                    );
+
+                }
+
+
+                const submissions =
+                    await response.json();
+
+
+                /* NO SUBMISSIONS */
+
+                if (
+                    !Array.isArray(submissions) ||
+                    submissions.length === 0
+                ) {
+
+                    container.innerHTML = `
+                        <div class="no-submissions">
+                            No submissions yet. Start solving a problem!
+                        </div>
+                    `;
+
+                    return;
+
+                }
+
+
+                /* LATEST FIVE */
+
+                const recent =
+                    [...submissions]
+                        .sort(
+                            (a, b) =>
+                                Number(b.id) -
+                                Number(a.id)
+                        )
+                        .slice(0, 5);
+
+
+                container.innerHTML = "";
+
+
+                recent.forEach(
+                    submission => {
+
+                        const status =
+                            String(
+                                submission.status ||
+                                "Pending"
+                            );
+
+
+                        const normalizedStatus =
+                            status.toLowerCase();
+
+
+                        let statusClass =
+                            "submission-status";
+
+
+                        if (
+                            normalizedStatus ===
+                            "accepted"
+                        ) {
+
+                            statusClass +=
+                                " submission-accepted";
+
+                        } else if (
+                            normalizedStatus ===
+                            "wrong answer"
+                        ) {
+
+                            statusClass +=
+                                " submission-wrong";
+
+                        } else if (
+                            normalizedStatus ===
+                            "runtime error"
+                        ) {
+
+                            statusClass +=
+                                " submission-error";
+
+                        } else {
+
+                            statusClass +=
+                                " submission-warning";
+
+                        }
+
+
+                        const item =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        item.className =
+                            "submission-item";
+
+
+                        item.innerHTML = `
+
+                            <div>
+
+                                <div class="submission-problem">
+                                    Problem #${submission.problem_id}
+                                </div>
+
+                                <div class="submission-meta">
+                                    Submission #${submission.id || "—"}
+                                </div>
+
+                            </div>
+
+                            <div class="submission-language">
+                                ${submission.language || "Unknown"}
+                            </div>
+
+                            <div class="${statusClass}">
+                                ${status}
+                            </div>
+
+                        `;
+
+
+                        container.appendChild(
+                            item
+                        );
+
+                    }
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Recent submissions error:",
+                    error
+                );
+
+                container.innerHTML = `
+                    <div class="no-submissions">
+                        Unable to load recent submissions.
+                    </div>
+                `;
+
+            }
+
+        }
+
+
+        /* ================================
+           LOGOUT
+        ================================= */
+
+        document
+            .getElementById("logoutBtn")
+            .addEventListener(
+                "click",
+                () => {
+
+                    localStorage.removeItem(
+                        "access_token"
+                    );
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                }
+            );
+
+
+        /* ================================
+           START
+        ================================= */
+
+        if (token) {
+
+            loadDashboard();
+            loadRecentSubmissions();
+
+        }
+
+    </script>
 
 </body>
 
 </html>
+```
