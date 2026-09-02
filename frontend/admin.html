@@ -1,0 +1,2443 @@
+ <!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Panel — CodeArena</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background:
+                radial-gradient(
+                    circle at 50% -10%,
+                    rgba(255, 161, 22, 0.08),
+                    transparent 35%
+                ),
+                #0b0b0b;
+            color: #fff;
+            font-family: "Inter", sans-serif;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .dashboard-nav {
+            height: 66px;
+            border-bottom: 1px solid #252525;
+            background: rgba(15, 15, 15, 0.94);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            color: #ffa116;
+            text-decoration: none;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 23px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #888;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #ffa116;
+        }
+
+        .nav-links a.active::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -23px;
+            height: 2px;
+            background: #ffa116;
+            border-radius: 5px;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #333;
+            color: #aaa;
+            padding: 8px 15px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-family: "Inter", sans-serif;
+            font-size: 13px;
+            transition: 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            border-color: #ffa116;
+            color: #ffa116;
+            background: rgba(255, 161, 22, 0.05);
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .admin-container {
+            width: min(1180px, 92%);
+            margin: 0 auto;
+            padding: 48px 0 80px;
+        }
+
+        .error-box,
+        .success-box {
+            display: none;
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .error-box {
+            background: #241414;
+            border: 1px solid #542525;
+            color: #ff7b7b;
+        }
+
+        .success-box {
+            background: #102018;
+            border: 1px solid #234d31;
+            color: #55d984;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .admin-header {
+            margin-bottom: 30px;
+        }
+
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 10px;
+            border: 1px solid #292929;
+            border-radius: 999px;
+            color: #999;
+            background: #111;
+            font-size: 11px;
+            margin-bottom: 15px;
+        }
+
+        .admin-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #2db55d;
+            box-shadow: 0 0 8px rgba(45, 181, 93, 0.6);
+        }
+
+        .admin-header h1 {
+            margin: 0 0 9px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 36px;
+            line-height: 1.15;
+            letter-spacing: -1px;
+        }
+
+        .admin-header h1 span {
+            color: #ffa116;
+        }
+
+        .admin-header p {
+            margin: 0;
+            color: #777;
+            font-size: 14px;
+        }
+
+        /* =========================
+           TABS
+        ========================= */
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            border: 1px solid #303030;
+            background: #101010;
+            color: #888;
+            padding: 10px 17px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: "Inter", sans-serif;
+            font-size: 13px;
+            transition: 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: #ddd;
+            border-color: #444;
+        }
+
+        .tab-btn.active {
+            background: #ffa116;
+            color: #111;
+            border-color: #ffa116;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* =========================
+           GRID
+        ========================= */
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 390px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .panel {
+            background: linear-gradient(145deg, #161616, #121212);
+            border: 1px solid #292929;
+            border-radius: 13px;
+            padding: 25px;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 23px;
+        }
+
+        .panel-header h2 {
+            margin: 0;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 19px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .panel-subtitle {
+            color: #666;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #aaa;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            background: #0e0e0e;
+            border: 1px solid #303030;
+            border-radius: 8px;
+            color: #eee;
+            padding: 11px 12px;
+            outline: none;
+            font-family: "Inter", sans-serif;
+            font-size: 13px;
+            transition: 0.2s ease;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #ffa116;
+            box-shadow: 0 0 0 3px rgba(255, 161, 22, 0.06);
+        }
+
+        select option {
+            background: #111;
+            color: #fff;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 9px;
+            margin-top: 20px;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            border-radius: 8px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-family: "Inter", sans-serif;
+            font-size: 13px;
+            transition: 0.2s ease;
+        }
+
+        .primary-btn {
+            background: #ffa116;
+            color: #111;
+            border: 1px solid #ffa116;
+            font-weight: 600;
+        }
+
+        .primary-btn:hover {
+            background: #ffb13b;
+        }
+
+        .secondary-btn {
+            background: #101010;
+            border: 1px solid #303030;
+            color: #aaa;
+        }
+
+        .secondary-btn:hover {
+            border-color: #555;
+            color: #fff;
+        }
+
+        /* =========================
+           LIST
+        ========================= */
+
+        .list-container {
+            max-height: 650px;
+            overflow-y: auto;
+        }
+
+        .list-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .list-container::-webkit-scrollbar-track {
+            background: #111;
+        }
+
+        .list-container::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 10px;
+        }
+
+        .problem-item,
+        .testcase-item {
+            border-bottom: 1px solid #252525;
+            padding: 16px 4px;
+        }
+
+        .problem-item:first-child,
+        .testcase-item:first-child {
+            padding-top: 0;
+        }
+
+        .problem-item:last-child,
+        .testcase-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .item-title {
+            color: #ddd;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .item-id {
+            color: #555;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 10px;
+        }
+
+        .difficulty {
+            display: inline-block;
+            margin-top: 7px;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 999px;
+        }
+
+        .difficulty.easy {
+            color: #2db55d;
+            background: rgba(45, 181, 93, 0.08);
+            border: 1px solid rgba(45, 181, 93, 0.2);
+        }
+
+        .difficulty.medium {
+            color: #ffa116;
+            background: rgba(255, 161, 22, 0.08);
+            border: 1px solid rgba(255, 161, 22, 0.2);
+        }
+
+        .difficulty.hard {
+            color: #ef4743;
+            background: rgba(239, 71, 67, 0.08);
+            border: 1px solid rgba(239, 71, 67, 0.2);
+        }
+
+        .item-description {
+            color: #666;
+            font-size: 11px;
+            line-height: 1.5;
+            margin-top: 9px;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 7px;
+            margin-top: 12px;
+        }
+
+        .small-btn {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            font-family: "Inter", sans-serif;
+            background: #101010;
+            border: 1px solid #303030;
+            color: #aaa;
+        }
+
+        .small-btn:hover {
+            border-color: #ffa116;
+            color: #ffa116;
+        }
+
+        .small-btn.delete:hover {
+            border-color: #ef4743;
+            color: #ef4743;
+        }
+
+        .testcase-input,
+        .testcase-output {
+            margin-top: 9px;
+            background: #0d0d0d;
+            border: 1px solid #252525;
+            border-radius: 7px;
+            padding: 9px 10px;
+            color: #999;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 10px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .empty-state,
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 35px 10px;
+            font-size: 12px;
+        }
+
+        /* =========================
+           TEST CASE SELECT
+        ========================= */
+
+        .testcase-toolbar {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .testcase-toolbar select {
+            min-width: 0;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 950px) {
+
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .list-container {
+                max-height: none;
+            }
+        }
+
+        @media (max-width: 650px) {
+
+            .dashboard-nav {
+                padding: 0 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .admin-container {
+                width: calc(100% - 30px);
+                padding: 32px 0 55px;
+            }
+
+            .admin-header h1 {
+                font-size: 28px;
+            }
+
+            .panel {
+                padding: 20px;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .testcase-toolbar {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="dashboard-nav">
+
+        <a href="index.html" class="nav-logo">
+            CodeArena
+        </a>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="problems.html">
+                Problems
+            </a>
+
+            <a href="profile.html">
+                Profile
+            </a>
+
+            <a href="admin.html" class="active">
+                Admin
+            </a>
+
+        </div>
+
+        <button class="logout-btn" id="logoutBtn">
+            Logout
+        </button>
+
+    </nav>
+
+
+    <!-- MAIN -->
+
+    <main class="admin-container">
+
+        <div id="errorBox" class="error-box"></div>
+
+        <div id="successBox" class="success-box"></div>
+
+
+        <!-- HEADER -->
+
+        <section class="admin-header">
+
+            <div class="admin-badge">
+                <span class="admin-dot"></span>
+                Administrator Workspace
+            </div>
+
+            <h1>
+                CodeArena <span>Admin Panel</span>
+            </h1>
+
+            <p>
+                Manage problems, test cases and judge data.
+            </p>
+
+        </section>
+
+
+        <!-- TABS -->
+
+        <div class="tabs">
+
+            <button
+                class="tab-btn active"
+                data-tab="problemsTab">
+                Problems
+            </button>
+
+            <button
+                class="tab-btn"
+                data-tab="testCasesTab">
+                Test Cases
+            </button>
+
+        </div>
+
+
+        <!-- =========================
+             PROBLEMS TAB
+        ========================== -->
+
+        <section
+            id="problemsTab"
+            class="tab-content active">
+
+            <div class="admin-grid">
+
+
+                <!-- PROBLEM FORM -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <h2 id="problemFormTitle">
+                                Add Problem
+                            </h2>
+
+                            <div class="panel-subtitle">
+                                Create or update a coding problem
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <form id="problemForm">
+
+                        <div class="form-group">
+
+                            <label for="problemTitle">
+                                Title
+                            </label>
+
+                            <input
+                                id="problemTitle"
+                                type="text"
+                                placeholder="e.g. Two Sum"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="problemDescription">
+                                Description
+                            </label>
+
+                            <textarea
+                                id="problemDescription"
+                                placeholder="Describe the problem..."
+                                required></textarea>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="problemDifficulty">
+                                Difficulty
+                            </label>
+
+                            <select
+                                id="problemDifficulty"
+                                required>
+
+                                <option value="Easy">
+                                    Easy
+                                </option>
+
+                                <option value="Medium">
+                                    Medium
+                                </option>
+
+                                <option value="Hard">
+                                    Hard
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="inputFormat">
+                                Input Format
+                            </label>
+
+                            <textarea
+                                id="inputFormat"
+                                placeholder="Describe the input..."></textarea>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="outputFormat">
+                                Output Format
+                            </label>
+
+                            <textarea
+                                id="outputFormat"
+                                placeholder="Describe the output..."></textarea>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="constraints">
+                                Constraints
+                            </label>
+
+                            <textarea
+                                id="constraints"
+                                placeholder="e.g. 1 ≤ n ≤ 10⁵"></textarea>
+
+                        </div>
+
+
+                        <div class="form-actions">
+
+                            <button
+                                type="submit"
+                                class="primary-btn"
+                                id="problemSubmitBtn">
+                                Add Problem
+                            </button>
+
+                            <button
+                                type="button"
+                                class="secondary-btn"
+                                id="cancelProblemBtn"
+                                style="display:none;">
+                                Cancel
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- PROBLEM LIST -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <h2>Problems</h2>
+
+                            <div class="panel-subtitle">
+                                Manage CodeArena problems
+                            </div>
+                        </div>
+
+                        <span
+                            class="item-id"
+                            id="problemCount">
+                            0 problems
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        id="problemsList"
+                        class="list-container">
+
+                        <div class="loading">
+                            Loading problems...
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             TEST CASE TAB
+        ========================== -->
+
+        <section
+            id="testCasesTab"
+            class="tab-content">
+
+            <div class="admin-grid">
+
+
+                <!-- TEST CASE FORM -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <h2 id="testCaseFormTitle">
+                                Add Test Case
+                            </h2>
+
+                            <div class="panel-subtitle">
+                                Create or update judge test cases
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <form id="testCaseForm">
+
+                        <div class="form-group">
+
+                            <label for="testProblem">
+                                Problem
+                            </label>
+
+                            <select
+                                id="testProblem"
+                                required>
+
+                                <option value="">
+                                    Select a problem
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="testInput">
+                                Input
+                            </label>
+
+                            <textarea
+                                id="testInput"
+                                placeholder="Example:
+2
+1 2"
+                                required></textarea>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="testOutput">
+                                Expected Output
+                            </label>
+
+                            <textarea
+                                id="testOutput"
+                                placeholder="Example:
+3"
+                                required></textarea>
+
+                        </div>
+
+
+                        <div class="form-actions">
+
+                            <button
+                                type="submit"
+                                class="primary-btn"
+                                id="testCaseSubmitBtn">
+                                Add Test Case
+                            </button>
+
+                            <button
+                                type="button"
+                                class="secondary-btn"
+                                id="cancelTestCaseBtn"
+                                style="display:none;">
+                                Cancel
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- TEST CASE LIST -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <h2>Test Cases</h2>
+
+                            <div class="panel-subtitle">
+                                Select a problem to view its test cases
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="testcase-toolbar">
+
+                        <select id="testCaseProblemFilter">
+
+                            <option value="">
+                                Select problem
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div
+                        id="testCasesList"
+                        class="list-container">
+
+                        <div class="empty-state">
+                            Select a problem to view test cases.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        const API_URL = "http://127.0.0.1:8000";
+
+        const token =
+            localStorage.getItem("access_token");
+
+
+        /* =========================
+           AUTH
+        ========================= */
+
+        if (!token) {
+
+            window.location.replace("login.html");
+
+        }
+
+
+        let currentUser = null;
+        let editingProblemId = null;
+        let editingTestCaseId = null;
+        let problems = [];
+
+
+        /* =========================
+           HELPERS
+        ========================= */
+
+        function showError(message) {
+
+            const box =
+                document.getElementById("errorBox");
+
+            box.textContent = message;
+            box.style.display = "block";
+
+            document.getElementById(
+                "successBox"
+            ).style.display = "none";
+
+        }
+
+
+        function showSuccess(message) {
+
+            const box =
+                document.getElementById("successBox");
+
+            box.textContent = message;
+            box.style.display = "block";
+
+            document.getElementById(
+                "errorBox"
+            ).style.display = "none";
+
+            setTimeout(() => {
+
+                box.style.display = "none";
+
+            }, 3000);
+
+        }
+
+
+        function hideMessages() {
+
+            document.getElementById(
+                "errorBox"
+            ).style.display = "none";
+
+            document.getElementById(
+                "successBox"
+            ).style.display = "none";
+
+        }
+
+
+        function authHeaders() {
+
+            return {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            };
+
+        }
+
+
+        function escapeHtml(value) {
+
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        async function parseResponse(response) {
+
+            let data = null;
+
+            try {
+
+                data = await response.json();
+
+            } catch {
+
+                data = null;
+
+            }
+
+            if (response.status === 401) {
+
+                localStorage.removeItem(
+                    "access_token"
+                );
+
+                window.location.replace(
+                    "login.html"
+                );
+
+                return null;
+
+            }
+
+
+            if (response.status === 403) {
+
+                showError(
+                    data?.detail ||
+                    "Admin access required."
+                );
+
+                setTimeout(() => {
+
+                    window.location.replace(
+                        "dashboard.html"
+                    );
+
+                }, 1200);
+
+                return null;
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data?.detail ||
+                    "Request failed"
+                );
+
+            }
+
+            return data;
+
+        }
+
+
+        /* =========================
+           VERIFY ADMIN
+        ========================= */
+
+        async function verifyAdmin() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/me`,
+                        {
+                            method: "GET",
+                            headers: {
+                                "Authorization":
+                                    `Bearer ${token}`,
+                                "Accept":
+                                    "application/json"
+                            }
+                        }
+                    );
+
+
+                const user =
+                    await parseResponse(response);
+
+                if (!user) {
+                    return false;
+                }
+
+
+                currentUser = user;
+
+
+                if (
+                    String(user.role || "")
+                        .toLowerCase() !== "admin"
+                ) {
+
+                    showError(
+                        "Access denied. Admin account required."
+                    );
+
+                    setTimeout(() => {
+
+                        window.location.replace(
+                            "dashboard.html"
+                        );
+
+                    }, 1200);
+
+                    return false;
+
+                }
+
+
+                return true;
+
+            } catch (error) {
+
+                console.error(
+                    "Admin verification error:",
+                    error
+                );
+
+                showError(
+                    error.message ||
+                    "Unable to verify admin access."
+                );
+
+                return false;
+
+            }
+
+        }
+
+
+        /* =========================
+           TABS
+        ========================= */
+
+        document
+            .querySelectorAll(".tab-btn")
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        document
+                            .querySelectorAll(
+                                ".tab-btn"
+                            )
+                            .forEach(btn =>
+                                btn.classList.remove(
+                                    "active"
+                                )
+                            );
+
+                        document
+                            .querySelectorAll(
+                                ".tab-content"
+                            )
+                            .forEach(tab =>
+                                tab.classList.remove(
+                                    "active"
+                                )
+                            );
+
+
+                        button.classList.add(
+                            "active"
+                        );
+
+                        document
+                            .getElementById(
+                                button.dataset.tab
+                            )
+                            .classList.add(
+                                "active"
+                            );
+
+                    }
+                );
+
+            });
+
+
+        /* =========================
+           LOAD PROBLEMS
+        ========================= */
+
+        async function loadProblems() {
+
+            const list =
+                document.getElementById(
+                    "problemsList"
+                );
+
+
+            list.innerHTML = `
+                <div class="loading">
+                    Loading problems...
+                </div>
+            `;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/problems`,
+                        {
+                            method: "GET",
+                            headers: {
+                                "Accept":
+                                    "application/json"
+                            }
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load problems"
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                problems =
+                    Array.isArray(data)
+                        ? data
+                        : [];
+
+
+                renderProblems();
+                populateProblemSelects();
+
+            } catch (error) {
+
+                console.error(error);
+
+                list.innerHTML = `
+                    <div class="empty-state">
+                        Unable to load problems.
+                    </div>
+                `;
+
+                showError(
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        /* =========================
+           RENDER PROBLEMS
+        ========================= */
+
+        function renderProblems() {
+
+            const list =
+                document.getElementById(
+                    "problemsList"
+                );
+
+
+            document.getElementById(
+                "problemCount"
+            ).textContent =
+                `${problems.length} ${
+                    problems.length === 1
+                        ? "problem"
+                        : "problems"
+                }`;
+
+
+            if (problems.length === 0) {
+
+                list.innerHTML = `
+                    <div class="empty-state">
+                        No problems created yet.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            list.innerHTML = "";
+
+
+            problems.forEach(problem => {
+
+                const difficulty =
+                    String(
+                        problem.difficulty || "Easy"
+                    ).toLowerCase();
+
+
+                const item =
+                    document.createElement("div");
+
+                item.className =
+                    "problem-item";
+
+
+                item.innerHTML = `
+
+                    <div class="item-top">
+
+                        <div class="item-title">
+                            ${escapeHtml(problem.title)}
+                        </div>
+
+                        <div class="item-id">
+                            #${problem.id}
+                        </div>
+
+                    </div>
+
+                    <span class="difficulty ${difficulty}">
+                        ${escapeHtml(problem.difficulty)}
+                    </span>
+
+                    <div class="item-description">
+                        ${escapeHtml(
+                            problem.description
+                        )}
+                    </div>
+
+                    <div class="item-actions">
+
+                        <button
+                            class="small-btn"
+                            onclick="editProblem(${problem.id})">
+                            Edit
+                        </button>
+
+                        <button
+                            class="small-btn delete"
+                            onclick="deleteProblem(${problem.id})">
+                            Delete
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                list.appendChild(item);
+
+            });
+
+        }
+
+
+        /* =========================
+           PROBLEM SELECTS
+        ========================= */
+
+        function populateProblemSelects() {
+
+            const selects = [
+                document.getElementById(
+                    "testProblem"
+                ),
+                document.getElementById(
+                    "testCaseProblemFilter"
+                )
+            ];
+
+
+            selects.forEach(select => {
+
+                const currentValue =
+                    select.value;
+
+
+                select.innerHTML = `
+
+                    <option value="">
+                        Select problem
+                    </option>
+
+                `;
+
+
+                problems.forEach(problem => {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+                    option.value =
+                        problem.id;
+
+                    option.textContent =
+                        `#${problem.id} — ${problem.title}`;
+
+                    select.appendChild(
+                        option
+                    );
+
+                });
+
+
+                if (
+                    currentValue &&
+                    problems.some(
+                        problem =>
+                            String(problem.id) ===
+                            String(currentValue)
+                    )
+                ) {
+
+                    select.value =
+                        currentValue;
+
+                }
+
+            });
+
+        }
+
+
+        /* =========================
+           ADD / UPDATE PROBLEM
+        ========================= */
+
+        document
+            .getElementById("problemForm")
+            .addEventListener(
+                "submit",
+                async event => {
+
+                    event.preventDefault();
+
+                    hideMessages();
+
+
+                    const problemData = {
+
+                        title:
+                            document.getElementById(
+                                "problemTitle"
+                            ).value.trim(),
+
+                        description:
+                            document.getElementById(
+                                "problemDescription"
+                            ).value.trim(),
+
+                        difficulty:
+                            document.getElementById(
+                                "problemDifficulty"
+                            ).value,
+
+                        input_format:
+                            document.getElementById(
+                                "inputFormat"
+                            ).value.trim(),
+
+                        output_format:
+                            document.getElementById(
+                                "outputFormat"
+                            ).value.trim(),
+
+                        constraints:
+                            document.getElementById(
+                                "constraints"
+                            ).value.trim()
+
+                    };
+
+
+                    try {
+
+                        let response;
+
+
+                        if (editingProblemId) {
+
+                            response =
+                                await fetch(
+                                    `${API_URL}/problems/${editingProblemId}`,
+                                    {
+                                        method: "PUT",
+                                        headers:
+                                            authHeaders(),
+                                        body:
+                                            JSON.stringify(
+                                                problemData
+                                            )
+                                    }
+                                );
+
+                        } else {
+
+                            response =
+                                await fetch(
+                                    `${API_URL}/problems`,
+                                    {
+                                        method: "POST",
+                                        headers:
+                                            authHeaders(),
+                                        body:
+                                            JSON.stringify(
+                                                problemData
+                                            )
+                                    }
+                                );
+
+                        }
+
+
+                        const result =
+                            await parseResponse(
+                                response
+                            );
+
+
+                        if (!result) {
+                            return;
+                        }
+
+
+                        showSuccess(
+                            editingProblemId
+                                ? "Problem updated successfully."
+                                : "Problem created successfully."
+                        );
+
+
+                        resetProblemForm();
+                        await loadProblems();
+
+                    } catch (error) {
+
+                        console.error(error);
+
+                        showError(
+                            error.message ||
+                            "Unable to save problem."
+                        );
+
+                    }
+
+                }
+            );
+
+
+        /* =========================
+           EDIT PROBLEM
+        ========================= */
+
+        async function editProblem(id) {
+
+            hideMessages();
+
+
+            const problem =
+                problems.find(
+                    item =>
+                        Number(item.id) ===
+                        Number(id)
+                );
+
+
+            if (!problem) {
+
+                showError(
+                    "Problem not found."
+                );
+
+                return;
+
+            }
+
+
+            editingProblemId =
+                problem.id;
+
+
+            document.getElementById(
+                "problemFormTitle"
+            ).textContent =
+                "Edit Problem";
+
+
+            document.getElementById(
+                "problemSubmitBtn"
+            ).textContent =
+                "Update Problem";
+
+
+            document.getElementById(
+                "cancelProblemBtn"
+            ).style.display =
+                "block";
+
+
+            document.getElementById(
+                "problemTitle"
+            ).value =
+                problem.title || "";
+
+
+            document.getElementById(
+                "problemDescription"
+            ).value =
+                problem.description || "";
+
+
+            document.getElementById(
+                "problemDifficulty"
+            ).value =
+                problem.difficulty || "Easy";
+
+
+            document.getElementById(
+                "inputFormat"
+            ).value =
+                problem.input_format || "";
+
+
+            document.getElementById(
+                "outputFormat"
+            ).value =
+                problem.output_format || "";
+
+
+            document.getElementById(
+                "constraints"
+            ).value =
+                problem.constraints || "";
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+
+        /* =========================
+           DELETE PROBLEM
+        ========================= */
+
+        async function deleteProblem(id) {
+
+            const problem =
+                problems.find(
+                    item =>
+                        Number(item.id) ===
+                        Number(id)
+                );
+
+
+            const name =
+                problem?.title ||
+                `Problem #${id}`;
+
+
+            if (
+                !confirm(
+                    `Delete "${name}"? This action cannot be undone.`
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            hideMessages();
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/problems/${id}`,
+                        {
+                            method: "DELETE",
+                            headers:
+                                authHeaders()
+                        }
+                    );
+
+
+                const result =
+                    await parseResponse(
+                        response
+                    );
+
+
+                if (!result) {
+                    return;
+                }
+
+
+                showSuccess(
+                    "Problem deleted successfully."
+                );
+
+
+                if (
+                    Number(editingProblemId) ===
+                    Number(id)
+                ) {
+
+                    resetProblemForm();
+
+                }
+
+
+                await loadProblems();
+
+            } catch (error) {
+
+                console.error(error);
+
+                showError(
+                    error.message ||
+                    "Unable to delete problem."
+                );
+
+            }
+
+        }
+
+
+        /* =========================
+           RESET PROBLEM FORM
+        ========================= */
+
+        function resetProblemForm() {
+
+            editingProblemId = null;
+
+
+            document.getElementById(
+                "problemForm"
+            ).reset();
+
+
+            document.getElementById(
+                "problemFormTitle"
+            ).textContent =
+                "Add Problem";
+
+
+            document.getElementById(
+                "problemSubmitBtn"
+            ).textContent =
+                "Add Problem";
+
+
+            document.getElementById(
+                "cancelProblemBtn"
+            ).style.display =
+                "none";
+
+        }
+
+
+        document
+            .getElementById(
+                "cancelProblemBtn"
+            )
+            .addEventListener(
+                "click",
+                resetProblemForm
+            );
+
+
+        /* =========================
+           LOAD TEST CASES
+        ========================= */
+
+        document
+            .getElementById(
+                "testCaseProblemFilter"
+            )
+            .addEventListener(
+                "change",
+                loadSelectedTestCases
+            );
+
+
+        async function loadSelectedTestCases() {
+
+            const problemId =
+                document.getElementById(
+                    "testCaseProblemFilter"
+                ).value;
+
+
+            const list =
+                document.getElementById(
+                    "testCasesList"
+                );
+
+
+            if (!problemId) {
+
+                list.innerHTML = `
+                    <div class="empty-state">
+                        Select a problem to view test cases.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            list.innerHTML = `
+                <div class="loading">
+                    Loading test cases...
+                </div>
+            `;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/test-cases/${problemId}`,
+                        {
+                            method: "GET",
+                            headers:
+                                authHeaders()
+                        }
+                    );
+
+
+                const data =
+                    await parseResponse(
+                        response
+                    );
+
+
+                if (!data) {
+                    return;
+                }
+
+
+                renderTestCases(
+                    Array.isArray(data)
+                        ? data
+                        : []
+                );
+
+            } catch (error) {
+
+                console.error(error);
+
+                list.innerHTML = `
+                    <div class="empty-state">
+                        Unable to load test cases.
+                    </div>
+                `;
+
+                showError(
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        /* =========================
+           RENDER TEST CASES
+        ========================= */
+
+        function renderTestCases(testCases) {
+
+            const list =
+                document.getElementById(
+                    "testCasesList"
+                );
+
+
+            if (testCases.length === 0) {
+
+                list.innerHTML = `
+                    <div class="empty-state">
+                        No test cases for this problem yet.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            list.innerHTML = "";
+
+
+            testCases.forEach(testCase => {
+
+                const item =
+                    document.createElement("div");
+
+                item.className =
+                    "testcase-item";
+
+
+                item.innerHTML = `
+
+                    <div class="item-top">
+
+                        <div class="item-title">
+                            Test Case
+                        </div>
+
+                        <div class="item-id">
+                            #${testCase.id}
+                        </div>
+
+                    </div>
+
+                    <div class="testcase-input">
+                        <strong>Input:</strong><br>
+                        ${escapeHtml(
+                            testCase.input_data
+                        )}
+                    </div>
+
+                    <div class="testcase-output">
+                        <strong>Expected Output:</strong><br>
+                        ${escapeHtml(
+                            testCase.expected_output
+                        )}
+                    </div>
+
+                    <div class="item-actions">
+
+                        <button
+                            class="small-btn"
+                            onclick='editTestCase(${JSON.stringify(
+                                testCase
+                            )})'>
+                            Edit
+                        </button>
+
+                        <button
+                            class="small-btn delete"
+                            onclick="deleteTestCase(${testCase.id})">
+                            Delete
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                list.appendChild(item);
+
+            });
+
+        }
+
+
+        /* =========================
+           ADD / UPDATE TEST CASE
+        ========================= */
+
+        document
+            .getElementById(
+                "testCaseForm"
+            )
+            .addEventListener(
+                "submit",
+                async event => {
+
+                    event.preventDefault();
+
+                    hideMessages();
+
+
+                    const problemId =
+                        document.getElementById(
+                            "testProblem"
+                        ).value;
+
+
+                    if (!problemId) {
+
+                        showError(
+                            "Please select a problem."
+                        );
+
+                        return;
+
+                    }
+
+
+                    const testCaseData = {
+
+                        problem_id:
+                            Number(problemId),
+
+                        input_data:
+                            document.getElementById(
+                                "testInput"
+                            ).value,
+
+                        expected_output:
+                            document.getElementById(
+                                "testOutput"
+                            ).value
+
+                    };
+
+
+                    try {
+
+                        let response;
+
+
+                        if (editingTestCaseId) {
+
+                            response =
+                                await fetch(
+                                    `${API_URL}/test-cases/${editingTestCaseId}`,
+                                    {
+                                        method: "PUT",
+                                        headers:
+                                            authHeaders(),
+                                        body:
+                                            JSON.stringify(
+                                                testCaseData
+                                            )
+                                    }
+                                );
+
+                        } else {
+
+                            response =
+                                await fetch(
+                                    `${API_URL}/test-cases`,
+                                    {
+                                        method: "POST",
+                                        headers:
+                                            authHeaders(),
+                                        body:
+                                            JSON.stringify(
+                                                testCaseData
+                                            )
+                                    }
+                                );
+
+                        }
+
+
+                        const result =
+                            await parseResponse(
+                                response
+                            );
+
+
+                        if (!result) {
+                            return;
+                        }
+
+
+                        showSuccess(
+                            editingTestCaseId
+                                ? "Test case updated successfully."
+                                : "Test case created successfully."
+                        );
+
+
+                        resetTestCaseForm();
+
+
+                        const selectedProblem =
+                            document.getElementById(
+                                "testCaseProblemFilter"
+                            );
+
+
+                        selectedProblem.value =
+                            problemId;
+
+
+                        await loadSelectedTestCases();
+
+                    } catch (error) {
+
+                        console.error(error);
+
+                        showError(
+                            error.message ||
+                            "Unable to save test case."
+                        );
+
+                    }
+
+                }
+            );
+
+
+        /* =========================
+           EDIT TEST CASE
+        ========================= */
+
+        function editTestCase(testCase) {
+
+            editingTestCaseId =
+                testCase.id;
+
+
+            document.getElementById(
+                "testCaseFormTitle"
+            ).textContent =
+                "Edit Test Case";
+
+
+            document.getElementById(
+                "testCaseSubmitBtn"
+            ).textContent =
+                "Update Test Case";
+
+
+            document.getElementById(
+                "cancelTestCaseBtn"
+            ).style.display =
+                "block";
+
+
+            document.getElementById(
+                "testProblem"
+            ).value =
+                testCase.problem_id;
+
+
+            document.getElementById(
+                "testInput"
+            ).value =
+                testCase.input_data || "";
+
+
+            document.getElementById(
+                "testOutput"
+            ).value =
+                testCase.expected_output || "";
+
+
+            document.querySelector(
+                '[data-tab="testCasesTab"]'
+            ).click();
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+
+        /* =========================
+           DELETE TEST CASE
+        ========================= */
+
+        async function deleteTestCase(id) {
+
+            if (
+                !confirm(
+                    "Delete this test case?"
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            hideMessages();
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/test-cases/${id}`,
+                        {
+                            method: "DELETE",
+                            headers:
+                                authHeaders()
+                        }
+                    );
+
+
+                const result =
+                    await parseResponse(
+                        response
+                    );
+
+
+                if (!result) {
+                    return;
+                }
+
+
+                showSuccess(
+                    "Test case deleted successfully."
+                );
+
+
+                await loadSelectedTestCases();
+
+            } catch (error) {
+
+                console.error(error);
+
+                showError(
+                    error.message ||
+                    "Unable to delete test case."
+                );
+
+            }
+
+        }
+
+
+        /* =========================
+           RESET TEST CASE FORM
+        ========================= */
+
+        function resetTestCaseForm() {
+
+            editingTestCaseId = null;
+
+
+            document.getElementById(
+                "testCaseForm"
+            ).reset();
+
+
+            document.getElementById(
+                "testCaseFormTitle"
+            ).textContent =
+                "Add Test Case";
+
+
+            document.getElementById(
+                "testCaseSubmitBtn"
+            ).textContent =
+                "Add Test Case";
+
+
+            document.getElementById(
+                "cancelTestCaseBtn"
+            ).style.display =
+                "none";
+
+        }
+
+
+        document
+            .getElementById(
+                "cancelTestCaseBtn"
+            )
+            .addEventListener(
+                "click",
+                resetTestCaseForm
+            );
+
+
+        /* =========================
+           LOGOUT
+        ========================= */
+
+        document
+            .getElementById("logoutBtn")
+            .addEventListener(
+                "click",
+                () => {
+
+                    localStorage.removeItem(
+                        "access_token"
+                    );
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                }
+            );
+
+
+        /* =========================
+           START
+        ========================= */
+
+        async function initAdminPanel() {
+
+            if (!token) {
+                return;
+            }
+
+
+            const isAdmin =
+                await verifyAdmin();
+
+
+            if (!isAdmin) {
+                return;
+            }
+
+
+            await loadProblems();
+
+        }
+
+
+        initAdminPanel();
+
+    </script>
+
+</body>
+
+</html>

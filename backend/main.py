@@ -366,7 +366,8 @@ def delete_problem(
 )
 def create_test_case(
     test_case: TestCaseCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin)
 ):
 
     problem = db.query(Problem).filter(
@@ -402,7 +403,8 @@ def create_test_case(
 )
 def get_test_cases(
     problem_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin)
 ):
 
     problem = db.query(Problem).filter(
@@ -419,6 +421,79 @@ def get_test_cases(
         TestCase.problem_id == problem_id
     ).all()
 
+# =========================
+# UPDATE TEST CASE
+# =========================
+
+@app.put(
+    "/test-cases/{test_case_id}",
+    response_model=TestCaseResponse
+)
+def update_test_case(
+    test_case_id: int,
+    test_case_data: TestCaseCreate,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin)
+):
+
+    test_case = db.query(TestCase).filter(
+        TestCase.id == test_case_id
+    ).first()
+
+    if not test_case:
+        raise HTTPException(
+            status_code=404,
+            detail="Test case not found"
+        )
+
+    problem = db.query(Problem).filter(
+        Problem.id == test_case_data.problem_id
+    ).first()
+
+    if not problem:
+        raise HTTPException(
+            status_code=404,
+            detail="Problem not found"
+        )
+
+    test_case.problem_id = test_case_data.problem_id
+    test_case.input_data = test_case_data.input_data
+    test_case.expected_output = (
+        test_case_data.expected_output
+    )
+
+    db.commit()
+    db.refresh(test_case)
+
+    return test_case
+
+# =========================
+# DELETE TEST CASE
+# =========================
+
+@app.delete("/test-cases/{test_case_id}")
+def delete_test_case(
+    test_case_id: int,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin)
+):
+
+    test_case = db.query(TestCase).filter(
+        TestCase.id == test_case_id
+    ).first()
+
+    if not test_case:
+        raise HTTPException(
+            status_code=404,
+            detail="Test case not found"
+        )
+
+    db.delete(test_case)
+    db.commit()
+
+    return {
+        "message": "Test case deleted successfully"
+    }
 
 # =========================================================
 # RUN CODE
