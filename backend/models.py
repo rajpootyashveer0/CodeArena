@@ -24,6 +24,7 @@ class Problem(Base):
     input_format = Column(String, nullable=False, default="")
     output_format = Column(String, nullable=False, default="")
     constraints = Column(String, nullable=False, default="")
+    tags = Column(String, nullable=False, default="[]")
 class Submission(Base):
     __tablename__ = "submissions"
 

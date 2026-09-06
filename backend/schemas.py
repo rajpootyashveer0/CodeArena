@@ -1,4 +1,5 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field, field_validator
+import json
 
 
 class UserCreate(BaseModel):
@@ -16,6 +17,7 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
@@ -25,6 +27,7 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
+
 class ProblemBase(BaseModel):
     title: str
     description: str
@@ -32,6 +35,18 @@ class ProblemBase(BaseModel):
     input_format: str = ""
     output_format: str = ""
     constraints: str = ""
+    tags: list[str] = Field(default_factory=list)
+
+    @field_validator("tags", mode="before")
+    @classmethod
+    def parse_tags(cls, value):
+        if isinstance(value, str):
+            try:
+                return json.loads(value)
+            except (json.JSONDecodeError, TypeError):
+                return []
+        return value
+
 
 class ProblemCreate(ProblemBase):
     pass
@@ -61,22 +76,6 @@ class SubmissionResponse(BaseModel):
     class Config:
         from_attributes = True
 
-class SubmissionCreate(BaseModel):
-    problem_id: int
-    code: str
-    language: str
-
-
-class SubmissionResponse(BaseModel):
-    id: int
-    user_id: int
-    problem_id: int
-    code: str
-    language: str
-    status: str
-
-    class Config:
-        from_attributes = True
 
 class TestCaseCreate(BaseModel):
     problem_id: int
@@ -92,6 +91,7 @@ class TestCaseResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class LeaderboardResponse(BaseModel):
     rank: int

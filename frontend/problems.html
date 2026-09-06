@@ -1,7 +1,9 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -46,28 +48,22 @@
             height: 64px;
             background: rgba(17, 17, 17, 0.96);
             border-bottom: 1px solid #292929;
-
             display: flex;
             align-items: center;
             justify-content: space-between;
-
             padding: 0 6%;
-
             position: sticky;
             top: 0;
             z-index: 100;
-
             backdrop-filter: blur(12px);
         }
 
         .nav-logo {
             text-decoration: none;
             color: #ffa116;
-
             font-family: "Space Grotesk", sans-serif;
             font-size: 23px;
             font-weight: 700;
-
             letter-spacing: -0.5px;
         }
 
@@ -80,10 +76,8 @@
         .nav-links a {
             color: #888;
             text-decoration: none;
-
             font-size: 13px;
             font-weight: 500;
-
             transition: 0.2s;
         }
 
@@ -94,25 +88,18 @@
 
         .dashboard-btn {
             text-decoration: none;
-
             color: #ddd;
-
             border: 1px solid #333;
-
             padding: 8px 14px;
-
             border-radius: 7px;
-
             font-size: 13px;
             font-weight: 500;
-
             transition: 0.2s;
         }
 
         .dashboard-btn:hover {
             border-color: #ffa116;
             color: #ffa116;
-
             background: rgba(255, 161, 22, 0.05);
         }
 
@@ -123,7 +110,6 @@
         .page-container {
             width: min(1200px, 92%);
             margin: 0 auto;
-
             padding: 48px 0 90px;
         }
 
@@ -135,43 +121,32 @@
             display: inline-flex;
             align-items: center;
             gap: 7px;
-
             color: #ffa116;
-
             font-family: "JetBrains Mono", monospace;
             font-size: 11px;
             font-weight: 600;
-
             margin-bottom: 10px;
         }
 
         .heading-dot {
             width: 6px;
             height: 6px;
-
             background: #ffa116;
-
             border-radius: 50%;
-
             box-shadow: 0 0 10px rgba(255, 161, 22, 0.45);
         }
 
         .page-heading h1 {
             margin: 0 0 9px;
-
             font-family: "Space Grotesk", sans-serif;
-
             font-size: 38px;
             line-height: 1.1;
-
             letter-spacing: -1px;
         }
 
         .page-heading p {
             margin: 0;
-
             color: #777;
-
             font-size: 14px;
             line-height: 1.6;
         }
@@ -182,24 +157,16 @@
 
         .stats-grid {
             display: grid;
-
-            grid-template-columns:
-                repeat(3, minmax(0, 1fr));
-
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 12px;
-
             margin-bottom: 24px;
         }
 
         .stat-card {
             background: #121212;
-
             border: 1px solid #292929;
-
             border-radius: 10px;
-
             padding: 15px 17px;
-
             transition: 0.2s;
         }
 
@@ -210,22 +177,16 @@
 
         .stat-label {
             color: #666;
-
             font-size: 11px;
             font-weight: 600;
-
             text-transform: uppercase;
-
             letter-spacing: 0.6px;
-
             margin-bottom: 7px;
         }
 
         .stat-value {
             color: #eee;
-
             font-family: "Space Grotesk", sans-serif;
-
             font-size: 22px;
             font-weight: 700;
         }
@@ -234,85 +195,51 @@
             color: #2db55d;
         }
 
-        .stat-value.easy {
-            color: #2db55d;
-        }
-
-        .stat-value.medium {
-            color: #ffa116;
-        }
-
-        .stat-value.hard {
-            color: #ef4743;
-        }
-
         /* =========================
            FILTER CARD
         ========================= */
 
         .controls-card {
             background: #121212;
-
             border: 1px solid #292929;
-
             border-radius: 11px;
-
             padding: 15px;
-
             margin-bottom: 18px;
         }
 
         .controls-top {
             display: flex;
-
             align-items: center;
-
             gap: 10px;
-
             margin-bottom: 13px;
         }
 
         .search-box {
             position: relative;
-
             flex: 1;
         }
 
         .search-icon {
             position: absolute;
-
             left: 13px;
             top: 50%;
-
             transform: translateY(-50%);
-
             color: #666;
-
             font-size: 14px;
-
             pointer-events: none;
         }
 
         .search-box input {
             width: 100%;
-
             height: 42px;
-
             background: #0d0d0d;
-
             border: 1px solid #303030;
-
             color: #fff;
-
             padding: 0 40px 0 36px;
-
             border-radius: 8px;
-
             outline: none;
-
             font-family: "Inter", sans-serif;
             font-size: 13px;
-
             transition: 0.2s;
         }
 
@@ -322,53 +249,33 @@
 
         .search-box input:focus {
             border-color: #ffa116;
-
-            box-shadow:
-                0 0 0 3px
-                rgba(255, 161, 22, 0.07);
+            box-shadow: 0 0 0 3px rgba(255, 161, 22, 0.07);
         }
 
         .search-shortcut {
             position: absolute;
-
             right: 10px;
             top: 50%;
-
             transform: translateY(-50%);
-
             color: #555;
-
             border: 1px solid #292929;
-
             background: #151515;
-
             border-radius: 5px;
-
             padding: 3px 6px;
-
             font-family: "JetBrains Mono", monospace;
-
             font-size: 10px;
         }
 
         .clear-search {
             display: none;
-
             position: absolute;
-
             right: 10px;
             top: 50%;
-
             transform: translateY(-50%);
-
             border: none;
-
             background: transparent;
-
             color: #777;
-
             cursor: pointer;
-
             font-size: 15px;
         }
 
@@ -378,34 +285,22 @@
 
         .filter-buttons {
             display: flex;
-
             align-items: center;
-
             gap: 8px;
-
             flex-wrap: wrap;
         }
 
         .filter-btn {
             height: 34px;
-
             padding: 0 13px;
-
             border: 1px solid #303030;
-
             border-radius: 7px;
-
             background: #151515;
-
             color: #999;
-
             cursor: pointer;
-
             font-size: 12px;
             font-weight: 500;
-
             font-family: "Inter", sans-serif;
-
             transition: 0.2s;
         }
 
@@ -416,21 +311,15 @@
 
         .filter-btn.active {
             background: #ffa116;
-
             color: #111;
-
             border-color: #ffa116;
-
             font-weight: 700;
         }
 
         .filter-divider {
             width: 1px;
-
             height: 22px;
-
             background: #292929;
-
             margin: 0 3px;
         }
 
@@ -440,18 +329,14 @@
 
         .list-info {
             display: flex;
-
             align-items: center;
             justify-content: space-between;
-
             gap: 15px;
-
             margin: 0 2px 10px;
         }
 
         .result-count {
             color: #666;
-
             font-size: 12px;
         }
 
@@ -461,13 +346,11 @@
 
         .active-filter-label {
             color: #777;
-
             font-size: 12px;
         }
 
         .active-filter-label span {
             color: #ffa116;
-
             font-weight: 600;
         }
 
@@ -477,58 +360,39 @@
 
         .problem-table {
             background: #151515;
-
             border: 1px solid #292929;
-
             border-radius: 12px;
-
             overflow: hidden;
-
-            box-shadow:
-                0 14px 40px
-                rgba(0, 0, 0, 0.15);
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.15);
         }
 
         .table-head,
         .problem-row {
             display: grid;
-
             grid-template-columns:
                 65px
                 minmax(280px, 1fr)
                 140px
                 130px;
-
             align-items: center;
         }
 
         .table-head {
             padding: 14px 22px;
-
             color: #666;
-
             font-size: 10px;
             font-weight: 700;
-
             text-transform: uppercase;
-
             letter-spacing: 0.7px;
-
             background: #111;
-
             border-bottom: 1px solid #292929;
         }
 
         .problem-row {
             min-height: 74px;
-
             padding: 14px 22px;
-
             border-bottom: 1px solid #242424;
-
-            transition:
-                background 0.18s,
-                border-color 0.18s;
+            transition: background 0.18s, border-color 0.18s;
         }
 
         .problem-row:last-child {
@@ -550,9 +414,7 @@
 
         .problem-number {
             color: #555;
-
             font-family: "JetBrains Mono", monospace;
-
             font-size: 12px;
         }
 
@@ -562,28 +424,19 @@
 
         .problem-title-line {
             display: flex;
-
             align-items: center;
-
             gap: 8px;
-
             min-width: 0;
         }
 
         .problem-title a {
             color: #eee;
-
             text-decoration: none;
-
             font-size: 14px;
             font-weight: 600;
-
             white-space: nowrap;
-
             overflow: hidden;
-
             text-overflow: ellipsis;
-
             transition: 0.2s;
         }
 
@@ -593,33 +446,55 @@
 
         .solved-check {
             display: inline-flex;
-
             align-items: center;
             justify-content: center;
-
             width: 18px;
             height: 18px;
-
             flex-shrink: 0;
-
             border-radius: 50%;
-
             background: rgba(45, 181, 93, 0.12);
-
             color: #2db55d;
-
             font-size: 10px;
             font-weight: 700;
         }
 
         .problem-id {
             color: #555;
-
             font-size: 10px;
-
             margin-top: 5px;
-
             font-family: "JetBrains Mono", monospace;
+        }
+
+        /* =========================
+           TAGS
+        ========================= */
+
+        .problem-tags {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .problem-tag {
+            display: inline-flex;
+            align-items: center;
+            min-height: 21px;
+            padding: 3px 7px;
+            border-radius: 5px;
+            background: rgba(255, 161, 22, 0.07);
+            border: 1px solid rgba(255, 161, 22, 0.12);
+            color: #a99a87;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+
+        .problem-tag:hover {
+            color: #ffa116;
+            border-color: rgba(255, 161, 22, 0.28);
         }
 
         /* =========================
@@ -628,54 +503,36 @@
 
         .difficulty-badge {
             display: inline-flex;
-
             align-items: center;
-
             padding: 5px 9px;
-
             border-radius: 6px;
-
             font-size: 10px;
-
             font-weight: 700;
-
             text-transform: uppercase;
-
             letter-spacing: 0.35px;
         }
 
         .difficulty-easy {
             background: rgba(45, 181, 93, 0.11);
-
             color: #2db55d;
-
-            border: 1px solid
-                rgba(45, 181, 93, 0.13);
+            border: 1px solid rgba(45, 181, 93, 0.13);
         }
 
         .difficulty-medium {
             background: rgba(255, 161, 22, 0.11);
-
             color: #ffa116;
-
-            border: 1px solid
-                rgba(255, 161, 22, 0.13);
+            border: 1px solid rgba(255, 161, 22, 0.13);
         }
 
         .difficulty-hard {
             background: rgba(239, 71, 67, 0.11);
-
             color: #ef4743;
-
-            border: 1px solid
-                rgba(239, 71, 67, 0.13);
+            border: 1px solid rgba(239, 71, 67, 0.13);
         }
 
         .difficulty-unknown {
             background: #1c1c1c;
-
             color: #777;
-
             border: 1px solid #292929;
         }
 
@@ -689,32 +546,21 @@
 
         .solve-link {
             display: inline-flex;
-
             align-items: center;
-
             justify-content: center;
-
             min-width: 76px;
-
             color: #999;
-
             text-decoration: none;
-
             font-size: 12px;
             font-weight: 600;
-
             padding: 7px 9px;
-
             border-radius: 6px;
-
             transition: 0.2s;
         }
 
         .solve-link:hover {
             color: #ffa116;
-
-            background:
-                rgba(255, 161, 22, 0.06);
+            background: rgba(255, 161, 22, 0.06);
         }
 
         .solved-link {
@@ -723,9 +569,7 @@
 
         .solved-link:hover {
             color: #2db55d !important;
-
-            background:
-                rgba(45, 181, 93, 0.06);
+            background: rgba(45, 181, 93, 0.06);
         }
 
         /* =========================
@@ -735,63 +579,41 @@
         .loading,
         .empty-state {
             padding: 75px 20px;
-
             text-align: center;
-
             color: #666;
-
             font-size: 13px;
         }
 
         .loading::before {
             content: "";
-
             display: block;
-
             width: 22px;
             height: 22px;
-
             margin: 0 auto 13px;
-
             border: 2px solid #292929;
-
             border-top-color: #ffa116;
-
             border-radius: 50%;
-
-            animation:
-                spin 0.8s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
 
         .empty-icon {
             width: 44px;
             height: 44px;
-
             display: flex;
-
             align-items: center;
             justify-content: center;
-
             margin: 0 auto 14px;
-
             border-radius: 10px;
-
             background: #1a1a1a;
-
             border: 1px solid #292929;
-
             color: #777;
-
             font-size: 18px;
         }
 
         .empty-state strong {
             display: block;
-
             color: #aaa;
-
             font-size: 15px;
-
             margin-bottom: 6px;
         }
 
@@ -811,19 +633,12 @@
 
         .error-box {
             display: none;
-
             background: #291717;
-
             border: 1px solid #5c2525;
-
             color: #ff7b7b;
-
             border-radius: 8px;
-
             padding: 13px 15px;
-
             margin-bottom: 20px;
-
             font-size: 13px;
         }
 
@@ -846,9 +661,7 @@
                     40px
                     1fr
                     auto;
-
                 gap: 10px;
-
                 padding: 16px;
             }
 
@@ -860,15 +673,12 @@
             .problem-action {
                 grid-column: 3;
                 grid-row: 1 / span 2;
-
                 text-align: right;
             }
 
             .stats-grid {
-                grid-template-columns:
-                    repeat(3, 1fr);
+                grid-template-columns: repeat(3, 1fr);
             }
-
         }
 
         @media (max-width: 600px) {
@@ -883,7 +693,6 @@
 
             .page-container {
                 width: 94%;
-
                 padding-top: 32px;
             }
 
@@ -893,7 +702,6 @@
 
             .stats-grid {
                 grid-template-columns: 1fr;
-
                 gap: 8px;
             }
 
@@ -919,9 +727,7 @@
 
             .filter-btn {
                 flex: 1;
-
                 min-width: 75px;
-
                 padding: 0 8px;
             }
 
@@ -931,9 +737,7 @@
 
             .list-info {
                 align-items: flex-start;
-
                 flex-direction: column;
-
                 gap: 4px;
             }
 
@@ -947,12 +751,21 @@
 
             .solve-link {
                 min-width: 65px;
-
                 padding: 7px 5px;
             }
 
+            .problem-tags {
+                gap: 4px;
+                margin-top: 7px;
+            }
+
+            .problem-tag {
+                font-size: 8px;
+                padding: 3px 6px;
+            }
         }
     </style>
+
 </head>
 
 <body>
@@ -995,8 +808,11 @@
         <section class="page-heading">
 
             <div class="heading-eyebrow">
+
                 <span class="heading-dot"></span>
+
                 CODING ARENA
+
             </div>
 
             <h1>
@@ -1079,7 +895,7 @@
                     <input
                         type="text"
                         id="searchInput"
-                        placeholder="Search by problem name or ID..."
+                        placeholder="Search by problem name, ID or tag..."
                         autocomplete="off">
 
                     <span
@@ -1164,8 +980,10 @@
             <div
                 class="active-filter-label"
                 id="activeFilterLabel">
+
                 Showing:
                 <span>All</span>
+
             </div>
 
         </div>
@@ -1215,17 +1033,13 @@
            CONFIG
         ========================= */
 
-        const API_URL =
-            "http://127.0.0.1:8000";
-
+        const API_URL = "http://127.0.0.1:8000";
 
         let allProblems = [];
 
-        let solvedProblemIds =
-            new Set();
+        let solvedProblemIds = new Set();
 
-        let activeFilter =
-            "all";
+        let activeFilter = "all";
 
 
         /* =========================
@@ -1233,34 +1047,22 @@
         ========================= */
 
         const problemList =
-            document.getElementById(
-                "problemList"
-            );
+            document.getElementById("problemList");
 
         const errorBox =
-            document.getElementById(
-                "errorBox"
-            );
+            document.getElementById("errorBox");
 
         const searchInput =
-            document.getElementById(
-                "searchInput"
-            );
+            document.getElementById("searchInput");
 
         const clearSearch =
-            document.getElementById(
-                "clearSearch"
-            );
+            document.getElementById("clearSearch");
 
         const resultCount =
-            document.getElementById(
-                "resultCount"
-            );
+            document.getElementById("resultCount");
 
         const activeFilterLabel =
-            document.getElementById(
-                "activeFilterLabel"
-            );
+            document.getElementById("activeFilterLabel");
 
 
         /* =========================
@@ -1270,26 +1072,52 @@
         function escapeHtml(value) {
 
             return String(value ?? "")
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
-                .replace(
-                    />/g,
-                    "&gt;"
-                )
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
-                .replace(
-                    /'/g,
-                    "&#039;"
-                );
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        /* =========================
+           NORMALIZE TAGS
+        ========================= */
+
+        function normalizeTags(value) {
+
+            if (Array.isArray(value)) {
+
+                return value
+                    .map(tag => String(tag).trim())
+                    .filter(Boolean);
+
+            }
+
+            if (typeof value === "string") {
+
+                try {
+
+                    const parsed = JSON.parse(value);
+
+                    if (Array.isArray(parsed)) {
+
+                        return parsed
+                            .map(tag => String(tag).trim())
+                            .filter(Boolean);
+
+                    }
+
+                } catch (error) {
+
+                    /* Ignore invalid JSON */
+
+                }
+
+            }
+
+            return [];
 
         }
 
@@ -1302,30 +1130,22 @@
 
             try {
 
-                errorBox.style.display =
-                    "none";
-
+                errorBox.style.display = "none";
 
                 const response =
-                    await fetch(
-                        `${API_URL}/problems`
-                    );
-
+                    await fetch(`${API_URL}/problems`);
 
                 let data = null;
 
-
                 try {
 
-                    data =
-                        await response.json();
+                    data = await response.json();
 
                 } catch {
 
                     data = null;
 
                 }
-
 
                 if (!response.ok) {
 
@@ -1336,7 +1156,6 @@
 
                 }
 
-
                 if (!Array.isArray(data)) {
 
                     throw new Error(
@@ -1345,7 +1164,6 @@
 
                 }
 
-
                 allProblems = data;
 
 
@@ -1353,14 +1171,10 @@
                    LOAD SOLVED STATUS
                 ========================= */
 
-                solvedProblemIds =
-                    new Set();
-
+                solvedProblemIds = new Set();
 
                 const token =
-                    localStorage.getItem(
-                        "access_token"
-                    );
+                    localStorage.getItem("access_token");
 
 
                 if (token) {
@@ -1385,8 +1199,7 @@
 
 
                         if (
-                            submissionsResponse.status ===
-                            401
+                            submissionsResponse.status === 401
                         ) {
 
                             localStorage.removeItem(
@@ -1402,9 +1215,7 @@
 
 
                             if (
-                                Array.isArray(
-                                    submissions
-                                )
+                                Array.isArray(submissions)
                             ) {
 
                                 submissions.forEach(
@@ -1420,12 +1231,9 @@
 
 
                                         if (
-                                            status ===
-                                                "accepted" ||
-                                            status ===
-                                                "correct" ||
-                                            status ===
-                                                "success"
+                                            status === "accepted" ||
+                                            status === "correct" ||
+                                            status === "success"
                                         ) {
 
                                             solvedProblemIds.add(
@@ -1459,6 +1267,7 @@
 
                 applyFilters();
 
+
             } catch (error) {
 
                 console.error(
@@ -1466,18 +1275,13 @@
                     error
                 );
 
-
-                problemList.innerHTML =
-                    "";
-
+                problemList.innerHTML = "";
 
                 errorBox.textContent =
                     error.message ||
                     "Unable to load problems.";
 
-
-                errorBox.style.display =
-                    "block";
+                errorBox.style.display = "block";
 
             }
 
@@ -1493,34 +1297,26 @@
             const total =
                 allProblems.length;
 
-
             const solved =
                 solvedProblemIds.size;
 
-
             const remaining =
-                Math.max(
-                    total - solved,
-                    0
-                );
+                Math.max(total - solved, 0);
 
 
             document.getElementById(
                 "totalProblems"
-            ).textContent =
-                total;
+            ).textContent = total;
 
 
             document.getElementById(
                 "totalSolved"
-            ).textContent =
-                solved;
+            ).textContent = solved;
 
 
             document.getElementById(
                 "totalRemaining"
-            ).textContent =
-                remaining;
+            ).textContent = remaining;
 
         }
 
@@ -1534,15 +1330,10 @@
             const labels = {
 
                 all: "All",
-
                 Easy: "Easy",
-
                 Medium: "Medium",
-
                 Hard: "Hard",
-
                 Solved: "Solved",
-
                 Unsolved: "Unsolved"
 
             };
@@ -1550,8 +1341,7 @@
 
             activeFilterLabel.innerHTML =
                 `Showing: <span>${escapeHtml(
-                    labels[activeFilter] ||
-                    "All"
+                    labels[activeFilter] || "All"
                 )}</span>`;
 
         }
@@ -1569,11 +1359,12 @@
                     .trim();
 
 
-            let filtered =
-                [...allProblems];
+            let filtered = [...allProblems];
 
 
-            /* DIFFICULTY */
+            /* =========================
+               DIFFICULTY
+            ========================= */
 
             if (
                 activeFilter === "Easy" ||
@@ -1585,8 +1376,7 @@
                     filtered.filter(
                         problem =>
                             String(
-                                problem.difficulty ||
-                                ""
+                                problem.difficulty || ""
                             )
                                 .toLowerCase() ===
                             activeFilter.toLowerCase()
@@ -1595,47 +1385,44 @@
             }
 
 
-            /* SOLVED */
+            /* =========================
+               SOLVED
+            ========================= */
 
-            if (
-                activeFilter ===
-                "Solved"
-            ) {
+            if (activeFilter === "Solved") {
 
                 filtered =
                     filtered.filter(
                         problem =>
                             solvedProblemIds.has(
-                                Number(
-                                    problem.id
-                                )
+                                Number(problem.id)
                             )
                     );
 
             }
 
 
-            /* UNSOLVED */
+            /* =========================
+               UNSOLVED
+            ========================= */
 
-            if (
-                activeFilter ===
-                "Unsolved"
-            ) {
+            if (activeFilter === "Unsolved") {
 
                 filtered =
                     filtered.filter(
                         problem =>
                             !solvedProblemIds.has(
-                                Number(
-                                    problem.id
-                                )
+                                Number(problem.id)
                             )
                     );
 
             }
 
 
-            /* SEARCH */
+            /* =========================
+               SEARCH
+               TITLE + DESCRIPTION + ID + TAGS
+            ========================= */
 
             if (query) {
 
@@ -1645,38 +1432,38 @@
 
                             const title =
                                 String(
-                                    problem.title ||
-                                    ""
+                                    problem.title || ""
                                 )
                                     .toLowerCase();
 
 
                             const description =
                                 String(
-                                    problem.description ||
-                                    ""
+                                    problem.description || ""
                                 )
                                     .toLowerCase();
 
 
                             const id =
                                 String(
-                                    problem.id ||
-                                    ""
+                                    problem.id || ""
                                 )
                                     .toLowerCase();
 
 
-                            return (
-                                title.includes(
-                                    query
-                                ) ||
-                                description.includes(
-                                    query
-                                ) ||
-                                id.includes(
-                                    query
+                            const tags =
+                                normalizeTags(
+                                    problem.tags
                                 )
+                                    .join(" ")
+                                    .toLowerCase();
+
+
+                            return (
+                                title.includes(query) ||
+                                description.includes(query) ||
+                                id.includes(query) ||
+                                tags.includes(query)
                             );
 
                         }
@@ -1687,15 +1474,11 @@
 
             updateFilterLabel();
 
-            updateResultCount(
-                filtered.length
-            );
+            updateResultCount(filtered.length);
 
             updateClearButton();
 
-            renderProblems(
-                filtered
-            );
+            renderProblems(filtered);
 
         }
 
@@ -1704,20 +1487,13 @@
            RESULT COUNT
         ========================= */
 
-        function updateResultCount(
-            count
-        ) {
+        function updateResultCount(count) {
 
-            resultCount.innerHTML =
-                `
+            resultCount.innerHTML = `
                 <strong>${count}</strong>
-                ${
-                    count === 1
-                        ? "problem"
-                        : "problems"
-                }
+                ${count === 1 ? "problem" : "problems"}
                 found
-                `;
+            `;
 
         }
 
@@ -1728,27 +1504,21 @@
 
         function updateClearButton() {
 
-            if (
-                searchInput.value.trim()
-            ) {
+            if (searchInput.value.trim()) {
 
-                clearSearch.style.display =
-                    "block";
+                clearSearch.style.display = "block";
 
                 document.getElementById(
                     "searchShortcut"
-                ).style.display =
-                    "none";
+                ).style.display = "none";
 
             } else {
 
-                clearSearch.style.display =
-                    "none";
+                clearSearch.style.display = "none";
 
                 document.getElementById(
                     "searchShortcut"
-                ).style.display =
-                    "block";
+                ).style.display = "block";
 
             }
 
@@ -1759,8 +1529,7 @@
             "click",
             () => {
 
-                searchInput.value =
-                    "";
+                searchInput.value = "";
 
                 applyFilters();
 
@@ -1774,9 +1543,7 @@
            RENDER PROBLEMS
         ========================= */
 
-        function renderProblems(
-            problems
-        ) {
+        function renderProblems(problems) {
 
             if (!problems.length) {
 
@@ -1827,8 +1594,7 @@
 
 
                             if (
-                                difficultyLower ===
-                                "easy"
+                                difficultyLower === "easy"
                             ) {
 
                                 difficultyClass =
@@ -1838,8 +1604,7 @@
 
 
                             if (
-                                difficultyLower ===
-                                "medium"
+                                difficultyLower === "medium"
                             ) {
 
                                 difficultyClass =
@@ -1849,8 +1614,7 @@
 
 
                             if (
-                                difficultyLower ===
-                                "hard"
+                                difficultyLower === "hard"
                             ) {
 
                                 difficultyClass =
@@ -1861,9 +1625,7 @@
 
                             const isSolved =
                                 solvedProblemIds.has(
-                                    Number(
-                                        problem.id
-                                    )
+                                    Number(problem.id)
                                 );
 
 
@@ -1873,47 +1635,86 @@
                                     : "problem-row";
 
 
+                            /* =========================
+                               TAGS
+                            ========================= */
+
+                            const tags =
+                                normalizeTags(
+                                    problem.tags
+                                );
+
+
+                            const tagsHTML =
+                                tags.length
+                                    ? `
+
+                                        <div class="problem-tags">
+
+                                            ${tags
+                                                .map(
+                                                    tag => `
+
+                                                        <span
+                                                            class="problem-tag">
+                                                            ${escapeHtml(tag)}
+                                                        </span>
+
+                                                    `
+                                                )
+                                                .join("")}
+
+                                        </div>
+
+                                    `
+                                    : "";
+
+
+                            /* =========================
+                               ACTION
+                            ========================= */
+
                             const actionHTML =
                                 isSolved
-
                                     ? `
+
                                         <a
                                             href="problem.html?id=${encodeURIComponent(
                                                 problem.id
                                             )}"
                                             class="solve-link solved-link">
-
                                             ✓ Solved
-
                                         </a>
-                                    `
 
+                                    `
                                     : `
+
                                         <a
                                             href="problem.html?id=${encodeURIComponent(
                                                 problem.id
                                             )}"
                                             class="solve-link">
-
                                             Solve →
-
                                         </a>
+
                                     `;
 
 
+                            /* =========================
+                               SOLVED CHECK
+                            ========================= */
+
                             const solvedCheck =
                                 isSolved
-
                                     ? `
+
                                         <span
                                             class="solved-check"
                                             title="Solved">
-
                                             ✓
-
                                         </span>
-                                    `
 
+                                    `
                                     : "";
 
 
@@ -1924,11 +1725,7 @@
 
                                     <div
                                         class="problem-number">
-
-                                        ${
-                                            index + 1
-                                        }
-
+                                        ${index + 1}
                                     </div>
 
 
@@ -1954,6 +1751,7 @@
 
                                             </div>
 
+
                                             ${solvedCheck}
 
                                         </div>
@@ -1967,6 +1765,9 @@
                                             )}
 
                                         </div>
+
+
+                                        ${tagsHTML}
 
                                     </div>
 
@@ -2019,9 +1820,7 @@
         ========================= */
 
         document
-            .querySelectorAll(
-                ".filter-btn"
-            )
+            .querySelectorAll(".filter-btn")
             .forEach(
                 button => {
 
@@ -2035,10 +1834,9 @@
                                 )
                                 .forEach(
                                     btn =>
-                                        btn.classList
-                                            .remove(
-                                                "active"
-                                            )
+                                        btn.classList.remove(
+                                            "active"
+                                        )
                                 );
 
 
@@ -2048,8 +1846,7 @@
 
 
                             activeFilter =
-                                button.dataset
-                                    .filter;
+                                button.dataset.filter;
 
 
                             applyFilters();
@@ -2071,12 +1868,9 @@
 
                 if (
                     event.key === "/" &&
-                    document.activeElement !==
-                        searchInput &&
-                    document.activeElement.tagName !==
-                        "TEXTAREA" &&
-                    document.activeElement.tagName !==
-                        "INPUT"
+                    document.activeElement !== searchInput &&
+                    document.activeElement.tagName !== "TEXTAREA" &&
+                    document.activeElement.tagName !== "INPUT"
                 ) {
 
                     event.preventDefault();
@@ -2088,12 +1882,10 @@
 
                 if (
                     event.key === "Escape" &&
-                    document.activeElement ===
-                        searchInput
+                    document.activeElement === searchInput
                 ) {
 
-                    searchInput.value =
-                        "";
+                    searchInput.value = "";
 
                     applyFilters();
 

@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
+import json
 
 from database import engine, Base, get_db
 from models import User, Problem, Submission, TestCase
@@ -225,7 +226,8 @@ def create_problem(
         difficulty=problem.difficulty,
         input_format=problem.input_format,
         output_format=problem.output_format,
-        constraints=problem.constraints
+        constraints=problem.constraints,
+        tags=json.dumps(problem.tags)
     )
 
     db.add(new_problem)
@@ -315,6 +317,7 @@ def update_problem(
     problem.input_format = problem_data.input_format
     problem.output_format = problem_data.output_format
     problem.constraints = problem_data.constraints
+    problem.tags = json.dumps(problem_data.tags)
 
     db.commit()
     db.refresh(problem)
@@ -421,6 +424,7 @@ def get_test_cases(
         TestCase.problem_id == problem_id
     ).all()
 
+
 # =========================
 # UPDATE TEST CASE
 # =========================
@@ -467,6 +471,7 @@ def update_test_case(
 
     return test_case
 
+
 # =========================
 # DELETE TEST CASE
 # =========================
@@ -494,6 +499,7 @@ def delete_test_case(
     return {
         "message": "Test case deleted successfully"
     }
+
 
 # =========================================================
 # RUN CODE
@@ -913,6 +919,7 @@ def get_dashboard(
         }
     }
 
+
 # =========================================================
 # LEADERBOARD
 # =========================================================
@@ -974,6 +981,7 @@ def get_leaderboard(
         # -----------------------------
 
         if total_submissions > 0:
+
             acceptance_rate = round(
                 (
                     accepted_submissions
@@ -981,7 +989,9 @@ def get_leaderboard(
                 ) * 100,
                 2
             )
+
         else:
+
             acceptance_rate = 0.0
 
         # -----------------------------
@@ -1018,6 +1028,7 @@ def get_leaderboard(
         leaderboard,
         start=1
     ):
+
         user["rank"] = index
 
     return leaderboard
