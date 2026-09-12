@@ -1,8 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -691,6 +692,7 @@
         ========================= */
 
         @media (max-width: 850px) {
+
             .nav-links {
                 display: none;
             }
@@ -725,6 +727,7 @@
         }
 
         @media (max-width: 600px) {
+
             .problems-nav {
                 padding: 0 20px;
             }
@@ -815,7 +818,9 @@
                 font-size: 11px;
             }
         }
+
     </style>
+
 </head>
 
 <body>
@@ -1087,6 +1092,7 @@
 
             </button>
 
+
             <div
                 class="page-info"
                 id="pageInfo">
@@ -1094,6 +1100,7 @@
                 Page 1 of 1
 
             </div>
+
 
             <button
                 type="button"
@@ -1109,1005 +1116,974 @@
     </main>
 
 
-    <script>
+ ```html
+<script>
+    /* =========================
+       CONFIG
+    ========================= */
 
-        /* =========================
-           CONFIG
-        ========================= */
+    const API_URL = "http://127.0.0.1:8000";
 
-        const API_URL = "http://127.0.0.1:8000";
+    let allProblems = [];
+    let solvedProblemIds = new Set();
+    let activeFilter = "all";
 
-        let allProblems = [];
-        let solvedProblemIds = new Set();
-        let activeFilter = "all";
+    /* PAGINATION */
+    let currentPage = 1;
+    let totalPages = 1;
+    let totalProblemsFromServer = 0;
 
-        /* PAGINATION */
-
-        let currentPage = 1;
-        let totalPages = 1;
-        let totalProblemsFromServer = 0;
-
-        const PROBLEMS_PER_PAGE = 10;
-
-
-        /* =========================
-           ELEMENTS
-        ========================= */
-
-        const problemList =
-            document.getElementById("problemList");
-
-        const errorBox =
-            document.getElementById("errorBox");
-
-        const searchInput =
-            document.getElementById("searchInput");
-
-        const clearSearch =
-            document.getElementById("clearSearch");
-
-        const resultCount =
-            document.getElementById("resultCount");
-
-        const activeFilterLabel =
-            document.getElementById("activeFilterLabel");
+    const PROBLEMS_PER_PAGE = 10;
 
 
-        /* PAGINATION ELEMENTS */
+    /* =========================
+       ELEMENTS
+    ========================= */
 
-        const pagination =
-            document.getElementById("pagination");
+    const problemList =
+        document.getElementById("problemList");
 
-        const prevPage =
-            document.getElementById("prevPage");
+    const errorBox =
+        document.getElementById("errorBox");
 
-        const nextPage =
-            document.getElementById("nextPage");
+    const searchInput =
+        document.getElementById("searchInput");
 
-        const pageInfo =
-            document.getElementById("pageInfo");
+    const clearSearch =
+        document.getElementById("clearSearch");
+
+    const resultCount =
+        document.getElementById("resultCount");
+
+    const activeFilterLabel =
+        document.getElementById("activeFilterLabel");
+
+    const pagination =
+        document.getElementById("pagination");
+
+    const prevPage =
+        document.getElementById("prevPage");
+
+    const nextPage =
+        document.getElementById("nextPage");
+
+    const pageInfo =
+        document.getElementById("pageInfo");
 
 
-        /* =========================
-           ESCAPE HTML
-        ========================= */
+    /* =========================
+       ESCAPE HTML
+    ========================= */
 
-        function escapeHtml(value) {
+    function escapeHtml(value) {
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
 
-            return String(value ?? "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
 
+    /* =========================
+       NORMALIZE TAGS
+    ========================= */
+
+    function normalizeTags(value) {
+
+        if (Array.isArray(value)) {
+            return value
+                .map(tag => String(tag).trim())
+                .filter(Boolean);
         }
 
-
-        /* =========================
-           NORMALIZE TAGS
-        ========================= */
-
-        function normalizeTags(value) {
-
-            if (Array.isArray(value)) {
-
-                return value
-                    .map(tag => String(tag).trim())
-                    .filter(Boolean);
-
-            }
-
-            if (typeof value === "string") {
-
-                try {
-
-                    const parsed =
-                        JSON.parse(value);
-
-                    if (Array.isArray(parsed)) {
-
-                        return parsed
-                            .map(tag => String(tag).trim())
-                            .filter(Boolean);
-
-                    }
-
-                } catch (error) {
-
-                    /* Ignore invalid JSON */
-
-                }
-
-            }
-
-            return [];
-
-        }
-
-
-        /* =========================
-           LOAD PROBLEMS
-        ========================= */
-
-        async function loadProblems() {
+        if (typeof value === "string") {
 
             try {
 
-                errorBox.style.display = "none";
+                const parsed = JSON.parse(value);
 
-
-                const response =
-                    await fetch(
-                        `${API_URL}/problems?page=${currentPage}&limit=${PROBLEMS_PER_PAGE}`
-                    );
-
-
-                let data = null;
-
-                try {
-
-                    data = await response.json();
-
-                } catch {
-
-                    data = null;
-
+                if (Array.isArray(parsed)) {
+                    return parsed
+                        .map(tag => String(tag).trim())
+                        .filter(Boolean);
                 }
 
+            } catch (error) {
+                /* Ignore invalid JSON */
+            }
+        }
 
-                if (!response.ok) {
+        return [];
+    }
 
-                    throw new Error(
-                        data?.detail ||
-                        "Unable to load problems."
+
+    /* =========================
+       LOAD SOLVED STATUS
+    ========================= */
+
+    async function loadSolvedStatus() {
+
+        solvedProblemIds = new Set();
+
+        const token =
+            localStorage.getItem("access_token");
+
+        if (!token) {
+            return;
+        }
+
+        try {
+
+            const submissionsResponse =
+                await fetch(
+                    `${API_URL}/submissions`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Authorization":
+                                `Bearer ${token}`,
+                            "Accept":
+                                "application/json"
+                        }
+                    }
+                );
+
+            if (submissionsResponse.status === 401) {
+
+                localStorage.removeItem(
+                    "access_token"
+                );
+
+                return;
+            }
+
+            if (submissionsResponse.ok) {
+
+                const submissions =
+                    await submissionsResponse.json();
+
+                if (Array.isArray(submissions)) {
+
+                    submissions.forEach(
+                        submission => {
+
+                            const status =
+                                String(
+                                    submission.status || ""
+                                )
+                                    .trim()
+                                    .toLowerCase();
+
+                            if (
+                                status === "accepted" ||
+                                status === "correct" ||
+                                status === "success"
+                            ) {
+
+                                solvedProblemIds.add(
+                                    Number(
+                                        submission.problem_id
+                                    )
+                                );
+                            }
+                        }
                     );
-
                 }
+            }
+
+        } catch (error) {
+
+            console.warn(
+                "Unable to load solved status:",
+                error
+            );
+        }
+    }
 
 
-                /* PAGINATION RESPONSE */
+    /* =========================
+       BUILD API URL
+    ========================= */
 
-                if (!data || !Array.isArray(data.items)) {
+    function buildProblemsUrl() {
 
-                    throw new Error(
-                        "Invalid problems response."
-                    );
+        const params =
+            new URLSearchParams();
 
-                }
+        params.set(
+            "page",
+            currentPage
+        );
 
-
-                allProblems = data.items;
-
-                totalProblemsFromServer =
-                    data.total;
-
-                currentPage =
-                    data.page;
-
-                totalPages =
-                    data.pages;
+        params.set(
+            "limit",
+            PROBLEMS_PER_PAGE
+        );
 
 
-                /* =========================
-                   LOAD SOLVED STATUS
-                ========================= */
+        /* SEARCH */
 
-                solvedProblemIds = new Set();
+        const search =
+            searchInput.value.trim();
 
-                const token =
-                    localStorage.getItem(
-                        "access_token"
-                    );
+        if (search) {
+
+            params.set(
+                "search",
+                search
+            );
+        }
 
 
-                if (token) {
+        /* DIFFICULTY */
 
-                    try {
+        if (
+            activeFilter === "Easy" ||
+            activeFilter === "Medium" ||
+            activeFilter === "Hard"
+        ) {
 
-                        const submissionsResponse =
-                            await fetch(
-                                `${API_URL}/submissions`,
-                                {
-                                    method: "GET",
+            params.set(
+                "difficulty",
+                activeFilter
+            );
+        }
 
-                                    headers: {
-                                        "Authorization":
-                                            `Bearer ${token}`,
 
-                                        "Accept":
-                                            "application/json"
-                                    }
-                                }
+        return `${API_URL}/problems?${params.toString()}`;
+    }
+
+
+    /* =========================
+       LOAD PROBLEMS
+    ========================= */
+
+    async function loadProblems() {
+
+        try {
+
+            errorBox.style.display = "none";
+
+            problemList.innerHTML = `
+                <div class="loading">
+                    Loading problems...
+                </div>
+            `;
+
+            const response =
+                await fetch(
+                    buildProblemsUrl()
+                );
+
+            let data = null;
+
+            try {
+                data = await response.json();
+            } catch {
+                data = null;
+            }
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data?.detail ||
+                    "Unable to load problems."
+                );
+            }
+
+
+            /* PAGINATION RESPONSE */
+
+            if (
+                !data ||
+                !Array.isArray(data.items)
+            ) {
+
+                throw new Error(
+                    "Invalid problems response."
+                );
+            }
+
+
+            allProblems =
+                data.items;
+
+            totalProblemsFromServer =
+                Number(data.total || 0);
+
+            currentPage =
+                Number(data.page || 1);
+
+            totalPages =
+                Number(data.pages || 1);
+
+
+            /* LOAD SOLVED STATUS */
+
+            await loadSolvedStatus();
+
+
+            updateStats();
+
+            applyClientFilters();
+
+            updatePagination();
+
+        } catch (error) {
+
+            console.error(
+                "Problems error:",
+                error
+            );
+
+            problemList.innerHTML = "";
+
+            errorBox.textContent =
+                error.message ||
+                "Unable to load problems.";
+
+            errorBox.style.display = "block";
+        }
+    }
+
+
+    /* =========================
+       UPDATE PAGINATION
+    ========================= */
+
+    function updatePagination() {
+
+        pageInfo.textContent =
+            `Page ${currentPage} of ${totalPages}`;
+
+        prevPage.disabled =
+            currentPage <= 1;
+
+        nextPage.disabled =
+            currentPage >= totalPages;
+
+        pagination.style.display =
+            totalPages > 1
+                ? "flex"
+                : "none";
+    }
+
+
+    /* =========================
+       PAGINATION BUTTONS
+    ========================= */
+
+    prevPage.addEventListener(
+        "click",
+        () => {
+
+            if (currentPage > 1) {
+
+                currentPage--;
+
+                loadProblems();
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            }
+        }
+    );
+
+
+    nextPage.addEventListener(
+        "click",
+        () => {
+
+            if (currentPage < totalPages) {
+
+                currentPage++;
+
+                loadProblems();
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            }
+        }
+    );
+
+
+    /* =========================
+       UPDATE STATS
+    ========================= */
+
+    function updateStats() {
+
+        const total =
+            totalProblemsFromServer;
+
+        const solved =
+            [...solvedProblemIds]
+                .filter(
+                    id => Number.isFinite(id)
+                )
+                .length;
+
+        const remaining =
+            Math.max(
+                total - solved,
+                0
+            );
+
+
+        document.getElementById(
+            "totalProblems"
+        ).textContent = total;
+
+
+        document.getElementById(
+            "totalSolved"
+        ).textContent = solved;
+
+
+        document.getElementById(
+            "totalRemaining"
+        ).textContent = remaining;
+    }
+
+
+    /* =========================
+       FILTER LABEL
+    ========================= */
+
+    function updateFilterLabel() {
+
+        const labels = {
+
+            all: "All",
+            Easy: "Easy",
+            Medium: "Medium",
+            Hard: "Hard",
+            Solved: "Solved",
+            Unsolved: "Unsolved"
+
+        };
+
+
+        let label =
+            labels[activeFilter] ||
+            "All";
+
+
+        const search =
+            searchInput.value.trim();
+
+
+        if (search) {
+
+            label +=
+                ` · Search: "${search}"`;
+        }
+
+
+        activeFilterLabel.innerHTML =
+            `Showing: <span>${escapeHtml(label)}</span>`;
+    }
+
+
+    /* =========================
+       CLIENT-SIDE FILTERS
+       
+       Only Solved / Unsolved
+       remain client-side.
+    ========================= */
+
+    function applyClientFilters() {
+
+        let filtered =
+            [...allProblems];
+
+
+        /* SOLVED */
+
+        if (activeFilter === "Solved") {
+
+            filtered =
+                filtered.filter(
+                    problem =>
+                        solvedProblemIds.has(
+                            Number(problem.id)
+                        )
+                );
+        }
+
+
+        /* UNSOLVED */
+
+        if (activeFilter === "Unsolved") {
+
+            filtered =
+                filtered.filter(
+                    problem =>
+                        !solvedProblemIds.has(
+                            Number(problem.id)
+                        )
+                );
+        }
+
+
+        updateFilterLabel();
+
+        updateResultCount(
+            filtered.length
+        );
+
+        updateClearButton();
+
+        renderProblems(
+            filtered
+        );
+    }
+
+
+    /* =========================
+       RESULT COUNT
+    ========================= */
+
+    function updateResultCount(count) {
+
+        resultCount.innerHTML = `
+            <strong>${count}</strong>
+            ${count === 1
+                ? "problem"
+                : "problems"}
+            shown
+        `;
+    }
+
+
+    /* =========================
+       CLEAR SEARCH BUTTON
+    ========================= */
+
+    function updateClearButton() {
+
+        if (searchInput.value.trim()) {
+
+            clearSearch.style.display =
+                "block";
+
+            document.getElementById(
+                "searchShortcut"
+            ).style.display =
+                "none";
+
+        } else {
+
+            clearSearch.style.display =
+                "none";
+
+            document.getElementById(
+                "searchShortcut"
+            ).style.display =
+                "block";
+        }
+    }
+
+
+    clearSearch.addEventListener(
+        "click",
+        () => {
+
+            searchInput.value = "";
+
+            currentPage = 1;
+
+            loadProblems();
+
+            searchInput.focus();
+        }
+    );
+
+
+    /* =========================
+       RENDER PROBLEMS
+    ========================= */
+
+    function renderProblems(problems) {
+
+        if (!problems.length) {
+
+            problemList.innerHTML = `
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        ⌕
+                    </div>
+
+                    <strong>
+                        No problems found
+                    </strong>
+
+                    <span>
+                        Try changing your search
+                        or filters.
+                    </span>
+
+                </div>
+            `;
+
+            return;
+        }
+
+
+        problemList.innerHTML =
+            problems
+                .map(
+                    (problem, index) => {
+
+                        const difficulty =
+                            String(
+                                problem.difficulty ||
+                                "Unknown"
                             );
+
+
+                        const difficultyLower =
+                            difficulty.toLowerCase();
+
+
+                        let difficultyClass =
+                            "difficulty-unknown";
 
 
                         if (
-                            submissionsResponse.status === 401
+                            difficultyLower ===
+                            "easy"
                         ) {
 
-                            localStorage.removeItem(
-                                "access_token"
-                            );
-
-                        } else if (
-                            submissionsResponse.ok
-                        ) {
-
-                            const submissions =
-                                await submissionsResponse.json();
-
-
-                            if (
-                                Array.isArray(submissions)
-                            ) {
-
-                                submissions.forEach(
-                                    submission => {
-
-                                        const status =
-                                            String(
-                                                submission.status ||
-                                                ""
-                                            )
-                                                .trim()
-                                                .toLowerCase();
-
-
-                                        if (
-                                            status === "accepted" ||
-                                            status === "correct" ||
-                                            status === "success"
-                                        ) {
-
-                                            solvedProblemIds.add(
-                                                Number(
-                                                    submission.problem_id
-                                                )
-                                            );
-
-                                        }
-
-                                    }
-                                );
-
-                            }
-
+                            difficultyClass =
+                                "difficulty-easy";
                         }
 
-                    } catch (error) {
 
-                        console.warn(
-                            "Unable to load solved status:",
-                            error
-                        );
+                        if (
+                            difficultyLower ===
+                            "medium"
+                        ) {
 
-                    }
+                            difficultyClass =
+                                "difficulty-medium";
+                        }
 
-                }
 
+                        if (
+                            difficultyLower ===
+                            "hard"
+                        ) {
 
-                updateStats();
+                            difficultyClass =
+                                "difficulty-hard";
+                        }
 
-                applyFilters();
 
-                updatePagination();
-
-
-            } catch (error) {
-
-                console.error(
-                    "Problems error:",
-                    error
-                );
-
-                problemList.innerHTML = "";
-
-                errorBox.textContent =
-                    error.message ||
-                    "Unable to load problems.";
-
-                errorBox.style.display =
-                    "block";
-
-            }
-
-        }
-
-
-        /* =========================
-           UPDATE PAGINATION
-        ========================= */
-
-        function updatePagination() {
-
-            pageInfo.textContent =
-                `Page ${currentPage} of ${totalPages}`;
-
-
-            prevPage.disabled =
-                currentPage <= 1;
-
-
-            nextPage.disabled =
-                currentPage >= totalPages;
-
-
-            pagination.style.display =
-                totalPages > 1
-                    ? "flex"
-                    : "none";
-
-        }
-
-
-        /* =========================
-           PAGINATION BUTTONS
-        ========================= */
-
-        prevPage.addEventListener(
-            "click",
-            () => {
-
-                if (currentPage > 1) {
-
-                    currentPage--;
-
-                    loadProblems();
-
-                    window.scrollTo({
-                        top: 0,
-                        behavior: "smooth"
-                    });
-
-                }
-
-            }
-        );
-
-
-        nextPage.addEventListener(
-            "click",
-            () => {
-
-                if (currentPage < totalPages) {
-
-                    currentPage++;
-
-                    loadProblems();
-
-                    window.scrollTo({
-                        top: 0,
-                        behavior: "smooth"
-                    });
-
-                }
-
-            }
-        );
-
-
-        /* =========================
-           UPDATE STATS
-        ========================= */
-
-        function updateStats() {
-
-            const total =
-                totalProblemsFromServer;
-
-            const solved =
-                solvedProblemIds.size;
-
-            const remaining =
-                Math.max(total - solved, 0);
-
-
-            document.getElementById(
-                "totalProblems"
-            ).textContent = total;
-
-
-            document.getElementById(
-                "totalSolved"
-            ).textContent = solved;
-
-
-            document.getElementById(
-                "totalRemaining"
-            ).textContent = remaining;
-
-        }
-
-
-        /* =========================
-           FILTER LABEL
-        ========================= */
-
-        function updateFilterLabel() {
-
-            const labels = {
-
-                all: "All",
-                Easy: "Easy",
-                Medium: "Medium",
-                Hard: "Hard",
-                Solved: "Solved",
-                Unsolved: "Unsolved"
-
-            };
-
-
-            activeFilterLabel.innerHTML =
-                `Showing: <span>${escapeHtml(
-                    labels[activeFilter] || "All"
-                )}</span>`;
-
-        }
-
-
-        /* =========================
-           APPLY FILTERS
-        ========================= */
-
-        function applyFilters() {
-
-            const query =
-                searchInput.value
-                    .toLowerCase()
-                    .trim();
-
-
-            let filtered =
-                [...allProblems];
-
-
-            /* =========================
-               DIFFICULTY
-            ========================= */
-
-            if (
-                activeFilter === "Easy" ||
-                activeFilter === "Medium" ||
-                activeFilter === "Hard"
-            ) {
-
-                filtered =
-                    filtered.filter(
-                        problem =>
-                            String(
-                                problem.difficulty || ""
-                            )
-                                .toLowerCase() ===
-                            activeFilter.toLowerCase()
-                    );
-
-            }
-
-
-            /* =========================
-               SOLVED
-            ========================= */
-
-            if (activeFilter === "Solved") {
-
-                filtered =
-                    filtered.filter(
-                        problem =>
+                        const isSolved =
                             solvedProblemIds.has(
                                 Number(problem.id)
-                            )
-                    );
-
-            }
-
-
-            /* =========================
-               UNSOLVED
-            ========================= */
-
-            if (activeFilter === "Unsolved") {
-
-                filtered =
-                    filtered.filter(
-                        problem =>
-                            !solvedProblemIds.has(
-                                Number(problem.id)
-                            )
-                    );
-
-            }
-
-
-            /* =========================
-               SEARCH
-               TITLE + DESCRIPTION + ID + TAGS
-            ========================= */
-
-            if (query) {
-
-                filtered =
-                    filtered.filter(
-                        problem => {
-
-                            const title =
-                                String(
-                                    problem.title || ""
-                                )
-                                    .toLowerCase();
-
-
-                            const description =
-                                String(
-                                    problem.description || ""
-                                )
-                                    .toLowerCase();
-
-
-                            const id =
-                                String(
-                                    problem.id || ""
-                                )
-                                    .toLowerCase();
-
-
-                            const tags =
-                                normalizeTags(
-                                    problem.tags
-                                )
-                                    .join(" ")
-                                    .toLowerCase();
-
-
-                            return (
-                                title.includes(query) ||
-                                description.includes(query) ||
-                                id.includes(query) ||
-                                tags.includes(query)
                             );
 
-                        }
-                    );
 
-            }
-
-
-            updateFilterLabel();
-
-            updateResultCount(
-                filtered.length
-            );
-
-            updateClearButton();
-
-            renderProblems(filtered);
-
-        }
-
-
-        /* =========================
-           RESULT COUNT
-        ========================= */
-
-        function updateResultCount(count) {
-
-            resultCount.innerHTML = `
-                <strong>${count}</strong>
-                ${count === 1 ? "problem" : "problems"}
-                found
-            `;
-
-        }
-
-
-        /* =========================
-           CLEAR SEARCH
-        ========================= */
-
-        function updateClearButton() {
-
-            if (searchInput.value.trim()) {
-
-                clearSearch.style.display =
-                    "block";
-
-                document.getElementById(
-                    "searchShortcut"
-                ).style.display =
-                    "none";
-
-            } else {
-
-                clearSearch.style.display =
-                    "none";
-
-                document.getElementById(
-                    "searchShortcut"
-                ).style.display =
-                    "block";
-
-            }
-
-        }
-
-
-        clearSearch.addEventListener(
-            "click",
-            () => {
-
-                searchInput.value = "";
-
-                applyFilters();
-
-                searchInput.focus();
-
-            }
-        );
-
-
-        /* =========================
-           RENDER PROBLEMS
-        ========================= */
-
-        function renderProblems(problems) {
-
-            if (!problems.length) {
-
-                problemList.innerHTML = `
-                    <div class="empty-state">
-
-                        <div class="empty-icon">
-                            ⌕
-                        </div>
-
-                        <strong>
-                            No problems found
-                        </strong>
-
-                        <span>
-                            Try changing your search
-                            or filters.
-                        </span>
-
-                    </div>
-                `;
-
-                return;
-
-            }
-
-
-            problemList.innerHTML =
-                problems
-                    .map(
-                        (problem, index) => {
-
-                            const difficulty =
-                                String(
-                                    problem.difficulty ||
-                                    "Unknown"
-                                );
-
-
-                            const difficultyLower =
-                                difficulty.toLowerCase();
-
-
-                            let difficultyClass =
-                                "difficulty-unknown";
-
-
-                            if (
-                                difficultyLower === "easy"
-                            ) {
-
-                                difficultyClass =
-                                    "difficulty-easy";
-
-                            }
-
-
-                            if (
-                                difficultyLower === "medium"
-                            ) {
-
-                                difficultyClass =
-                                    "difficulty-medium";
-
-                            }
-
-
-                            if (
-                                difficultyLower === "hard"
-                            ) {
-
-                                difficultyClass =
-                                    "difficulty-hard";
-
-                            }
-
-
-                            const isSolved =
-                                solvedProblemIds.has(
-                                    Number(problem.id)
-                                );
-
-
-                            const rowClass =
-                                isSolved
-                                    ? "problem-row solved-row"
-                                    : "problem-row";
-
-
-                            /* =========================
-                               TAGS
-                            ========================= */
-
-                            const tags =
-                                normalizeTags(
-                                    problem.tags
-                                );
-
-
-                            const tagsHTML =
-                                tags.length
-                                    ? `
-                                        <div class="problem-tags">
-
-                                            ${tags
-                                                .map(
-                                                    tag => `
-                                                        <span
-                                                            class="problem-tag">
-                                                            ${escapeHtml(tag)}
-                                                        </span>
-                                                    `
-                                                )
-                                                .join("")}
-
-                                        </div>
-                                    `
-                                    : "";
-
-
-                            /* =========================
-                               ACTION
-                            ========================= */
-
-                            const actionHTML =
-                                isSolved
-                                    ? `
-                                        <a
-                                            href="problem.html?id=${encodeURIComponent(
-                                                problem.id
-                                            )}"
-                                            class="solve-link solved-link">
-
-                                            ✓ Solved
-
-                                        </a>
-                                    `
-                                    : `
-                                        <a
-                                            href="problem.html?id=${encodeURIComponent(
-                                                problem.id
-                                            )}"
-                                            class="solve-link">
-
-                                            Solve →
-
-                                        </a>
-                                    `;
-
-
-                            /* =========================
-                               SOLVED CHECK
-                            ========================= */
-
-                            const solvedCheck =
-                                isSolved
-                                    ? `
-                                        <span
-                                            class="solved-check"
-                                            title="Solved">
-
-                                            ✓
-
-                                        </span>
-                                    `
-                                    : "";
-
-
-                            return `
+                        const rowClass =
+                            isSolved
+                                ? "problem-row solved-row"
+                                : "problem-row";
+
+
+                        /* TAGS */
+
+                        const tags =
+                            normalizeTags(
+                                problem.tags
+                            );
+
+
+                        const tagsHTML =
+                            tags.length
+                                ? `
+                                    <div class="problem-tags">
+
+                                        ${tags
+                                            .map(
+                                                tag => `
+                                                    <span
+                                                        class="problem-tag">
+                                                        ${escapeHtml(tag)}
+                                                    </span>
+                                                `
+                                            )
+                                            .join("")}
+
+                                    </div>
+                                `
+                                : "";
+
+
+                        /* ACTION */
+
+                        const problemUrl =
+                            `problem.html?id=${encodeURIComponent(
+                                problem.id
+                            )}`;
+
+
+                        const actionHTML =
+                            isSolved
+                                ? `
+                                    <a
+                                        href="${problemUrl}"
+                                        class="solve-link solved-link">
+                                        ✓ Solved
+                                    </a>
+                                `
+                                : `
+                                    <a
+                                        href="${problemUrl}"
+                                        class="solve-link">
+                                        Solve →
+                                    </a>
+                                `;
+
+
+                        /* SOLVED CHECK */
+
+                        const solvedCheck =
+                            isSolved
+                                ? `
+                                    <span
+                                        class="solved-check"
+                                        title="Solved">
+                                        ✓
+                                    </span>
+                                `
+                                : "";
+
+
+                        /* GLOBAL ROW NUMBER */
+
+                        const rowNumber =
+                            (
+                                (currentPage - 1) *
+                                PROBLEMS_PER_PAGE
+                            ) +
+                            index +
+                            1;
+
+
+                        return `
+                            <div
+                                class="${rowClass}">
 
                                 <div
-                                    class="${rowClass}">
+                                    class="problem-number">
+                                    ${rowNumber}
+                                </div>
+
+
+                                <div
+                                    class="problem-main">
 
                                     <div
-                                        class="problem-number">
-
-                                        ${index + 1}
-
-                                    </div>
-
-
-                                    <div
-                                        class="problem-main">
+                                        class="problem-title-line">
 
                                         <div
-                                            class="problem-title-line">
+                                            class="problem-title">
 
-                                            <div
-                                                class="problem-title">
-
-                                                <a
-                                                    href="problem.html?id=${encodeURIComponent(
-                                                        problem.id
-                                                    )}">
-
-                                                    ${escapeHtml(
-                                                        problem.title
-                                                    )}
-
-                                                </a>
-
-                                            </div>
-
-
-                                            ${solvedCheck}
+                                            <a
+                                                href="${problemUrl}">
+                                                ${escapeHtml(
+                                                    problem.title
+                                                )}
+                                            </a>
 
                                         </div>
 
-
-                                        <div
-                                            class="problem-id">
-
-                                            Problem #${escapeHtml(
-                                                problem.id
-                                            )}
-
-                                        </div>
-
-
-                                        ${tagsHTML}
+                                        ${solvedCheck}
 
                                     </div>
 
 
                                     <div
-                                        class="problem-difficulty">
+                                        class="problem-id">
 
-                                        <span
-                                            class="difficulty-badge ${difficultyClass}">
-
-                                            ${escapeHtml(
-                                                difficulty
-                                            )}
-
-                                        </span>
+                                        Problem #${escapeHtml(
+                                            problem.id
+                                        )}
 
                                     </div>
 
 
-                                    <div
-                                        class="problem-action">
-
-                                        ${actionHTML}
-
-                                    </div>
+                                    ${tagsHTML}
 
                                 </div>
 
-                            `;
 
-                        }
-                    )
-                    .join("");
+                                <div
+                                    class="problem-difficulty">
 
-        }
+                                    <span
+                                        class="difficulty-badge ${difficultyClass}">
 
+                                        ${escapeHtml(
+                                            difficulty
+                                        )}
 
-        /* =========================
-           SEARCH EVENT
-        ========================= */
+                                    </span>
 
-        searchInput.addEventListener(
-            "input",
-            applyFilters
-        );
+                                </div>
 
 
-        /* =========================
-           FILTER BUTTONS
-        ========================= */
+                                <div
+                                    class="problem-action">
 
-        document
-            .querySelectorAll(".filter-btn")
-            .forEach(
-                button => {
+                                    ${actionHTML}
 
-                    button.addEventListener(
-                        "click",
-                        () => {
+                                </div>
 
-                            document
-                                .querySelectorAll(
-                                    ".filter-btn"
-                                )
-                                .forEach(
-                                    btn =>
-                                        btn.classList.remove(
-                                            "active"
-                                        )
-                                );
+                            </div>
+                        `;
+                    }
+                )
+                .join("");
+    }
 
 
-                            button.classList.add(
-                                "active"
-                            );
+    /* =========================
+       SEARCH
+       SERVER-SIDE + DEBOUNCE
+    ========================= */
+
+    let searchTimeout;
 
 
-                            activeFilter =
-                                button.dataset.filter;
+    searchInput.addEventListener(
+        "input",
+        () => {
 
-
-                            applyFilters();
-
-                        }
-                    );
-
-                }
+            clearTimeout(
+                searchTimeout
             );
 
 
-        /* =========================
-           "/" SEARCH SHORTCUT
-        ========================= */
+            searchTimeout =
+                setTimeout(
+                    () => {
 
-        document.addEventListener(
-            "keydown",
-            event => {
+                        currentPage = 1;
 
-                if (
-                    event.key === "/" &&
-                    document.activeElement !== searchInput &&
-                    document.activeElement.tagName !== "TEXTAREA" &&
-                    document.activeElement.tagName !== "INPUT"
-                ) {
+                        loadProblems();
 
-                    event.preventDefault();
-
-                    searchInput.focus();
-
-                }
+                    },
+                    300
+                );
+        }
+    );
 
 
-                if (
-                    event.key === "Escape" &&
-                    document.activeElement === searchInput
-                ) {
+    /* =========================
+       FILTER BUTTONS
+    ========================= */
 
-                    searchInput.value = "";
+    document
+        .querySelectorAll(".filter-btn")
+        .forEach(
+            button => {
 
-                    applyFilters();
+                button.addEventListener(
+                    "click",
+                    () => {
 
-                    searchInput.blur();
+                        document
+                            .querySelectorAll(
+                                ".filter-btn"
+                            )
+                            .forEach(
+                                btn =>
+                                    btn.classList.remove(
+                                        "active"
+                                    )
+                            );
 
-                }
 
+                        button.classList.add(
+                            "active"
+                        );
+
+
+                        activeFilter =
+                            button.dataset.filter;
+
+
+                        currentPage = 1;
+
+
+                        loadProblems();
+                    }
+                );
             }
         );
 
 
-        /* =========================
-           START
-        ========================= */
+    /* =========================
+       "/" SEARCH SHORTCUT
+    ========================= */
 
-        loadProblems();
+    document.addEventListener(
+        "keydown",
+        event => {
 
-    </script>
+            if (
+                event.key === "/" &&
+                document.activeElement !== searchInput &&
+                document.activeElement.tagName !== "TEXTAREA" &&
+                document.activeElement.tagName !== "INPUT"
+            ) {
+
+                event.preventDefault();
+
+                searchInput.focus();
+            }
+
+
+            if (
+                event.key === "Escape" &&
+                document.activeElement === searchInput
+            ) {
+
+                if (searchInput.value.trim()) {
+
+                    searchInput.value = "";
+
+                    currentPage = 1;
+
+                    loadProblems();
+                }
+
+                searchInput.blur();
+            }
+        }
+    );
+
+
+    /* =========================
+       START
+    ========================= */
+
+    loadProblems();
+
+</script>
+
+
 
 </body>
 
 </html>
-```
+

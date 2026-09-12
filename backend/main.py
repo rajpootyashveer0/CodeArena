@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import or_
 import json
 
 from database import engine, Base, get_db
@@ -240,6 +241,7 @@ def create_problem(
 
 # =========================
 # GET ALL PROBLEMS
+# SEARCH + FILTER + PAGINATION
 # =========================
 
 @app.get(
@@ -250,6 +252,8 @@ def get_problems(
     page: int = 1,
     limit: int = 10,
     difficulty: str | None = None,
+    search: str | None = None,
+    tag: str | None = None,
     db: Session = Depends(get_db)
 ):
 
@@ -267,21 +271,104 @@ def get_problems(
         limit = 100
 
     # -------------------------
-    # Build query
+    # Build base query
     # -------------------------
 
     query = db.query(Problem)
 
-    if difficulty:
+    # -------------------------
+    # Difficulty filter
+    # -------------------------
+
+    if difficulty and difficulty.strip().lower() != "all":
+
+        difficulty_value = difficulty.strip()
+
         query = query.filter(
-            Problem.difficulty == difficulty
+            Problem.difficulty.ilike(
+                difficulty_value
+            )
         )
 
     # -------------------------
-    # Total problems
+    # Search
+    # Title + Description + ID + Tags
+    # -------------------------
+
+    if search:
+
+        search_value = search.strip()
+
+        if search_value:
+
+            search_pattern = f"%{search_value}%"
+
+            search_conditions = [
+                Problem.title.ilike(
+                    search_pattern
+                ),
+
+                Problem.description.ilike(
+                    search_pattern
+                ),
+
+                Problem.tags.ilike(
+                    search_pattern
+                )
+            ]
+
+            # -------------------------
+            # Problem ID search
+            # -------------------------
+
+            if search_value.isdigit():
+
+                search_conditions.append(
+                    Problem.id == int(search_value)
+                )
+
+            query = query.filter(
+                or_(*search_conditions)
+            )
+
+    # -------------------------
+    # Tag filter
+    # -------------------------
+
+    if tag:
+
+        tag_value = tag.strip()
+
+        if tag_value:
+
+            query = query.filter(
+                Problem.tags.ilike(
+                    f'%"{tag_value}"%'
+                )
+            )
+
+    # -------------------------
+    # Total filtered problems
     # -------------------------
 
     total = query.count()
+
+    # -------------------------
+    # Total pages
+    # -------------------------
+
+    pages = (
+        (total + limit - 1) // limit
+        if total > 0
+        else 1
+    )
+
+    # -------------------------
+    # Prevent invalid page
+    # -------------------------
+
+    if page > pages:
+        page = pages
 
     # -------------------------
     # Pagination
@@ -289,17 +376,13 @@ def get_problems(
 
     offset = (page - 1) * limit
 
-    problems = query.offset(
-        offset
-    ).limit(
-        limit
-    ).all()
-
-    # -------------------------
-    # Total pages
-    # -------------------------
-
-    pages = (total + limit - 1) // limit
+    problems = (
+        query
+        .order_by(Problem.id.asc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
 
     # -------------------------
     # Response
@@ -1086,3 +1169,4 @@ def get_leaderboard(
         user["rank"] = index
 
     return leaderboard
+
