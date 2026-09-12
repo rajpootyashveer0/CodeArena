@@ -6,7 +6,7 @@ from sqlalchemy import or_
 import json
 
 from database import engine, Base, get_db
-from models import User, Problem, Submission, TestCase
+from models import User, Problem, Submission, TestCase, Bookmark
 from judge import run_python_code
 
 from schemas import (
@@ -1169,4 +1169,143 @@ def get_leaderboard(
         user["rank"] = index
 
     return leaderboard
+
+# =========================================================
+# BOOKMARKS
+# =========================================================
+
+
+# =========================
+# ADD BOOKMARK
+# =========================
+
+@app.post("/bookmarks/{problem_id}")
+def add_bookmark(
+    problem_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+
+    # -------------------------
+    # Check problem
+    # -------------------------
+
+    problem = db.query(Problem).filter(
+        Problem.id == problem_id
+    ).first()
+
+    if not problem:
+        raise HTTPException(
+            status_code=404,
+            detail="Problem not found"
+        )
+
+    # -------------------------
+    # Check existing bookmark
+    # -------------------------
+
+    existing_bookmark = db.query(Bookmark).filter(
+        Bookmark.user_id == current_user.id,
+        Bookmark.problem_id == problem_id
+    ).first()
+
+    if existing_bookmark:
+        raise HTTPException(
+            status_code=400,
+            detail="Problem already bookmarked"
+        )
+
+    # -------------------------
+    # Create bookmark
+    # -------------------------
+
+    new_bookmark = Bookmark(
+        user_id=current_user.id,
+        problem_id=problem_id
+    )
+
+    db.add(new_bookmark)
+    db.commit()
+    db.refresh(new_bookmark)
+
+    return {
+        "message": "Problem bookmarked successfully",
+        "bookmark_id": new_bookmark.id,
+        "problem_id": new_bookmark.problem_id
+    }
+
+
+# =========================
+# REMOVE BOOKMARK
+# =========================
+
+@app.delete("/bookmarks/{problem_id}")
+def remove_bookmark(
+    problem_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+
+    bookmark = db.query(Bookmark).filter(
+        Bookmark.user_id == current_user.id,
+        Bookmark.problem_id == problem_id
+    ).first()
+
+    if not bookmark:
+        raise HTTPException(
+            status_code=404,
+            detail="Bookmark not found"
+        )
+
+    db.delete(bookmark)
+    db.commit()
+
+    return {
+        "message": "Bookmark removed successfully"
+    }
+
+
+# =========================
+# GET MY BOOKMARKS
+# =========================
+
+@app.get("/bookmarks")
+def get_bookmarks(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+
+    bookmarks = db.query(Bookmark).filter(
+        Bookmark.user_id == current_user.id
+    ).order_by(
+        Bookmark.id.desc()
+    ).all()
+
+    result = []
+
+    for bookmark in bookmarks:
+
+        problem = db.query(Problem).filter(
+            Problem.id == bookmark.problem_id
+        ).first()
+
+        if not problem:
+            continue
+
+        try:
+            tags = json.loads(problem.tags)
+        except (json.JSONDecodeError, TypeError):
+            tags = []
+
+        result.append({
+            "bookmark_id": bookmark.id,
+            "problem_id": problem.id,
+            "title": problem.title,
+            "description": problem.description,
+            "difficulty": problem.difficulty,
+            "tags": tags,
+            "created_at": bookmark.created_at
+        })
+
+    return result
 

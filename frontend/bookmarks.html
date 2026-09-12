@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>Bookmarks — CodeArena</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
+<style>
+    :root {
+        --bg: #0b0b0b;
+        --surface: #111111;
+        --surface-2: #151515;
+        --border: #252525;
+        --border-light: #303030;
+        --text: #f0f0f0;
+        --muted: #888;
+        --orange: #ffa116;
+        --green: #2db55d;
+        --red: #ef4743;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Inter", sans-serif;
+        min-height: 100vh;
+    }
+
+    button,
+    a {
+        font-family: inherit;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    /* NAVBAR */
+
+    nav {
+        height: 64px;
+        border-bottom: 1px solid var(--border);
+        background: rgba(11, 11, 11, 0.96);
+        display: flex;
+        align-items: center;
+        padding: 0 42px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(12px);
+    }
+
+    .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 38px;
+    }
+
+    .logo {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 23px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .logo span {
+        color: var(--orange);
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 26px;
+    }
+
+    .nav-links a {
+        position: relative;
+        color: #999;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 23px 0;
+        transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+        color: #fff;
+    }
+
+    .nav-links a.active {
+        color: #fff;
+    }
+
+    .nav-links a.active::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 2px;
+        background: var(--orange);
+    }
+
+    .nav-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .logout-btn {
+        border: 1px solid var(--border-light);
+        background: transparent;
+        color: #aaa;
+        padding: 8px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        transition: 0.2s;
+    }
+
+    .logout-btn:hover {
+        color: #fff;
+        border-color: var(--orange);
+    }
+
+    /* MAIN */
+
+    .container {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 48px 28px 70px;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 20px;
+        margin-bottom: 34px;
+    }
+
+    .eyebrow {
+        color: var(--orange);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 9px;
+    }
+
+    h1 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 34px;
+        line-height: 1.1;
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .bookmark-count {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        border-radius: 9px;
+        padding: 13px 18px;
+        min-width: 105px;
+        text-align: center;
+    }
+
+    .bookmark-count strong {
+        display: block;
+        color: var(--orange);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 20px;
+        margin-bottom: 3px;
+    }
+
+    .bookmark-count span {
+        color: #777;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+    }
+
+    /* TOOLBAR */
+
+    .toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 18px;
+    }
+
+    .toolbar-title {
+        font-size: 13px;
+        color: #999;
+    }
+
+    .refresh-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        border: 1px solid var(--border-light);
+        background: var(--surface);
+        color: #aaa;
+        border-radius: 6px;
+        padding: 8px 13px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: 0.2s;
+    }
+
+    .refresh-btn:hover {
+        color: #fff;
+        border-color: var(--orange);
+    }
+
+    /* PROBLEM LIST */
+
+    .problems-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .problem-card {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        border-radius: 9px;
+        padding: 19px 20px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        transition:
+            border-color 0.2s ease,
+            transform 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .problem-card:hover {
+        border-color: #3a3a3a;
+        background: #131313;
+        transform: translateY(-1px);
+    }
+
+    .problem-main {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .problem-top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+
+    .problem-id {
+        color: #666;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+    }
+
+    .problem-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 17px;
+        font-weight: 600;
+        color: #f4f4f4;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .problem-description {
+        color: #777;
+        font-size: 12px;
+        line-height: 1.55;
+        max-width: 760px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* META */
+
+    .problem-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-top: 12px;
+    }
+
+    .difficulty {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 5px;
+    }
+
+    .difficulty.easy {
+        color: var(--green);
+        background: rgba(45, 181, 93, 0.09);
+        border: 1px solid rgba(45, 181, 93, 0.18);
+    }
+
+    .difficulty.medium {
+        color: var(--orange);
+        background: rgba(255, 161, 22, 0.08);
+        border: 1px solid rgba(255, 161, 22, 0.18);
+    }
+
+    .difficulty.hard {
+        color: var(--red);
+        background: rgba(239, 71, 67, 0.08);
+        border: 1px solid rgba(239, 71, 67, 0.18);
+    }
+
+    .tag {
+        font-size: 10px;
+        color: #999;
+        background: #181818;
+        border: 1px solid #292929;
+        border-radius: 5px;
+        padding: 4px 7px;
+    }
+
+    /* ACTIONS */
+
+    .problem-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    .solve-btn {
+        border: 1px solid var(--orange);
+        background: var(--orange);
+        color: #111;
+        border-radius: 6px;
+        padding: 9px 15px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .solve-btn:hover {
+        background: #ffb33d;
+        border-color: #ffb33d;
+    }
+
+    .remove-btn {
+        width: 35px;
+        height: 35px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #303030;
+        background: #151515;
+        color: var(--orange);
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 15px;
+        transition: 0.2s;
+    }
+
+    .remove-btn:hover {
+        color: #fff;
+        border-color: var(--red);
+        background: rgba(239, 71, 67, 0.08);
+    }
+
+    .remove-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* LOADING */
+
+    .loading {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        border-radius: 9px;
+        padding: 50px 20px;
+        text-align: center;
+        color: #777;
+        font-size: 13px;
+    }
+
+    .spinner {
+        width: 25px;
+        height: 25px;
+        border: 2px solid #292929;
+        border-top-color: var(--orange);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 14px;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* EMPTY STATE */
+
+    .empty-state {
+        border: 1px dashed #303030;
+        background: #101010;
+        border-radius: 10px;
+        padding: 75px 25px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        font-size: 38px;
+        color: var(--orange);
+        margin-bottom: 17px;
+    }
+
+    .empty-state h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 21px;
+        margin-bottom: 9px;
+    }
+
+    .empty-state p {
+        color: #777;
+        font-size: 13px;
+        line-height: 1.6;
+        max-width: 450px;
+        margin: 0 auto 22px;
+    }
+
+    .browse-btn {
+        display: inline-block;
+        background: var(--orange);
+        color: #111;
+        border-radius: 6px;
+        padding: 10px 17px;
+        font-size: 12px;
+        font-weight: 700;
+        transition: 0.2s;
+    }
+
+    .browse-btn:hover {
+        background: #ffb33d;
+    }
+
+    /* ERROR */
+
+    .error-state {
+        border: 1px solid rgba(239, 71, 67, 0.25);
+        background: rgba(239, 71, 67, 0.05);
+        border-radius: 9px;
+        padding: 25px;
+        text-align: center;
+    }
+
+    .error-state h3 {
+        color: #f06b68;
+        font-size: 15px;
+        margin-bottom: 7px;
+    }
+
+    .error-state p {
+        color: #888;
+        font-size: 12px;
+        margin-bottom: 15px;
+    }
+
+    .retry-btn {
+        border: 1px solid #555;
+        background: #151515;
+        color: #ddd;
+        border-radius: 6px;
+        padding: 8px 14px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .retry-btn:hover {
+        border-color: var(--orange);
+    }
+
+    /* TOAST */
+
+    .toast {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        min-width: 250px;
+        max-width: 360px;
+        padding: 13px 16px;
+        background: #171717;
+        border: 1px solid #303030;
+        border-radius: 8px;
+        color: #ddd;
+        font-size: 12px;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
+        transform: translateY(20px);
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.25s ease;
+        z-index: 200;
+    }
+
+    .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .toast.success {
+        border-color: rgba(45, 181, 93, 0.35);
+    }
+
+    .toast.error {
+        border-color: rgba(239, 71, 67, 0.35);
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 850px) {
+        nav {
+            padding: 0 20px;
+        }
+
+        .nav-left {
+            gap: 22px;
+        }
+
+        .nav-links {
+            gap: 17px;
+        }
+
+        .nav-links a {
+            font-size: 12px;
+        }
+
+        .problem-card {
+            align-items: flex-start;
+        }
+
+        .problem-actions {
+            flex-direction: column;
+        }
+    }
+
+    @media (max-width: 650px) {
+        nav {
+            height: auto;
+            min-height: 64px;
+            padding: 12px 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-left {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .nav-links {
+            gap: 15px;
+            overflow-x: auto;
+        }
+
+        .nav-links a {
+            padding: 8px 0;
+            white-space: nowrap;
+        }
+
+        .nav-right {
+            position: absolute;
+            right: 16px;
+            top: 13px;
+        }
+
+        .logout-btn {
+            padding: 7px 10px;
+            font-size: 11px;
+        }
+
+        .nav-left {
+            padding-right: 75px;
+        }
+
+        .container {
+            padding: 32px 16px 50px;
+        }
+
+        .page-header {
+            align-items: flex-start;
+        }
+
+        h1 {
+            font-size: 28px;
+        }
+
+        .bookmark-count {
+            min-width: 85px;
+            padding: 10px 12px;
+        }
+
+        .problem-card {
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .problem-actions {
+            width: 100%;
+            flex-direction: row;
+        }
+
+        .solve-btn {
+            flex: 1;
+        }
+
+        .remove-btn {
+            width: 38px;
+            height: 38px;
+        }
+
+        .problem-title {
+            white-space: normal;
+        }
+
+        .toast {
+            left: 16px;
+            right: 16px;
+            bottom: 16px;
+            min-width: 0;
+        }
+    }
+</style>
+
+
+</head>
+
+<body>
+
+
+<nav>
+    <div class="nav-left">
+
+        <a href="dashboard.html" class="logo">
+            Code<span>Arena</span>
+        </a>
+
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="problems.html">Problems</a>
+            <a href="leaderboard.html">Leaderboard</a>
+            <a href="bookmarks.html" class="active">Bookmarks</a>
+            <a href="profile.html">Profile</a>
+        </div>
+
+    </div>
+
+    <div class="nav-right">
+        <button class="logout-btn" onclick="logout()">
+            Logout
+        </button>
+    </div>
+</nav>
+
+
+<main class="container">
+
+    <div class="page-header">
+
+        <div>
+            <div class="eyebrow">Your Collection</div>
+
+            <h1>Bookmarked Problems</h1>
+
+            <p class="subtitle">
+                Keep track of problems you want to solve later.
+            </p>
+        </div>
+
+        <div class="bookmark-count">
+            <strong id="bookmarkCount">0</strong>
+            <span>Saved</span>
+        </div>
+
+    </div>
+
+
+    <div class="toolbar">
+
+        <div class="toolbar-title">
+            Your saved coding problems
+        </div>
+
+        <button
+            type="button"
+            class="refresh-btn"
+            onclick="loadBookmarks()">
+            ↻ Refresh
+        </button>
+
+    </div>
+
+
+    <div id="content">
+
+        <div class="loading">
+            <div class="spinner"></div>
+            Loading bookmarks...
+        </div>
+
+    </div>
+
+</main>
+
+
+<div id="toast" class="toast"></div>
+
+
+<script>
+
+    const API_URL = "http://127.0.0.1:8000";
+
+    let bookmarks = [];
+
+
+    /* =========================
+       AUTH
+    ========================= */
+
+    function getToken() {
+        return localStorage.getItem("access_token");
+    }
+
+
+    function checkAuth() {
+
+        const token = getToken();
+
+        if (!token) {
+            window.location.href = "login.html";
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    function logout() {
+
+        localStorage.removeItem("access_token");
+
+        window.location.href = "login.html";
+    }
+
+
+    /* =========================
+       ESCAPE HTML
+    ========================= */
+
+    function escapeHtml(value) {
+
+        if (value === null || value === undefined) {
+            return "";
+        }
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    /* =========================
+       DIFFICULTY
+    ========================= */
+
+    function getDifficultyClass(difficulty) {
+
+        const value =
+            String(difficulty || "")
+                .toLowerCase();
+
+        if (value === "easy") {
+            return "easy";
+        }
+
+        if (value === "medium") {
+            return "medium";
+        }
+
+        if (value === "hard") {
+            return "hard";
+        }
+
+        return "";
+    }
+
+
+    /* =========================
+       TOAST
+    ========================= */
+
+    let toastTimer;
+
+    function showToast(message, type = "success") {
+
+        const toast =
+            document.getElementById("toast");
+
+        toast.textContent = message;
+
+        toast.className =
+            `toast show ${type}`;
+
+        clearTimeout(toastTimer);
+
+        toastTimer = setTimeout(() => {
+            toast.className = "toast";
+        }, 2500);
+    }
+
+
+    /* =========================
+       LOAD BOOKMARKS
+    ========================= */
+
+    async function loadBookmarks() {
+
+        if (!checkAuth()) {
+            return;
+        }
+
+        const content =
+            document.getElementById("content");
+
+        content.innerHTML = `
+            <div class="loading">
+                <div class="spinner"></div>
+                Loading bookmarks...
+            </div>
+        `;
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/bookmarks`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Authorization":
+                                `Bearer ${getToken()}`,
+                            "Accept":
+                                "application/json"
+                        }
+                    }
+                );
+
+
+            if (response.status === 401) {
+
+                localStorage.removeItem(
+                    "access_token"
+                );
+
+                window.location.href =
+                    "login.html";
+
+                return;
+            }
+
+
+            if (!response.ok) {
+
+                let message =
+                    "Unable to load bookmarks.";
+
+                try {
+
+                    const errorData =
+                        await response.json();
+
+                    if (errorData.detail) {
+                        message =
+                            errorData.detail;
+                    }
+
+                } catch (_) {}
+
+                throw new Error(message);
+            }
+
+
+            const data =
+                await response.json();
+
+
+            bookmarks =
+                Array.isArray(data)
+                    ? data
+                    : [];
+
+
+            updateCount();
+
+            renderBookmarks();
+
+        } catch (error) {
+
+            console.error(
+                "Bookmark loading error:",
+                error
+            );
+
+            content.innerHTML = `
+                <div class="error-state">
+
+                    <h3>
+                        Unable to load bookmarks
+                    </h3>
+
+                    <p>
+                        ${escapeHtml(
+                            error.message ||
+                            "Something went wrong."
+                        )}
+                    </p>
+
+                    <button
+                        type="button"
+                        class="retry-btn"
+                        onclick="loadBookmarks()">
+                        Try Again
+                    </button>
+
+                </div>
+            `;
+        }
+    }
+
+
+    /* =========================
+       COUNT
+    ========================= */
+
+    function updateCount() {
+
+        document.getElementById(
+            "bookmarkCount"
+        ).textContent = bookmarks.length;
+    }
+
+
+    /* =========================
+       RENDER
+    ========================= */
+
+    function renderBookmarks() {
+
+        const content =
+            document.getElementById("content");
+
+
+        if (!bookmarks.length) {
+
+            content.innerHTML = `
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        ☆
+                    </div>
+
+                    <h2>
+                        No bookmarked problems
+                    </h2>
+
+                    <p>
+                        You haven't saved any problems yet.
+                        Browse the problem set and bookmark
+                        the ones you want to solve later.
+                    </p>
+
+                    <a
+                        href="problems.html"
+                        class="browse-btn">
+                        Browse Problems
+                    </a>
+
+                </div>
+            `;
+
+            return;
+        }
+
+
+        const list =
+            document.createElement("div");
+
+        list.className =
+            "problems-list";
+
+
+        bookmarks.forEach(bookmark => {
+
+            const card =
+                document.createElement("article");
+
+            card.className =
+                "problem-card";
+
+
+            const difficultyClass =
+                getDifficultyClass(
+                    bookmark.difficulty
+                );
+
+
+            let tagsHTML = "";
+
+            if (
+                Array.isArray(bookmark.tags) &&
+                bookmark.tags.length
+            ) {
+
+                tagsHTML =
+                    bookmark.tags
+                        .slice(0, 6)
+                        .map(tag => `
+                            <span class="tag">
+                                ${escapeHtml(tag)}
+                            </span>
+                        `)
+                        .join("");
+            }
+
+
+            const description =
+                bookmark.description ||
+                "No description available.";
+
+
+            card.innerHTML = `
+
+                <div class="problem-main">
+
+                    <div class="problem-top">
+
+                        <span class="problem-id">
+                            #${escapeHtml(
+                                bookmark.problem_id
+                            )}
+                        </span>
+
+                        <h2 class="problem-title">
+                            ${escapeHtml(
+                                bookmark.title
+                            )}
+                        </h2>
+
+                    </div>
+
+
+                    <div class="problem-description">
+                        ${escapeHtml(description)}
+                    </div>
+
+
+                    <div class="problem-meta">
+
+                        <span class="difficulty ${difficultyClass}">
+                            ${escapeHtml(
+                                bookmark.difficulty ||
+                                "Unknown"
+                            )}
+                        </span>
+
+                        ${tagsHTML}
+
+                    </div>
+
+                </div>
+
+
+                <div class="problem-actions">
+
+                    <button
+                        type="button"
+                        class="solve-btn"
+                        data-solve-id="${escapeHtml(
+                            bookmark.problem_id
+                        )}">
+                        Solve
+                    </button>
+
+                    <button
+                        type="button"
+                        class="remove-btn"
+                        title="Remove bookmark"
+                        aria-label="Remove bookmark"
+                        data-remove-id="${escapeHtml(
+                            bookmark.problem_id
+                        )}">
+                        ★
+                    </button>
+
+                </div>
+            `;
+
+
+            const solveButton =
+                card.querySelector(
+                    "[data-solve-id]"
+                );
+
+            solveButton.addEventListener(
+                "click",
+                () => {
+
+                    const problemId =
+                        bookmark.problem_id;
+
+                    window.location.href =
+                        `problem.html?id=${encodeURIComponent(
+                            problemId
+                        )}`;
+                }
+            );
+
+
+            const removeButton =
+                card.querySelector(
+                    "[data-remove-id]"
+                );
+
+            removeButton.addEventListener(
+                "click",
+                () => {
+                    removeBookmark(
+                        bookmark.problem_id,
+                        removeButton,
+                        card
+                    );
+                }
+            );
+
+
+            list.appendChild(card);
+        });
+
+
+        content.innerHTML = "";
+
+        content.appendChild(list);
+    }
+
+
+    /* =========================
+       REMOVE BOOKMARK
+    ========================= */
+
+    async function removeBookmark(
+        problemId,
+        button,
+        card
+    ) {
+
+        if (!getToken()) {
+            window.location.href =
+                "login.html";
+
+            return;
+        }
+
+
+        button.disabled = true;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/bookmarks/${problemId}`,
+                    {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization":
+                                `Bearer ${getToken()}`,
+                            "Accept":
+                                "application/json"
+                        }
+                    }
+                );
+
+
+            if (response.status === 401) {
+
+                localStorage.removeItem(
+                    "access_token"
+                );
+
+                window.location.href =
+                    "login.html";
+
+                return;
+            }
+
+
+            if (!response.ok) {
+
+                let message =
+                    "Unable to remove bookmark.";
+
+                try {
+
+                    const errorData =
+                        await response.json();
+
+                    if (errorData.detail) {
+                        message =
+                            errorData.detail;
+                    }
+
+                } catch (_) {}
+
+                throw new Error(message);
+            }
+
+
+            bookmarks =
+                bookmarks.filter(
+                    bookmark =>
+                        Number(
+                            bookmark.problem_id
+                        ) !== Number(problemId)
+                );
+
+
+            updateCount();
+
+
+            card.style.opacity = "0";
+            card.style.transform =
+                "translateY(-5px)";
+
+
+            setTimeout(() => {
+
+                renderBookmarks();
+
+            }, 180);
+
+
+            showToast(
+                "Bookmark removed successfully.",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Remove bookmark error:",
+                error
+            );
+
+            button.disabled = false;
+
+            showToast(
+                error.message ||
+                "Unable to remove bookmark.",
+                "error"
+            );
+        }
+    }
+
+
+    /* =========================
+       INITIAL LOAD
+    ========================= */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        () => {
+
+            loadBookmarks();
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>
