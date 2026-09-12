@@ -15,6 +15,7 @@ from schemas import (
     Token,
     ProblemCreate,
     ProblemResponse,
+    PaginatedProblemResponse,
     SubmissionCreate,
     SubmissionResponse,
     TestCaseCreate,
@@ -243,12 +244,31 @@ def create_problem(
 
 @app.get(
     "/problems",
-    response_model=list[ProblemResponse]
+    response_model=PaginatedProblemResponse
 )
 def get_problems(
+    page: int = 1,
+    limit: int = 10,
     difficulty: str | None = None,
     db: Session = Depends(get_db)
 ):
+
+    # -------------------------
+    # Validate pagination
+    # -------------------------
+
+    if page < 1:
+        page = 1
+
+    if limit < 1:
+        limit = 10
+
+    if limit > 100:
+        limit = 100
+
+    # -------------------------
+    # Build query
+    # -------------------------
 
     query = db.query(Problem)
 
@@ -257,7 +277,41 @@ def get_problems(
             Problem.difficulty == difficulty
         )
 
-    return query.all()
+    # -------------------------
+    # Total problems
+    # -------------------------
+
+    total = query.count()
+
+    # -------------------------
+    # Pagination
+    # -------------------------
+
+    offset = (page - 1) * limit
+
+    problems = query.offset(
+        offset
+    ).limit(
+        limit
+    ).all()
+
+    # -------------------------
+    # Total pages
+    # -------------------------
+
+    pages = (total + limit - 1) // limit
+
+    # -------------------------
+    # Response
+    # -------------------------
+
+    return {
+        "items": problems,
+        "total": total,
+        "page": page,
+        "limit": limit,
+        "pages": pages
+    }
 
 
 # =========================

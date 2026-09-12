@@ -1,9 +1,8 @@
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -573,6 +572,51 @@
         }
 
         /* =========================
+           PAGINATION
+        ========================= */
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .page-btn {
+            height: 38px;
+            padding: 0 15px;
+            border: 1px solid #303030;
+            border-radius: 7px;
+            background: #151515;
+            color: #aaa;
+            cursor: pointer;
+            font-family: "Inter", sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            color: #ffa116;
+            border-color: #ffa116;
+            background: rgba(255, 161, 22, 0.05);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            min-width: 90px;
+            text-align: center;
+            color: #777;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 11px;
+        }
+
+        /* =========================
            EMPTY / LOADING
         ========================= */
 
@@ -647,7 +691,6 @@
         ========================= */
 
         @media (max-width: 850px) {
-
             .nav-links {
                 display: none;
             }
@@ -682,7 +725,6 @@
         }
 
         @media (max-width: 600px) {
-
             .problems-nav {
                 padding: 0 20px;
             }
@@ -763,9 +805,17 @@
                 font-size: 8px;
                 padding: 3px 6px;
             }
+
+            .pagination {
+                gap: 8px;
+            }
+
+            .page-btn {
+                padding: 0 11px;
+                font-size: 11px;
+            }
         }
     </style>
-
 </head>
 
 <body>
@@ -808,11 +858,8 @@
         <section class="page-heading">
 
             <div class="heading-eyebrow">
-
                 <span class="heading-dot"></span>
-
                 CODING ARENA
-
             </div>
 
             <h1>
@@ -1024,6 +1071,41 @@
 
         </section>
 
+
+        <!-- PAGINATION -->
+
+        <div
+            class="pagination"
+            id="pagination">
+
+            <button
+                type="button"
+                class="page-btn"
+                id="prevPage">
+
+                ← Previous
+
+            </button>
+
+            <div
+                class="page-info"
+                id="pageInfo">
+
+                Page 1 of 1
+
+            </div>
+
+            <button
+                type="button"
+                class="page-btn"
+                id="nextPage">
+
+                Next →
+
+            </button>
+
+        </div>
+
     </main>
 
 
@@ -1036,10 +1118,16 @@
         const API_URL = "http://127.0.0.1:8000";
 
         let allProblems = [];
-
         let solvedProblemIds = new Set();
-
         let activeFilter = "all";
+
+        /* PAGINATION */
+
+        let currentPage = 1;
+        let totalPages = 1;
+        let totalProblemsFromServer = 0;
+
+        const PROBLEMS_PER_PAGE = 10;
 
 
         /* =========================
@@ -1063,6 +1151,21 @@
 
         const activeFilterLabel =
             document.getElementById("activeFilterLabel");
+
+
+        /* PAGINATION ELEMENTS */
+
+        const pagination =
+            document.getElementById("pagination");
+
+        const prevPage =
+            document.getElementById("prevPage");
+
+        const nextPage =
+            document.getElementById("nextPage");
+
+        const pageInfo =
+            document.getElementById("pageInfo");
 
 
         /* =========================
@@ -1099,7 +1202,8 @@
 
                 try {
 
-                    const parsed = JSON.parse(value);
+                    const parsed =
+                        JSON.parse(value);
 
                     if (Array.isArray(parsed)) {
 
@@ -1132,8 +1236,12 @@
 
                 errorBox.style.display = "none";
 
+
                 const response =
-                    await fetch(`${API_URL}/problems`);
+                    await fetch(
+                        `${API_URL}/problems?page=${currentPage}&limit=${PROBLEMS_PER_PAGE}`
+                    );
+
 
                 let data = null;
 
@@ -1147,6 +1255,7 @@
 
                 }
 
+
                 if (!response.ok) {
 
                     throw new Error(
@@ -1156,7 +1265,10 @@
 
                 }
 
-                if (!Array.isArray(data)) {
+
+                /* PAGINATION RESPONSE */
+
+                if (!data || !Array.isArray(data.items)) {
 
                     throw new Error(
                         "Invalid problems response."
@@ -1164,7 +1276,17 @@
 
                 }
 
-                allProblems = data;
+
+                allProblems = data.items;
+
+                totalProblemsFromServer =
+                    data.total;
+
+                currentPage =
+                    data.page;
+
+                totalPages =
+                    data.pages;
 
 
                 /* =========================
@@ -1174,7 +1296,9 @@
                 solvedProblemIds = new Set();
 
                 const token =
-                    localStorage.getItem("access_token");
+                    localStorage.getItem(
+                        "access_token"
+                    );
 
 
                 if (token) {
@@ -1267,6 +1391,8 @@
 
                 applyFilters();
 
+                updatePagination();
+
 
             } catch (error) {
 
@@ -1281,11 +1407,84 @@
                     error.message ||
                     "Unable to load problems.";
 
-                errorBox.style.display = "block";
+                errorBox.style.display =
+                    "block";
 
             }
 
         }
+
+
+        /* =========================
+           UPDATE PAGINATION
+        ========================= */
+
+        function updatePagination() {
+
+            pageInfo.textContent =
+                `Page ${currentPage} of ${totalPages}`;
+
+
+            prevPage.disabled =
+                currentPage <= 1;
+
+
+            nextPage.disabled =
+                currentPage >= totalPages;
+
+
+            pagination.style.display =
+                totalPages > 1
+                    ? "flex"
+                    : "none";
+
+        }
+
+
+        /* =========================
+           PAGINATION BUTTONS
+        ========================= */
+
+        prevPage.addEventListener(
+            "click",
+            () => {
+
+                if (currentPage > 1) {
+
+                    currentPage--;
+
+                    loadProblems();
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+
+                }
+
+            }
+        );
+
+
+        nextPage.addEventListener(
+            "click",
+            () => {
+
+                if (currentPage < totalPages) {
+
+                    currentPage++;
+
+                    loadProblems();
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+
+                }
+
+            }
+        );
 
 
         /* =========================
@@ -1295,7 +1494,7 @@
         function updateStats() {
 
             const total =
-                allProblems.length;
+                totalProblemsFromServer;
 
             const solved =
                 solvedProblemIds.size;
@@ -1359,7 +1558,8 @@
                     .trim();
 
 
-            let filtered = [...allProblems];
+            let filtered =
+                [...allProblems];
 
 
             /* =========================
@@ -1474,7 +1674,9 @@
 
             updateFilterLabel();
 
-            updateResultCount(filtered.length);
+            updateResultCount(
+                filtered.length
+            );
 
             updateClearButton();
 
@@ -1506,19 +1708,23 @@
 
             if (searchInput.value.trim()) {
 
-                clearSearch.style.display = "block";
+                clearSearch.style.display =
+                    "block";
 
                 document.getElementById(
                     "searchShortcut"
-                ).style.display = "none";
+                ).style.display =
+                    "none";
 
             } else {
 
-                clearSearch.style.display = "none";
+                clearSearch.style.display =
+                    "none";
 
                 document.getElementById(
                     "searchShortcut"
-                ).style.display = "block";
+                ).style.display =
+                    "block";
 
             }
 
@@ -1548,7 +1754,6 @@
             if (!problems.length) {
 
                 problemList.innerHTML = `
-
                     <div class="empty-state">
 
                         <div class="empty-icon">
@@ -1565,7 +1770,6 @@
                         </span>
 
                     </div>
-
                 `;
 
                 return;
@@ -1648,24 +1852,20 @@
                             const tagsHTML =
                                 tags.length
                                     ? `
-
                                         <div class="problem-tags">
 
                                             ${tags
                                                 .map(
                                                     tag => `
-
                                                         <span
                                                             class="problem-tag">
                                                             ${escapeHtml(tag)}
                                                         </span>
-
                                                     `
                                                 )
                                                 .join("")}
 
                                         </div>
-
                                     `
                                     : "";
 
@@ -1677,26 +1877,26 @@
                             const actionHTML =
                                 isSolved
                                     ? `
-
                                         <a
                                             href="problem.html?id=${encodeURIComponent(
                                                 problem.id
                                             )}"
                                             class="solve-link solved-link">
-                                            ✓ Solved
-                                        </a>
 
+                                            ✓ Solved
+
+                                        </a>
                                     `
                                     : `
-
                                         <a
                                             href="problem.html?id=${encodeURIComponent(
                                                 problem.id
                                             )}"
                                             class="solve-link">
-                                            Solve →
-                                        </a>
 
+                                            Solve →
+
+                                        </a>
                                     `;
 
 
@@ -1707,13 +1907,13 @@
                             const solvedCheck =
                                 isSolved
                                     ? `
-
                                         <span
                                             class="solved-check"
                                             title="Solved">
-                                            ✓
-                                        </span>
 
+                                            ✓
+
+                                        </span>
                                     `
                                     : "";
 
@@ -1725,7 +1925,9 @@
 
                                     <div
                                         class="problem-number">
+
                                         ${index + 1}
+
                                     </div>
 
 
@@ -1908,3 +2110,4 @@
 </body>
 
 </html>
+```

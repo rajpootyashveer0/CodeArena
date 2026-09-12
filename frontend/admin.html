@@ -1360,80 +1360,116 @@
             });
 
 
-        /* =========================
-           LOAD PROBLEMS
-        ========================= */
+       async function loadProblems() {
 
-        async function loadProblems() {
-
-            const list =
-                document.getElementById(
-                    "problemsList"
-                );
+    const list =
+        document.getElementById(
+            "problemsList"
+        );
 
 
-            list.innerHTML = `
-                <div class="loading">
-                    Loading problems...
-                </div>
-            `;
+    list.innerHTML = `
+        <div class="loading">
+            Loading problems...
+        </div>
+    `;
 
 
-            try {
+    try {
 
-                const response =
-                    await fetch(
-                        `${API_URL}/problems`,
-                        {
-                            method: "GET",
-                            headers: {
-                                "Accept":
-                                    "application/json"
-                            }
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        "Unable to load problems"
-                    );
-
+        const response =
+            await fetch(
+                `${API_URL}/problems`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    }
                 }
+            );
 
 
-                const data =
-                    await response.json();
+        if (!response.ok) {
 
-
-                problems =
-                    Array.isArray(data)
-                        ? data
-                        : [];
-
-
-                renderProblems();
-                populateProblemSelects();
-
-            } catch (error) {
-
-                console.error(error);
-
-                list.innerHTML = `
-                    <div class="empty-state">
-                        Unable to load problems.
-                    </div>
-                `;
-
-                showError(
-                    error.message
-                );
-
-            }
+            throw new Error(
+                "Unable to load problems"
+            );
 
         }
 
+
+        const data =
+            await response.json();
+
+
+        /*
+         * Pagination support
+         *
+         * New API response:
+         * {
+         *     items: [...],
+         *     total: ...,
+         *     page: ...,
+         *     page_size: ...,
+         *     total_pages: ...
+         * }
+         *
+         * Old API response:
+         * [...]
+         */
+
+
+        if (Array.isArray(data)) {
+
+            problems = data;
+
+        } else if (
+            Array.isArray(data.items)
+        ) {
+
+            problems = data.items;
+
+        } else if (
+            Array.isArray(data.problems)
+        ) {
+
+            problems = data.problems;
+
+        } else {
+
+            problems = [];
+
+        }
+
+
+        renderProblems();
+        populateProblemSelects();
+
+
+    } catch (error) {
+
+        console.error(
+            "Load problems error:",
+            error
+        );
+
+
+        list.innerHTML = `
+            <div class="empty-state">
+                Unable to load problems.
+            </div>
+        `;
+
+
+        showError(
+            error.message ||
+            "Unable to load problems."
+        );
+
+    }
+
+}
 
         /* =========================
            RENDER PROBLEMS

@@ -101,3 +101,10 @@ class LeaderboardResponse(BaseModel):
     accepted_submissions: int
     total_submissions: int
     acceptance_rate: float
+
+class PaginatedProblemResponse(BaseModel):
+    items: list[ProblemResponse]
+    total: int
+    page: int
+    limit: int
+    pages: int
