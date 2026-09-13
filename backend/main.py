@@ -19,6 +19,7 @@ from schemas import (
     PaginatedProblemResponse,
     SubmissionCreate,
     SubmissionResponse,
+    RunCodeRequest,
     TestCaseCreate,
     TestCaseResponse,
     LeaderboardResponse
@@ -638,15 +639,19 @@ def delete_test_case(
     }
 
 
-# =========================================================
+ # =========================================================
 # RUN CODE
 # =========================================================
 
 @app.post("/run")
 def run_code(
-    submission: SubmissionCreate,
+    submission: RunCodeRequest,
     db: Session = Depends(get_db)
 ):
+
+    # =========================
+    # CHECK PROBLEM
+    # =========================
 
     problem = db.query(Problem).filter(
         Problem.id == submission.problem_id
@@ -658,32 +663,57 @@ def run_code(
             detail="Problem not found"
         )
 
+    # =========================
+    # LANGUAGE CHECK
+    # =========================
+
     if submission.language.lower() != "python":
         return {
             "success": False,
             "output": "Language Not Supported"
         }
 
-    test_case = db.query(TestCase).filter(
-        TestCase.problem_id == submission.problem_id
-    ).first()
+    # =========================
+    # SELECT INPUT
+    # =========================
 
-    if not test_case:
-        return {
-            "success": False,
-            "output": "No test cases available"
-        }
+    if submission.custom_input.strip():
+
+        # User provided custom input
+        input_data = submission.custom_input
+
+    else:
+
+        # Use existing first test case
+        test_case = db.query(TestCase).filter(
+            TestCase.problem_id == submission.problem_id
+        ).first()
+
+        if not test_case:
+            return {
+                "success": False,
+                "output": "No test cases available"
+            }
+
+        input_data = test_case.input_data
+
+    # =========================
+    # RUN CODE
+    # =========================
 
     result = run_python_code(
         submission.code,
-        test_case.input_data
+        input_data
     )
+
+    # =========================
+    # RESPONSE
+    # =========================
 
     return {
         "success": result["success"],
         "output": result["output"]
     }
-
 
 # =========================================================
 # SUBMISSIONS

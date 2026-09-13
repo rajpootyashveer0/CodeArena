@@ -64,6 +64,11 @@ class SubmissionCreate(BaseModel):
     code: str
     language: str
 
+class RunCodeRequest(BaseModel):
+    problem_id: int
+    code: str
+    language: str
+    custom_input: str = ""
 
 class SubmissionResponse(BaseModel):
     id: int

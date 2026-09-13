@@ -1,4 +1,5 @@
- <!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -432,6 +433,143 @@
         }
 
         /* =========================
+           CUSTOM INPUT
+        ========================= */
+
+        .custom-input-panel {
+            background: #111;
+            border-top: 1px solid #292929;
+            padding: 13px 16px;
+        }
+
+        .custom-input-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+
+            margin-bottom: 9px;
+        }
+
+        .custom-input-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: #ddd;
+
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .custom-input-icon {
+            width: 24px;
+            height: 24px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 6px;
+
+            background: rgba(255, 161, 22, 0.09);
+            color: #ffa116;
+
+            font-family: "JetBrains Mono", monospace;
+            font-size: 11px;
+        }
+
+        .custom-input-hint {
+            color: #555;
+            font-size: 10px;
+        }
+
+        .clear-input-btn {
+            background: transparent;
+            color: #777;
+
+            border: 1px solid #292929;
+            border-radius: 5px;
+
+            padding: 5px 9px;
+
+            font-family: "Inter", sans-serif;
+            font-size: 10px;
+
+            cursor: pointer;
+
+            transition: all 0.18s ease;
+        }
+
+        .clear-input-btn:hover {
+            color: #ffa116;
+            border-color: #555;
+            background: rgba(255, 161, 22, 0.04);
+        }
+
+        .custom-input {
+            width: 100%;
+            min-height: 88px;
+            max-height: 170px;
+
+            resize: vertical;
+
+            background: #0c0c0c;
+            color: #ddd;
+
+            border: 1px solid #292929;
+            border-radius: 7px;
+
+            outline: none;
+
+            padding: 11px 12px;
+
+            font-family: "JetBrains Mono", monospace;
+            font-size: 12px;
+
+            line-height: 1.6;
+
+            scrollbar-width: thin;
+            scrollbar-color: #333 transparent;
+        }
+
+        .custom-input::placeholder {
+            color: #444;
+        }
+
+        .custom-input:focus {
+            border-color: rgba(255, 161, 22, 0.5);
+            box-shadow: 0 0 0 2px rgba(255, 161, 22, 0.05);
+        }
+
+        .custom-input-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-top: 7px;
+
+            color: #555;
+            font-size: 10px;
+        }
+
+        .custom-input-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .custom-input-status-dot {
+            width: 5px;
+            height: 5px;
+
+            border-radius: 50%;
+
+            background: #555;
+        }
+
+        /* =========================
            ACTION BAR
         ========================= */
 
@@ -497,7 +635,8 @@
         }
 
         .submit-btn:disabled,
-        .run-btn:disabled {
+        .run-btn:disabled,
+        .clear-input-btn:disabled {
             opacity: 0.55;
             cursor: not-allowed;
             transform: none;
@@ -655,6 +794,18 @@
                 font-size: 23px;
             }
 
+            .custom-input-panel {
+                padding: 12px;
+            }
+
+            .custom-input-header {
+                align-items: flex-start;
+            }
+
+            .custom-input-hint {
+                display: none;
+            }
+
             .editor-actions {
                 flex-direction: column;
                 align-items: stretch;
@@ -789,6 +940,67 @@
             </div>
 
 
+            <!-- CUSTOM INPUT -->
+
+            <div class="custom-input-panel">
+
+                <div class="custom-input-header">
+
+                    <div class="custom-input-title">
+
+                        <div class="custom-input-icon">
+                            &gt;_
+                        </div>
+
+                        <span>
+                            Custom Input
+                        </span>
+
+                        <span class="custom-input-hint">
+                            Optional — test your own input
+                        </span>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="clear-input-btn"
+                        id="clearInputBtn">
+                        Clear
+                    </button>
+
+                </div>
+
+
+                <textarea
+                    id="customInput"
+                    class="custom-input"
+                    spellcheck="false"
+                    placeholder="Enter custom input here...&#10;&#10;Example:&#10;10 20"
+                ></textarea>
+
+
+                <div class="custom-input-footer">
+
+                    <div class="custom-input-status">
+
+                        <span class="custom-input-status-dot"></span>
+
+                        <span id="customInputStatus">
+                            Empty input uses the official test case
+                        </span>
+
+                    </div>
+
+                    <span>
+                        Input only
+                    </span>
+
+                </div>
+
+            </div>
+
+
             <div class="editor-actions">
 
                 <div id="submissionStatus">
@@ -888,6 +1100,15 @@
         const submissionStatus =
             document.getElementById("submissionStatus");
 
+        const customInput =
+            document.getElementById("customInput");
+
+        const clearInputBtn =
+            document.getElementById("clearInputBtn");
+
+        const customInputStatus =
+            document.getElementById("customInputStatus");
+
 
         /* =========================
            AUTH
@@ -939,6 +1160,69 @@
             resultBody.textContent =
                 message;
         }
+
+
+        /* =========================
+           CUSTOM INPUT STATUS
+        ========================= */
+
+        function updateCustomInputStatus() {
+
+            const hasInput =
+                customInput.value.trim().length > 0;
+
+            const statusDot =
+                document.querySelector(
+                    ".custom-input-status-dot"
+                );
+
+
+            if (hasInput) {
+
+                customInputStatus.textContent =
+                    "Custom input will be used";
+
+                if (statusDot) {
+                    statusDot.style.background =
+                        "#ffa116";
+                }
+
+            } else {
+
+                customInputStatus.textContent =
+                    "Empty input uses the official test case";
+
+                if (statusDot) {
+                    statusDot.style.background =
+                        "#555";
+                }
+
+            }
+        }
+
+
+        customInput.addEventListener(
+            "input",
+            updateCustomInputStatus
+        );
+
+
+        /* =========================
+           CLEAR CUSTOM INPUT
+        ========================= */
+
+        clearInputBtn.addEventListener(
+            "click",
+            function () {
+
+                customInput.value = "";
+
+                updateCustomInputStatus();
+
+                customInput.focus();
+
+            }
+        );
 
 
         /* =========================
@@ -1160,6 +1444,7 @@
 
             submitBtn.disabled = true;
             runBtn.disabled = true;
+            clearInputBtn.disabled = true;
 
             submitBtn.textContent =
                 "Submitting...";
@@ -1316,6 +1601,9 @@
                     false;
 
                 runBtn.disabled =
+                    false;
+
+                clearInputBtn.disabled =
                     false;
 
                 submitBtn.textContent =
@@ -1540,8 +1828,20 @@
             }
 
 
+            /*
+             * Custom input is optional.
+             *
+             * If it is empty, backend automatically
+             * uses the first official test case.
+             */
+
+            const customInputValue =
+                customInput.value;
+
+
             runBtn.disabled = true;
             submitBtn.disabled = true;
+            clearInputBtn.disabled = true;
 
             runBtn.textContent =
                 "Running...";
@@ -1555,7 +1855,9 @@
 
 
             setResult(
-                "Running your code..."
+                customInputValue.trim()
+                    ? "Running your code with custom input..."
+                    : "Running your code with the official test case..."
             );
 
 
@@ -1583,7 +1885,10 @@
                                 code,
 
                             language:
-                                languageSelect.value
+                                languageSelect.value,
+
+                            custom_input:
+                                customInputValue
 
                         })
                     }
@@ -1661,6 +1966,13 @@
                 );
 
 
+                submissionStatus.innerHTML = `
+                    <span style="color:#ef4743;font-size:12px;">
+                        Run failed
+                    </span>
+                `;
+
+
                 setResult(
                     error.message ||
                     "Run failed.",
@@ -1674,6 +1986,9 @@
                     false;
 
                 submitBtn.disabled =
+                    false;
+
+                clearInputBtn.disabled =
                     false;
 
                 runBtn.textContent =
@@ -1758,6 +2073,46 @@
 
 
         /* =========================
+           TAB KEY IN CUSTOM INPUT
+        ========================= */
+
+        customInput.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (event.key === "Tab") {
+
+                    event.preventDefault();
+
+                    const start =
+                        this.selectionStart;
+
+                    const end =
+                        this.selectionEnd;
+
+
+                    this.value =
+                        this.value.substring(
+                            0,
+                            start
+                        ) +
+                        "    " +
+                        this.value.substring(
+                            end
+                        );
+
+
+                    this.selectionStart =
+                        this.selectionEnd =
+                            start + 4;
+
+                }
+
+            }
+        );
+
+
+        /* =========================
            ESCAPE HTML
         ========================= */
 
@@ -1792,6 +2147,8 @@
            START
         ========================= */
 
+        updateCustomInputStatus();
+
         loadProblem();
 
     </script>
@@ -1799,3 +2156,4 @@
 </body>
 
 </html>
+```
